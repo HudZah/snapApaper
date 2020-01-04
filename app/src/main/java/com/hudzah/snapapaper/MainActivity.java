@@ -12,10 +12,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     File file;
     ImageView picture;
 
+    private ProgressDialog loadingBar;
+
+
     public void torchAction(View view){
 
 
@@ -79,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textureView = findViewById(R.id.view_finder);
+
+        loadingBar = new ProgressDialog(this);
+
+        loadingBar.setTitle("Recognizing Text");
+        loadingBar.setMessage("Please Wait");
+        loadingBar.setCanceledOnTouchOutside(false);
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
@@ -131,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
                         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
+                        loadingBar.show();
+
                         rotateImage(bitmap);
 
                     }
@@ -172,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
 
                                     Toast.makeText(MainActivity.this, "Recognized Text : " + firebaseVisionText.getText(), Toast.LENGTH_LONG).show();
                                 }
+
+                                loadingBar.cancel();
                             }
                         }
                 )
@@ -194,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         String[] splitText = text.split("/");
 
         System.out.println(Arrays.toString(splitText));
+
     }
 
     private void updateTransform(){
