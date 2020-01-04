@@ -2,21 +2,29 @@ package com.hudzah.snapapaper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.CameraControl;
+import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraX;
+import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureConfig;
+import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.Preview;
 import androidx.camera.core.PreviewConfig;
+import androidx.camera.view.TextureViewMeteringPointFactory;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.os.Bundle;
@@ -24,6 +32,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -43,6 +52,8 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
     File file;
     ImageView picture;
 
+    ImageCapture imgCap;
+
     private ProgressDialog loadingBar;
+
+
 
 
     public void torchAction(View view){
@@ -83,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         textureView = findViewById(R.id.view_finder);
 
         loadingBar = new ProgressDialog(this);
@@ -105,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         Rational aspectRatio = new Rational (textureView.getWidth(), textureView.getHeight());
         Size screen = new Size(textureView.getWidth(), textureView.getHeight()); //size of the screen
 
-
         PreviewConfig pConfig = new PreviewConfig.Builder().setTargetAspectRatio(aspectRatio).setTargetResolution(screen).setTargetRotation(Surface.ROTATION_0).build();
         preview = new Preview(pConfig);
 
@@ -124,13 +139,16 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder().setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
+        ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder().setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
                 .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
-        final ImageCapture imgCap = new ImageCapture(imageCaptureConfig);
+        imgCap = new ImageCapture(imageCaptureConfig);
 
         findViewById(R.id.imgCapture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CameraX.unbind(preview);
+
                 file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
                 imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
                     @Override
@@ -148,10 +166,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-
                     @Override
-                    public void onError(@NonNull ImageCapture.UseCaseError useCaseError, @NonNull String message, @Nullable Throwable cause) {
-                        String msg = "Pic capture failed : " + message;
+                    public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
+                        String msg = "Image Capture Failed : " + message;
                         Toast.makeText(getBaseContext(), msg,Toast.LENGTH_LONG).show();
                         if(cause != null){
                             cause.printStackTrace();
@@ -176,17 +193,22 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(FirebaseVisionText firebaseVisionText) {
 
-                                // Do something
                                 Log.i("Text Recognized" , firebaseVisionText.getText());
 
                                 if(firebaseVisionText.getText() != "") {
 
                                     splitCode(firebaseVisionText);
-
-                                    Toast.makeText(MainActivity.this, "Recognized Text : " + firebaseVisionText.getText(), Toast.LENGTH_LONG).show();
                                 }
 
-                                loadingBar.cancel();
+                                else{
+
+                                    loadingBar.cancel();
+                                    Toast.makeText(MainActivity.this, "Text Could Not Be Recognized", Toast.LENGTH_LONG).show();
+                                    startCamera();
+
+                                }
+
+
                             }
                         }
                 )
@@ -195,20 +217,80 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
 
-                                // Do something
-                                Log.i("Text Recognized", "Failed");
+                                loadingBar.cancel();
                                 e.printStackTrace();
+                                startCamera();
                             }
                         }
                 );
+
     }
 
     private void splitCode(FirebaseVisionText firebaseVisionText) {
 
         String text = firebaseVisionText.getText();
+
+        Pattern pattern = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$");
+
+        Matcher matcher = pattern.matcher(text);
+
+        while(matcher.find()){
+
+            String codeText = matcher.group(1);
+        }
+
+
         String[] splitText = text.split("/");
 
+        // Splits into 9709, 42, F, M, 19
+        // Splits into 9709, 42, M, J, 19
+        // Splits into 9709, 42, O, N, 19
+
+        String paperCode = splitText[0] + "_";
+
+        if(splitText[2] == "F"){
+
+            paperCode = paperCode + "m" + splitText[4] + "_qp_" + splitText[1];
+
+        }
+        else if(splitText[2] == "M"){
+
+            paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
+        }
+        else if(splitText[2] == "O"){
+
+            paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
+        }
+
+        Log.i("Paper", paperCode);
+
+
         System.out.println(Arrays.toString(splitText));
+
+        loadingBar.cancel();
+
+        // Keep camera unbinded
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setCancelable(false);
+        builder.setTitle("Select An Option");
+
+// add a list
+        String[] animals = {"Test", "Test", "Take another photo"};
+        builder.setItems(animals, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                    case 1:
+                    case 2: startCamera();
+                }
+            }
+        });
+
+// create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 
@@ -272,10 +354,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        picture = (ImageView)findViewById(R.id.picture);
-
-        picture.setImageBitmap(rotatedBitmap);
 
         processImage(rotatedBitmap);
 
