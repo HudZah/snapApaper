@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,28 @@ public class MainActivity extends AppCompatActivity {
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
     TextureView textureView;
     ImageView imageView;
+    Preview preview;
+    Button torchButton;
+
+    public void torchAction(View view){
+
+
+        if(preview.isTorchOn() != true){
+
+            preview.enableTorch(true);
+
+            torchButton = (Button)findViewById(R.id.torchButton);
+
+            //int id = getResources().getIdentifier("yourpackagename:drawable/" + StringGenerated, null, null);
+
+            torchButton.setBackgroundResource(R.drawable.flashon);
+        }
+        else{
+
+            preview.enableTorch(false);
+            torchButton.setBackgroundResource(R.drawable.flashoff);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         PreviewConfig pConfig = new PreviewConfig.Builder().setTargetAspectRatio(aspectRatio).setTargetResolution(screen).build();
-        Preview preview = new Preview(pConfig);
+        preview = new Preview(pConfig);
 
         preview.setOnPreviewOutputUpdateListener(
                 new Preview.OnPreviewOutputUpdateListener() {
@@ -137,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 // Do something
                                 Log.i("Text Recognized" , firebaseVisionText.getText());
-                                TextView textView = (TextView)findViewById(R.id.textView);
-                                textView.setText(firebaseVisionText.getText());
+
                             }
                         }
                 )
