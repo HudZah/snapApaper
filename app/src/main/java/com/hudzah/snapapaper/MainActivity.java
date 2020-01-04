@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -38,6 +39,8 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     Preview preview;
     Button torchButton;
+    File file;
+    ImageView picture;
 
     public void torchAction(View view){
 
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         Size screen = new Size(textureView.getWidth(), textureView.getHeight()); //size of the screen
 
 
-        PreviewConfig pConfig = new PreviewConfig.Builder().setTargetAspectRatio(aspectRatio).setTargetResolution(screen).build();
+        PreviewConfig pConfig = new PreviewConfig.Builder().setTargetAspectRatio(aspectRatio).setTargetResolution(screen).setTargetRotation(Surface.ROTATION_0).build();
         preview = new Preview(pConfig);
 
         preview.setOnPreviewOutputUpdateListener(
@@ -115,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.imgCapture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
+                file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
                 imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
                     @Override
                     public void onImageSaved(@NonNull File file) {
@@ -126,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
-                        processImage(bitmap);
+                        rotateImage(bitmap);
 
                     }
 
@@ -161,6 +166,12 @@ public class MainActivity extends AppCompatActivity {
                                 // Do something
                                 Log.i("Text Recognized" , firebaseVisionText.getText());
 
+                                if(firebaseVisionText.getText() != "") {
+
+                                    splitCode(firebaseVisionText);
+
+                                    Toast.makeText(MainActivity.this, "Recognized Text : " + firebaseVisionText.getText(), Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                 )
@@ -175,6 +186,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                 );
+    }
+
+    private void splitCode(FirebaseVisionText firebaseVisionText) {
+
+        String text = firebaseVisionText.getText();
+        String[] splitText = text.split("/");
+
+        System.out.println(Arrays.toString(splitText));
     }
 
     private void updateTransform(){
@@ -207,6 +226,43 @@ public class MainActivity extends AppCompatActivity {
 
         mx.postRotate((float)rotationDgr, cX, cY);
         textureView.setTransform(mx);
+    }
+
+    private void rotateImage(Bitmap bitmap){
+
+        ExifInterface exifInterface = null;
+        try{
+            exifInterface = new ExifInterface(file.getAbsolutePath());
+        }
+        catch (IOException e){
+
+            e.printStackTrace();
+        }
+
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+        Matrix matrix = new Matrix();
+
+        switch(orientation){
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(270);
+                break;
+            default:
+
+        }
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        picture = (ImageView)findViewById(R.id.picture);
+
+        picture.setImageBitmap(rotatedBitmap);
+
+        processImage(rotatedBitmap);
+
     }
 
     @Override
