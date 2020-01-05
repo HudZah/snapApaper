@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -59,17 +61,26 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity {
 
     private int REQUEST_CODE_PERMISSIONS = 101;
+
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA", "android.permission.WRITE_EXTERNAL_STORAGE"};
+
     TextureView textureView;
+
     ImageView imageView;
+
     Preview preview;
+
     Button torchButton;
+
     File file;
+
     ImageView picture;
 
     ImageCapture imgCap;
 
+    String codeText;
 
+    Spinner spinner;
 
 
     public void torchAction(View view){
@@ -98,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textureView = findViewById(R.id.view_finder);
+
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
@@ -139,15 +151,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                CameraX.unbind(preview);
-
-
                 file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
                 imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
                     @Override
                     public void onImageSaved(@NonNull File file) {
-                        String msg = "Pic captured at " + file.getAbsolutePath();
-                        Toast.makeText(getBaseContext(), msg,Toast.LENGTH_LONG).show();
 
                         String filePath = file.getPath();
 
@@ -186,17 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 Log.i("Text Recognized" , firebaseVisionText.getText());
 
-                                if(firebaseVisionText.getText() != "") {
-
-                                    splitCode(firebaseVisionText);
-                                }
-
-                                else{
-                                    Toast.makeText(MainActivity.this, "Text Could Not Be Recognized", Toast.LENGTH_LONG).show();
-                                    startCamera();
-
-                                }
-
+                                splitCode(firebaseVisionText);
 
                             }
                         }
@@ -206,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
-                                startCamera();
                             }
                         }
                 );
@@ -215,67 +211,90 @@ public class MainActivity extends AppCompatActivity {
 
     private void splitCode(FirebaseVisionText firebaseVisionText) {
 
+        boolean deleted = file.delete();
+
+        if(deleted){
+
+            Log.i("Deleted File", "Deleted");
+        }
+
         String text = firebaseVisionText.getText();
 
-        Pattern pattern = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$");
+        boolean isMatching = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$").matcher(text).matches();
 
-        Matcher matcher = pattern.matcher(text);
+        if(isMatching){
 
-        while(matcher.find()){
+            Pattern pattern = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$");
+            Matcher matcher = pattern.matcher(text);
 
-            String codeText = matcher.group(1);
+            while(matcher.find()){
+
+                codeText = matcher.group(0);
+                Log.i("Matcher", codeText);
+
+            }
+
+
+            String[] splitText = codeText.split("/");
+
+            System.out.println(Arrays.toString(splitText));
+
+            CameraX.unbind(preview);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setCancelable(false);
+            builder.setTitle("Select An Option");
+
+            String[] animals = {"Test", "Test", "Take another photo"};
+            builder.setItems(animals, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                        case 1:
+                        case 2: startCamera();
+                    }
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+        else{
+
+            Toast.makeText(this, "Text Is Not A Valid Exam Code", Toast.LENGTH_LONG).show();
         }
 
 
-        String[] splitText = text.split("/");
+
+
 
         // Splits into 9709, 42, F, M, 19
         // Splits into 9709, 42, M, J, 19
         // Splits into 9709, 42, O, N, 19
 
-        String paperCode = splitText[0] + "_";
+//        String paperCode = Array.get(splitText, 0) + "_";
+//
+//        if(Array.get(splitText, 2) == "F"){
+//
+//            paperCode = paperCode + "m" + Array.get(splitText, 4) + "_qp_" + Array.get(splitText, 1);
+//
+//        }
+//        else if(Array.get(splitText, 2) == "M"){
+//
+//            paperCode = paperCode + "s" + Array.get(splitText, 4) + "_qp_" + Array.get(splitText, 1);
+//        }
+//        else if(Array.get(splitText, 2) == "O"){
+//
+//            paperCode = paperCode + "w" + Array.get(splitText, 4) + "_qp_" + Array.get(splitText, 1);
+//        }
 
-        if(splitText[2] == "F"){
+//        Log.i("Paper", paperCode);
 
-            paperCode = paperCode + "m" + splitText[4] + "_qp_" + splitText[1];
-
-        }
-        else if(splitText[2] == "M"){
-
-            paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
-        }
-        else if(splitText[2] == "O"){
-
-            paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
-        }
-
-        Log.i("Paper", paperCode);
-
-
-        System.out.println(Arrays.toString(splitText));
 
         // Keep camera unbinded
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setCancelable(false);
-        builder.setTitle("Select An Option");
-
-// add a list
-        String[] animals = {"Test", "Test", "Take another photo"};
-        builder.setItems(animals, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                    case 1:
-                    case 2: startCamera();
-                }
-            }
-        });
-
-// create and show the alert dialog
-        AlertDialog dialog = builder.create();
-        dialog.show();
 
     }
 
