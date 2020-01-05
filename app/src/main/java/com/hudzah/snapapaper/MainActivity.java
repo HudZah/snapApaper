@@ -52,6 +52,7 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView picture;
 
     ImageCapture imgCap;
-
-    private ProgressDialog loadingBar;
 
 
 
@@ -98,14 +97,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         textureView = findViewById(R.id.view_finder);
-
-        loadingBar = new ProgressDialog(this);
-
-        loadingBar.setTitle("Recognizing Text");
-        loadingBar.setMessage("Please Wait");
-        loadingBar.setCanceledOnTouchOutside(false);
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
@@ -149,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
                 CameraX.unbind(preview);
 
+
                 file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
                 imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
                     @Override
@@ -159,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
                         String filePath = file.getPath();
 
                         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-
-                        loadingBar.show();
 
                         rotateImage(bitmap);
 
@@ -201,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 else{
-
-                                    loadingBar.cancel();
                                     Toast.makeText(MainActivity.this, "Text Could Not Be Recognized", Toast.LENGTH_LONG).show();
                                     startCamera();
 
@@ -216,8 +205,6 @@ public class MainActivity extends AppCompatActivity {
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-
-                                loadingBar.cancel();
                                 e.printStackTrace();
                                 startCamera();
                             }
@@ -266,8 +253,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         System.out.println(Arrays.toString(splitText));
-
-        loadingBar.cancel();
 
         // Keep camera unbinded
 
