@@ -27,7 +27,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -61,6 +63,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.hudzah.snapapaper.R.drawable.cameraon;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,15 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
     TextureView textureView;
 
-    ImageView imageView;
-
     Preview preview;
 
     Button torchButton;
 
     File file;
-
-    ImageView picture;
 
     ImageCapture imgCap;
 
@@ -88,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner spinner;
 
     LoadingDialog loadingDialog;
+
+    ImageView cameraImage;
 
 
     public void torchAction(View view){
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadingDialog = new LoadingDialog(MainActivity.this);
+
+        cameraImage = (ImageView)findViewById(R.id.imgCapture);
 
         textureView = findViewById(R.id.view_finder);
 
@@ -199,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                cameraImage.setImageResource(R.drawable.cameraon);
+
                 loadingDialog.startLoadingDialog();
 
                 file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
@@ -224,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
         });
+
 
         //bind to lifecycle:
         CameraX.bindToLifecycle((LifecycleOwner)this, preview, imgCap);
@@ -263,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
     private void splitCode(FirebaseVisionText firebaseVisionText) {
 
         loadingDialog.dismissDialog();
+
+        cameraImage.setImageResource(R.drawable.cameraoff);
 
         boolean deleted = file.delete();
 
