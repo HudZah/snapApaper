@@ -52,12 +52,18 @@
         android:id="@+id/torchButton"
         android:layout_width="51dp"
         android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="25dp"
         android:background="@drawable/flashoff"
         android:onClick="torchAction"
-        app:layout_constraintBottom_toBottomOf="@+id/imgCapture"
+        app:layout_constraintBottom_toTopOf="@+id/picture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgCapture"
-        app:layout_constraintTop_toTopOf="@+id/imgCapture" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/picture"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -67,5 +73,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.023" />
 </androidx.constraintlayout.widget.ConstraintLayout>
