@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
     String codeText;
 
-    Spinner spinner;
-
     LoadingDialog loadingDialog;
 
     ImageView cameraImage;
@@ -122,27 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
         textureView = findViewById(R.id.view_finder);
 
-        spinner = (Spinner)findViewById(R.id.spinner);
-
         String[] spinnerItems = new String[]{"Cambridge", "Choose another"};
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems);
-
-        spinner.setAdapter(spinnerAdapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.i("Selcted", (String) parent.getItemAtPosition(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-                Log.i("Selected", "None");
-            }
-        });
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
