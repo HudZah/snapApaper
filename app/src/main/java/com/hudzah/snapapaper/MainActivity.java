@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -37,6 +38,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -57,6 +60,8 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     String codeText;
 
     Spinner spinner;
+
+    LoadingDialog loadingDialog;
 
 
     public void torchAction(View view){
@@ -108,8 +115,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadingDialog = new LoadingDialog(MainActivity.this);
+
         textureView = findViewById(R.id.view_finder);
 
+        spinner = (Spinner)findViewById(R.id.spinner);
+
+        String[] spinnerItems = new String[]{"Cambridge", "Choose another"};
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerItems);
+
+        spinner.setAdapter(spinnerAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.i("Selcted", (String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+                Log.i("Selected", "None");
+            }
+        });
 
         if(allPermissionsGranted()){
             startCamera(); //start camera if permission has been granted by user
@@ -121,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
     private void startCamera() {
 
         CameraX.unbindAll();
+
+        //CameraControl cameraControl = CameraX.getCameraControl(CameraX.LensFacing.BACK);
 
         Rational aspectRatio = new Rational (textureView.getWidth(), textureView.getHeight());
         Size screen = new Size(textureView.getWidth(), textureView.getHeight()); //size of the screen
@@ -142,6 +174,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+//        textureView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() != MotionEvent.ACTION_UP) {
+//                /* Original post returns false here, but in my experience this makes
+//                onTouch not being triggered for ACTION_UP event */
+//                    return true;
+//                }
+//                TextureViewMeteringPointFactory factory = new TextureViewMeteringPointFactory(textureView);
+//                MeteringPoint point = factory.createPoint(event.getX(), event.getY());
+//                FocusMeteringAction action = FocusMeteringAction.Builder.from(point).build();
+//                cameraControl.startFocusAndMetering(action);
+//                return true;
+//            }
+//        });
+
 
         ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder().setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
                 .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
@@ -150,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.imgCapture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                loadingDialog.startLoadingDialog();
 
                 file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
                 imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
@@ -182,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void processImage(Bitmap bitmap){
 
+
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getOnDeviceTextRecognizer();
@@ -210,6 +261,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void splitCode(FirebaseVisionText firebaseVisionText) {
+
+        loadingDialog.dismissDialog();
 
         boolean deleted = file.delete();
 
