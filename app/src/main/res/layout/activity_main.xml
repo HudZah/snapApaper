@@ -26,8 +26,8 @@
 
     <ImageView
         android:id="@+id/imgCapture"
-        android:layout_width="102dp"
-        android:layout_height="94dp"
+        android:layout_width="98dp"
+        android:layout_height="84dp"
         android:foregroundGravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
