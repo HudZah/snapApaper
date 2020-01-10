@@ -33,6 +33,8 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -58,9 +60,15 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -575,30 +583,31 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // Keep camera unbinded
-
-
     }
 
     public void downloadPdf(int which, String url){
 
-        url = url.trim();
-
+        Log.i("Downloader", "Download pdf");
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setTitle(paperCode);
 
-        // allow types of networks
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setTitle("Downloading");
-        request.setDescription("Downloading file...");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 
+            request.allowScanningByMediaScanner();
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        }
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, paperCode + ".pdf");
+        DownloadManager downloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        request.setMimeType("application/pdf");
         request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "" + paperCode);
-
-        // get download service and enque file
-        DownloadManager manager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        downloadManager.enqueue(request);
     }
+
+
+
 
     private void updateTransform(){
         Matrix mx = new Matrix();
