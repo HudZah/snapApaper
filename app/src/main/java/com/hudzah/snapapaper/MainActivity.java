@@ -124,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
     ListAdapter adapter;
 
+    AlertDialog.Builder builder;
+
 
     public void torchAction(View view){
 
@@ -150,34 +152,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Item[] items = {
-                new Item("Download Question Paper", android.R.drawable.stat_sys_download),
-                new Item("Download Mark Scheme", android.R.drawable.stat_sys_download),
-                new Item("Take another photo", android.R.drawable.picture_frame),//no icon for this one
-        };
-
-        adapter = new ArrayAdapter<Item>(
-                this,
-                android.R.layout.select_dialog_item,
-                android.R.id.text1,
-                items){
-            public View getView(int position, View convertView, ViewGroup parent) {
-                //Use super class to create the View
-                View v = super.getView(position, convertView, parent);
-                TextView tv = (TextView)v.findViewById(android.R.id.text1);
-
-                //Put the image on the TextView
-                tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
-
-                //Add margin between image and text (support various screen densities)
-                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
-                tv.setCompoundDrawablePadding(dp5);
-
-                return v;
-            }
-        };
-
-
+        builder = new AlertDialog.Builder(this);
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
@@ -619,10 +594,12 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
 
-                        new AlertDialog.Builder(this)
-                                .setTitle("Select an option")
-                                .setCancelable(false)
-                                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        // add a list
+                        String[] items = {"Download question paper", "Download mark scheme", "Download both", "Take another photo"};
+                        builder.setCancelable(false);
+                        builder.setTitle("Select an option");
+                        builder.setMessage("Choose an option");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if(which == 0){
