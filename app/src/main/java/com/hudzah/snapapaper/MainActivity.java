@@ -23,6 +23,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -150,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Item[] items = {
-                new Item("Download Question Paper", android.R.drawable.ic_menu_add),
-                new Item("Download Mark Scheme", android.R.drawable.ic_menu_delete),
-                new Item("Take another photo", android.R.drawable.ic_menu_camera),//no icon for this one
+                new Item("Download Question Paper", android.R.drawable.stat_sys_download),
+                new Item("Download Mark Scheme", android.R.drawable.stat_sys_download),
+                new Item("Take another photo", android.R.drawable.picture_frame),//no icon for this one
         };
 
         adapter = new ArrayAdapter<Item>(
@@ -518,17 +519,23 @@ public class MainActivity extends AppCompatActivity {
         // nazoorh
         // DZIq90ar
 
-        boolean isMatching = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}").matcher(text).find();
+
+        boolean isMatching = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(text).find();
+//        Pattern pattern2 = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}");
+//        Matcher matcher2 = pattern2.matcher(text);
+//
+//        while(matcher2.find()){
+//            System.out.println(matcher2.group());
+//        }
 
         Log.i("Matching", String.valueOf(isMatching));
 
         if(isMatching){
 
-            CameraX.unbind(preview);
+            Log.i("in here", "In here");
 
-            Pattern pattern = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}");
+            Pattern pattern = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}");
             Matcher matcher = pattern.matcher(text);
-            matcher.find();
 
             while(matcher.find()){
 
@@ -572,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("Paper", paperCode);
 
-                Boolean paperCodeValid = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}").matcher(paperCode).find();
+                Boolean paperCodeValid = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(text).find();
 
                 if (paperCodeValid != true){
 
@@ -645,12 +652,15 @@ public class MainActivity extends AppCompatActivity {
             loadingDialog.dismissDialog();
 
             Toast.makeText(this, "Text is not a valid exam code, please try again", Toast.LENGTH_LONG).show();
+            loadingDialog.dismissDialog();
 
         }
 
     }
 
     public void downloadPdf(int which, String url, String fileName){
+
+        loadingDialog.dismissDialog();
 
         Log.i("Which", String.valueOf(which));
 
@@ -674,6 +684,7 @@ public class MainActivity extends AppCompatActivity {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
             downloadManager.enqueue(request);
 
+
         }
         else if(which == 1){
 
@@ -695,9 +706,21 @@ public class MainActivity extends AppCompatActivity {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
             downloadManager.enqueue(request);
         }
+
+        openPdf(fileName);
     }
 
+    public void openPdf(String fileName){
 
+        fileName = fileName + ".pdf";
+
+        File file = new File(Environment.DIRECTORY_DOWNLOADS + fileName);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+    }
 
 
     private void updateTransform(){
