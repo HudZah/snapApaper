@@ -49,6 +49,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     String paperCodeMs;
 
+    ListAdapter adapter;
+
 
     public void torchAction(View view){
 
@@ -145,6 +148,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final Item[] items = {
+                new Item("Download Question Paper", android.R.drawable.ic_menu_add),
+                new Item("Download Mark Scheme", android.R.drawable.ic_menu_delete),
+                new Item("Take another photo", android.R.drawable.ic_menu_camera),//no icon for this one
+        };
+
+        adapter = new ArrayAdapter<Item>(
+                this,
+                android.R.layout.select_dialog_item,
+                android.R.id.text1,
+                items){
+            public View getView(int position, View convertView, ViewGroup parent) {
+                //Use super class to create the View
+                View v = super.getView(position, convertView, parent);
+                TextView tv = (TextView)v.findViewById(android.R.id.text1);
+
+                //Put the image on the TextView
+                tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+                //Add margin between image and text (support various screen densities)
+                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                tv.setCompoundDrawablePadding(dp5);
+
+                return v;
+            }
+        };
+
+
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
@@ -341,6 +373,8 @@ public class MainActivity extends AppCompatActivity {
 
         CameraX.unbindAll();
 
+
+
         //CameraControl cameraControl = CameraX.getCameraControl(CameraX.LensFacing.BACK);
 
         Rational aspectRatio = new Rational (textureView.getWidth(), textureView.getHeight());
@@ -490,6 +524,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(isMatching){
 
+            CameraX.unbind(preview);
+
             Pattern pattern = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}");
             Matcher matcher = pattern.matcher(text);
             matcher.find();
@@ -536,77 +572,81 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("Paper", paperCode);
 
-                paperCodeMs = paperCode.replace("_qp_", "_ms_");
+                Boolean paperCodeValid = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}").matcher(paperCode).find();
 
-                String pdfUrlPart = examCodesMap.get(splitText[0]);
+                if (paperCodeValid != true){
 
-                if(pdfUrlPart != null) {
+                    Toast.makeText(this, "Error in finding past paper, please try again", Toast.LENGTH_SHORT).show();
+                }
 
-                    Log.i("pdfUrlPart", pdfUrlPart);
+                else {
 
-                    pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+                    CameraX.unbind(preview);
 
-                    Log.i("pdfUrlPart", pdfUrlPart);
+                    paperCodeMs = paperCode.replace("_qp_", "_ms_");
 
-                    if (Integer.valueOf(splitText[0]) > 8000) {
+                    String pdfUrlPart = examCodesMap.get(splitText[0]);
 
-                        examLevel = "A%20Levels";
-                    } else if (Integer.valueOf(splitText[0]) < 1000) {
+                    if (pdfUrlPart != null) {
 
-                        examLevel = "IGCSE";
-                    } else {
+                        Log.i("pdfUrlPart", pdfUrlPart);
 
-                        examLevel = "O%20Levels";
+                        pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+
+                        Log.i("pdfUrlPart", pdfUrlPart);
+
+                        if (Integer.valueOf(splitText[0]) > 8000) {
+
+                            examLevel = "A%20Levels";
+                        } else if (Integer.valueOf(splitText[0]) < 1000) {
+
+                            examLevel = "IGCSE";
+                        } else {
+
+                            examLevel = "O%20Levels";
+                        }
+
+                        pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
+
+                        pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
+
+                        Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
+
+                        new AlertDialog.Builder(this)
+                                .setTitle("Select an option")
+                                .setCancelable(false)
+                                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        if(which == 0){
+                                            downloadPdf(which, pdfUrl, paperCode);
+                                        }
+                                        else if(which == 1){
+                                            downloadPdf(which, pdfUrlMs, paperCodeMs);
+                                        }
+                                        else if(which == 2){
+                                            // Download both
+                                        }
+                                        else{
+                                            startCamera();
+                                        }
+                                    }
+
+                                }).show();
                     }
-
-                    pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
-
-                    pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
-
-                    Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
                 }
 
 
             }
 
-            CameraX.unbind(preview);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                    .setCancelable(false);
-            builder.setTitle("Select An Option");
-
-            String[] animals = {"Download Question Paper", "Download Mark Scheme", "Download Both Question and Mark scheme", "Take another photo"};
-            builder.setItems(animals, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    if(which == 0){
-                        downloadPdf(which, pdfUrl, paperCode);
-                    }
-                    else if(which == 1){
-                        downloadPdf(which, pdfUrlMs, paperCodeMs);
-                    }
-                    else if(which == 2){
-                        // Download both
-                    }
-                    else{
-                        startCamera();
-                    }
-                }
-            });
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
         }
 
         else{
-
-            Toast.makeText(this, "Text Is Not A Valid Exam Code", Toast.LENGTH_LONG).show();
-
             loadingDialog.dismissDialog();
+
+            Toast.makeText(this, "Text is not a valid exam code, please try again", Toast.LENGTH_LONG).show();
+
         }
-
-
 
     }
 
