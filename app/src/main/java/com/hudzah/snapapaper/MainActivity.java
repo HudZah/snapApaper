@@ -477,19 +477,22 @@ public class MainActivity extends AppCompatActivity {
 
         String text = firebaseVisionText.getText();
 
-        text.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
+        text = text.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
 
         Log.i("Whitespaces removed", text);
 
         // nazoorh
         // DZIq90ar
 
-        boolean isMatching = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$").matcher(text).matches();
+        boolean isMatching = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}").matcher(text).find();
+
+        Log.i("Matching", String.valueOf(isMatching));
 
         if(isMatching){
 
-            Pattern pattern = Pattern.compile("^\\d{4}/\\d{2}/\\w/\\w/\\d{2}$");
+            Pattern pattern = Pattern.compile("\\d{4}/\\d{2}/\\w/\\/\\d{2}");
             Matcher matcher = pattern.matcher(text);
+            matcher.find();
 
             while(matcher.find()){
 
