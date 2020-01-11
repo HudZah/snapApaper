@@ -518,9 +518,17 @@ public class MainActivity extends AppCompatActivity {
 
                     paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
                 }
-                else if(splitText[2].equals("O")){
+                else if(splitText[2].equals("O")) {
 
                     paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
+                }
+                else if(Integer.valueOf(splitText[2]) == 0){
+
+                    paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
+                }
+                else{
+
+                    Log.i("paperCode", "Code is none");
                 }
 
                 Log.i("Paper", paperCode);
@@ -564,14 +572,22 @@ public class MainActivity extends AppCompatActivity {
                     .setCancelable(false);
             builder.setTitle("Select An Option");
 
-            String[] animals = {"Download Question Paper", "Download Mark Scheme", "Take another photo"};
+            String[] animals = {"Download Question Paper", "Download Mark Scheme", "Download Both Question and Mark scheme", "Take another photo"};
             builder.setItems(animals, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case 0: downloadPdf(which, pdfUrl, paperCode);
-                        case 1: downloadPdf(which, pdfUrlMs, paperCodeMs);
-                        case 2: startCamera();
+
+                    if(which == 0){
+                        downloadPdf(which, pdfUrl, paperCode);
+                    }
+                    else if(which == 1){
+                        downloadPdf(which, pdfUrlMs, paperCodeMs);
+                    }
+                    else if(which == 2){
+                        // Download both
+                    }
+                    else{
+                        startCamera();
                     }
                 }
             });
@@ -593,23 +609,49 @@ public class MainActivity extends AppCompatActivity {
 
     public void downloadPdf(int which, String url, String fileName){
 
-        Log.i("Downloader", "Download pdf " + url);
+        Log.i("Which", String.valueOf(which));
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle(paperCode);
+        if(which == 0) {
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+            Log.i("Downloader", "Download pdf " + url);
 
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setTitle(paperCode);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            }
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
+            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            request.setMimeType("application/pdf");
             request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+            downloadManager.enqueue(request);
 
         }
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
-        DownloadManager downloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-        request.setMimeType("application/pdf");
-        request.allowScanningByMediaScanner();
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        downloadManager.enqueue(request);
+        else if(which == 1){
+
+            Log.i("Downloader", "Download pdf " + url);
+
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setTitle(paperCode);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            }
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
+            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            request.setMimeType("application/pdf");
+            request.allowScanningByMediaScanner();
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+            downloadManager.enqueue(request);
+        }
     }
 
 
