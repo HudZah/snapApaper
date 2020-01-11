@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
     String pdfUrlMs;
 
+    String paperCodeMs;
+
 
     public void torchAction(View view){
 
@@ -523,6 +525,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("Paper", paperCode);
 
+                paperCodeMs = paperCode.replace("_qp_", "_ms_");
+
                 String pdfUrlPart = examCodesMap.get(splitText[0]);
 
                 if(pdfUrlPart != null) {
@@ -548,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
 
                     pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
 
-                    Log.i("pdfURl", pdfUrl + "MS IS" + pdfUrlMs);
+                    Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
                 }
 
 
@@ -565,8 +569,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
-                        case 0: downloadPdf(which, pdfUrl);
-                        case 1: downloadPdf(which, pdfUrlMs);
+                        case 0: downloadPdf(which, pdfUrl, paperCode);
+                        case 1: downloadPdf(which, pdfUrlMs, paperCodeMs);
                         case 2: startCamera();
                     }
                 }
@@ -579,15 +583,17 @@ public class MainActivity extends AppCompatActivity {
         else{
 
             Toast.makeText(this, "Text Is Not A Valid Exam Code", Toast.LENGTH_LONG).show();
+
+            loadingDialog.dismissDialog();
         }
 
 
 
     }
 
-    public void downloadPdf(int which, String url){
+    public void downloadPdf(int which, String url, String fileName){
 
-        Log.i("Downloader", "Download pdf");
+        Log.i("Downloader", "Download pdf " + url);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setTitle(paperCode);
@@ -598,7 +604,7 @@ public class MainActivity extends AppCompatActivity {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
         }
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, paperCode + ".pdf");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
         DownloadManager downloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         request.setMimeType("application/pdf");
         request.allowScanningByMediaScanner();
