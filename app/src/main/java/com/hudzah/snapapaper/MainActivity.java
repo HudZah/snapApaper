@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(getApplicationContext());
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
@@ -373,6 +373,43 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        textureView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() != MotionEvent.ACTION_UP){
+
+                    return false;
+                }
+//
+                Log.i("Touched", "View touched");
+//                TextureViewMeteringPointFactory factory = new TextureViewMeteringPointFactory(textureView);
+//                MeteringPoint point = factory.createPoint(event.getX(), event.getY());
+//                FocusMeteringAction action = FocusMeteringAction.Builder.from(point).build();
+//
+//                return true;
+
+
+                final float x = (event != null) ? event.getX() : v.getX() + v.getWidth() / 2f;
+                final float y = (event != null) ? event.getY() : v.getY() + v.getHeight() / 2f;
+
+                TextureViewMeteringPointFactory pointFactory = new TextureViewMeteringPointFactory(textureView);
+                float afPointWidth = 1.0f / 6.0f;  // 1/6 total area
+                float aePointWidth = afPointWidth * 1.5f;
+                MeteringPoint afPoint = pointFactory.createPoint(x, y, afPointWidth, 1.0f);
+                MeteringPoint aePoint = pointFactory.createPoint(x, y, aePointWidth, 1.0f);
+
+                try {
+                    CameraX.getCameraControl(CameraX.LensFacing.BACK).startFocusAndMetering(
+                            FocusMeteringAction.Builder.from(afPoint, FocusMeteringAction.MeteringMode.AF_ONLY)
+                                    .addPoint(aePoint, FocusMeteringAction.MeteringMode.AE_ONLY)
+                                    .build());
+                } catch (CameraInfoUnavailableException e) {
+                    Log.d("Error", "cannot access camera", e);
+                }
+
+                return true;
+            }
+        });
 
         ImageCaptureConfig imageCaptureConfig = new ImageCaptureConfig.Builder().setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
                 .setTargetRotation(getWindowManager().getDefaultDisplay().getRotation()).build();
@@ -416,30 +453,8 @@ public class MainActivity extends AppCompatActivity {
 
         //bind to lifecycle:
         CameraX.bindToLifecycle((LifecycleOwner)this, preview, imgCap);
-        setUpTapToFocus();
 
         
-    }
-
-    public void setUpTapToFocus(){
-
-        textureView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() != MotionEvent.ACTION_UP){
-
-                    return false;
-                }
-
-                System.out.println("Touched");
-
-                TextureViewMeteringPointFactory factory = new TextureViewMeteringPointFactory(textureView);
-                MeteringPoint point = factory.createPoint(event.getX(), event.getY());
-                FocusMeteringAction action = FocusMeteringAction.Builder.from(point).build();
-
-                return true;
-            }
-        });
     }
 
     public void processImage(Bitmap bitmap){
@@ -491,17 +506,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Whitespaces removed", text);
 
-        // nazoorh
-        // DZIq90ar
-
-
         boolean isMatching = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(text).find();
-//        Pattern pattern2 = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}");
-//        Matcher matcher2 = pattern2.matcher(text);
-//
-//        while(matcher2.find()){
-//            System.out.println(matcher2.group());
-//        }
 
         Log.i("Matching", String.valueOf(isMatching));
 
@@ -596,7 +601,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // add a list
                         String[] items = {"Download question paper", "Download mark scheme", "Download both", "Take another photo"};
-                        builder.setCancelable(false);
+                        builder.setCancelable(true);
                         builder.setTitle("Select an option");
                         builder.setMessage("Choose an option");
                         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -616,9 +621,13 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                }).show();
+                                }).create();
+                        builder.show();
                     }
+
                 }
+
+                startCamera();
 
 
             }
