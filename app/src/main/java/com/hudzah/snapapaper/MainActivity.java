@@ -21,10 +21,13 @@ import androidx.lifecycle.LifecycleOwner;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -124,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
     ListAdapter adapter;
 
-    AlertDialog.Builder builder;
+    AlertDialog.Builder choiceBuilder;
+
 
 
     public void torchAction(View view){
@@ -151,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        builder = new AlertDialog.Builder(getApplicationContext());
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
@@ -599,12 +601,16 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
 
+                        choiceBuilder = new AlertDialog.Builder(this);
+
                         // add a list
-                        String[] items = {"Download question paper", "Download mark scheme", "Download both", "Take another photo"};
-                        builder.setCancelable(true);
-                        builder.setTitle("Select an option");
-                        builder.setMessage("Choose an option");
-                        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                        String[] items = getResources().getStringArray(R.array.choice_names);
+
+                        choiceBuilder.setCancelable(true);
+                        choiceBuilder.setTitle("Select an option for \n" + codeText);
+                        //choiceBuilder.setMessage("Choose an option");
+                        choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if(which == 0){
@@ -621,15 +627,13 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                }).create();
-                        builder.show();
+                                }).show();
+
                     }
 
                 }
 
                 startCamera();
-
-
             }
 
         }
@@ -650,57 +654,77 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Which", String.valueOf(which));
 
-        if(which == 0) {
 
-            Log.i("Downloader", "Download pdf " + url);
+        Log.i("Downloader", "Download pdf " + url);
 
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-            request.setTitle(paperCode);
+        File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if(downloadFile.exists()){
 
-                request.allowScanningByMediaScanner();
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-            }
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
-            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            request.setMimeType("application/pdf");
-            request.allowScanningByMediaScanner();
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-            downloadManager.enqueue(request);
-
-
-        }
-        else if(which == 1){
-
-            Log.i("Downloader", "Download pdf " + url);
-
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-            request.setTitle(paperCode);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-
-                request.allowScanningByMediaScanner();
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-            }
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
-            DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            request.setMimeType("application/pdf");
-            request.allowScanningByMediaScanner();
-            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-            downloadManager.enqueue(request);
+            Toast.makeText(this, "File Already Exists", Toast.LENGTH_LONG).show();
         }
 
-        openPdf(fileName);
+        else {
+
+            try {
+
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+
+                DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                request.setMimeType("application/pdf");
+
+                request.setTitle(paperCode);
+                request.setDescription(paperCode);
+
+                request.allowScanningByMediaScanner();
+
+                request.setVisibleInDownloadsUi(true);
+
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
+
+                // get download service and enqueue file
+                downloadManager.enqueue(request);
+
+                Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_SHORT).show();
+
+                registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
+            } catch (Exception e) {
+
+                Log.d("DOWNLOAD INFO", e.getMessage());
+                e.printStackTrace();
+            }
+
+        }
+
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(onComplete);
+    }
+
+
+    BroadcastReceiver onComplete = new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+
+            Toast.makeText(ctxt, "received", Toast.LENGTH_SHORT).show();
+            openPdf(paperCode);
+
+        }
+    };
 
     public void openPdf(String fileName){
 
-        fileName = fileName + ".pdf";
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
 
-        File file = new File(Environment.DIRECTORY_DOWNLOADS + fileName);
+        Log.i("pdf file name", fileName + ".pdf");
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), "application/pdf");
