@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item-->
+<!--        android:id="@+id/item_a"-->
+<!--        android:title="Sign in"-->
+<!--        android:checkable="true"-->
+<!--        android:icon="@drawable/ic_login_foreground"-->
+<!--         />-->
+
+    <item
+        android:id="@+id/item_a"
+        android:title="Scan a paper"
+        android:checkable="true"
+        android:icon="@drawable/ic_camera_foreground"
+        />
+
+    <item
+        android:id="@+id/item_b"
+        android:title="My list"
+        android:checkable="true"
+        android:icon="@drawable/ic_mylist_foreground"
+        />
+
+    <item
+        android:id="@+id/item_c"
+        android:title="Settings"
+        android:checkable="true"
+        android:icon="@drawable/ic_settings_foreground"
+        />
+
+    <item
+        android:id="@+id/item_d"
+        android:title="Log out"
+        android:checkable="true"
+        android:icon="@drawable/ic_logout_foreground"
+        />
+
+    <item
+        android:id="@+id/item_e"
+        android:title="About us"
+        android:checkable="true"
+        android:icon="@drawable/ic_about_foreground"
+        />
+</menu>

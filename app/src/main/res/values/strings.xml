@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">snapApaper</string>
 
+    <string name="username">HudZah</string>
+    <string name="email">chiefhudhayfa@gmail.com</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 
     <string-array name="choice_names">
 

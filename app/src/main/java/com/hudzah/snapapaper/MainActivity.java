@@ -2,8 +2,10 @@ package com.hudzah.snapapaper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraX;
@@ -16,6 +18,8 @@ import androidx.camera.core.PreviewConfig;
 import androidx.camera.view.TextureViewMeteringPointFactory;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.app.Activity;
@@ -44,6 +48,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
@@ -60,6 +65,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -89,7 +95,7 @@ import java.util.concurrent.Future;
 import static com.hudzah.snapapaper.R.drawable.cameraon;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private int REQUEST_CODE_PERMISSIONS = 101;
 
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
     Boolean isQp;
 
+    DrawerLayout drawerLayout;
 
 
     public void torchAction(View view){
@@ -165,6 +172,17 @@ public class MainActivity extends AppCompatActivity {
         textureView = findViewById(R.id.view_finder);
 
         paperCode = "";
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView)findViewById(R.id.drawer);
+        navigationView.setNavigationItemSelectedListener(this);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar , R.string.drawer_open, R.string.drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+        toolbar.setNavigationIcon(R.drawable.whitemenuverysmall);
+
 
         examCodesMap.put("7707" , "Accounting (7707)");
         examCodesMap.put("7707" ,"Accounting (7707)");
@@ -347,6 +365,52 @@ public class MainActivity extends AppCompatActivity {
         } else{
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        String itemName = (String) item.getTitle();
+
+        closeDrawer();
+
+        switch (item.getItemId()){
+
+            case R.id.item_a:
+                break;
+            case R.id.item_b:
+                break;
+            case R.id.item_c:
+                break;
+            case R.id.item_d:
+                break;
+            case R.id.item_e:
+                break;
+
+        }
+
+        return true;
+    }
+
+    private void closeDrawer(){
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    private void openDrawer(){
+
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+
+            closeDrawer();
+        }
+        super.onBackPressed();
     }
 
     private void startCamera() {
