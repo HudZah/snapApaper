@@ -40,11 +40,14 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
@@ -66,6 +69,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -139,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     DrawerLayout drawerLayout;
 
+    ConnectionDetector connectionDetector;
+
 
     public void torchAction(View view){
 
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             preview.enableTorch(true);
 
-            torchButton = (Button)findViewById(R.id.torchButton);
+
 
             //int id = getResources().getIdentifier("yourpackagename:drawable/" + StringGenerated, null, null);
 
@@ -167,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
+        torchButton = (Button)findViewById(R.id.torchButton);
+
+        torchButton.setBackgroundResource(R.drawable.flashoff);
+
         cameraImage = (ImageView)findViewById(R.id.imgCapture);
 
         textureView = findViewById(R.id.view_finder);
@@ -174,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         paperCode = "";
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        connectionDetector = new ConnectionDetector(this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView)findViewById(R.id.drawer);
@@ -719,65 +731,84 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void downloadPdf(int which, String url, String fileName, Boolean isQp){
+    public void downloadPdf(int which, String url, String fileName, Boolean isQp) {
 
-        loadingDialog.dismissDialog();
+        if (connectionDetector.checkConnection() == false) {
 
-        Log.i("Which", String.valueOf(which));
+            final Snackbar snackBar = Snackbar.make(textureView, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
+
+            snackBar.setAction("OK",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            snackBar.dismiss();
+                        }
+                    }).show();
 
 
-        Log.i("Downloader", "Download pdf " + url);
+            Log.i("Internet", "Not connected");
 
-        File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
 
-        if(downloadFile.exists()){
+        } else {
 
-            Toast.makeText(this, "File Already Exists", Toast.LENGTH_LONG).show();
-        }
+            loadingDialog.dismissDialog();
 
-        else {
+            Log.i("Which", String.valueOf(which));
 
-            try {
 
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+            Log.i("Downloader", "Download pdf " + url);
 
-                DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                request.setMimeType("application/pdf");
+            File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
 
-                if(isQp) {
+            if (downloadFile.exists()) {
 
-                    request.setTitle(paperCode);
-                    request.setDescription(paperCode);
-                }else if(isQp == false){
+                Toast.makeText(this, "File Already Exists", Toast.LENGTH_LONG).show();
+            } else {
 
-                    request.setTitle(paperCodeMs);
-                    request.setDescription(paperCodeMs);
+                try {
+
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+
+                    DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                    request.setMimeType("application/pdf");
+
+                    if (isQp) {
+
+                        request.setTitle(paperCode);
+                        request.setDescription(paperCode);
+                    } else if (isQp == false) {
+
+                        request.setTitle(paperCodeMs);
+                        request.setDescription(paperCodeMs);
+                    }
+                    request.allowScanningByMediaScanner();
+
+                    request.setVisibleInDownloadsUi(true);
+
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
+
+                    // get download service and enqueue file
+                    downloadManager.enqueue(request);
+
+                    Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
+
+                    registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
+                } catch (Exception e) {
+
+                    Log.d("DOWNLOAD INFO", e.getMessage());
+                    e.printStackTrace();
                 }
-                request.allowScanningByMediaScanner();
 
-                request.setVisibleInDownloadsUi(true);
-
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
-
-                // get download service and enqueue file
-                downloadManager.enqueue(request);
-
-                Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
-
-                registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-
-            } catch (Exception e) {
-
-                Log.d("DOWNLOAD INFO", e.getMessage());
-                e.printStackTrace();
             }
 
         }
-
     }
+
 
 
     @Override
@@ -801,7 +832,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openPdf(paperCodeMs);
             }
         }
+
     };
+
 
     public void openPdf(String fileName){
 
