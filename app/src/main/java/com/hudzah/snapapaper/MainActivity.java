@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     AlertDialog.Builder choiceBuilder;
 
+    Boolean isQp;
+
 
 
     public void torchAction(View view){
@@ -524,6 +526,9 @@ public class MainActivity extends AppCompatActivity {
                 codeText = matcher.group(0);
                 Log.i("Matched text", codeText);
 
+                preview.enableTorch(false);
+                torchButton.setBackgroundResource(R.drawable.flashoff);
+
                 splitText = codeText.split("/");
 
                 System.out.println(Arrays.toString(splitText));
@@ -614,10 +619,12 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if(which == 0){
-                                            downloadPdf(which, pdfUrl, paperCode);
+                                            isQp = true;
+                                            downloadPdf(which, pdfUrl, paperCode, isQp);
                                         }
                                         else if(which == 1){
-                                            downloadPdf(which, pdfUrlMs, paperCodeMs);
+                                            isQp = false;
+                                            downloadPdf(which, pdfUrlMs, paperCodeMs, isQp);
                                         }
                                         else if(which == 2){
                                             // Download both
@@ -648,7 +655,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void downloadPdf(int which, String url, String fileName){
+    public void downloadPdf(int which, String url, String fileName, Boolean isQp){
 
         loadingDialog.dismissDialog();
 
@@ -674,9 +681,15 @@ public class MainActivity extends AppCompatActivity {
                 DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                 request.setMimeType("application/pdf");
 
-                request.setTitle(paperCode);
-                request.setDescription(paperCode);
+                if(isQp) {
 
+                    request.setTitle(paperCode);
+                    request.setDescription(paperCode);
+                }else if(isQp == false){
+
+                    request.setTitle(paperCodeMs);
+                    request.setDescription(paperCodeMs);
+                }
                 request.allowScanningByMediaScanner();
 
                 request.setVisibleInDownloadsUi(true);
@@ -687,7 +700,7 @@ public class MainActivity extends AppCompatActivity {
                 // get download service and enqueue file
                 downloadManager.enqueue(request);
 
-                Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
 
                 registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -715,8 +728,14 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context ctxt, Intent intent) {
 
             Toast.makeText(ctxt, "received", Toast.LENGTH_SHORT).show();
-            openPdf(paperCode);
 
+            if(isQp) {
+                openPdf(paperCode); //issue
+
+            }else if(isQp == false){
+
+                openPdf(paperCodeMs);
+            }
         }
     };
 
