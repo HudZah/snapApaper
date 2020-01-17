@@ -391,16 +391,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.item_a:
 
-                Intent mainIntent = new Intent(String.valueOf(MainActivity.class));
+                Intent mainIntent = new Intent(this,MainActivity.class);
                 startActivity(mainIntent);
                 break;
             case R.id.item_b:
 
-                Intent listIntent = new Intent(MyListActivity.class);
+                Intent listIntent = new Intent(this ,MyListActivity.class);
                 startActivity(listIntent);
                 break;
             case R.id.item_c:
-                Intent settingsIntent = new Intent(SettingsActivity.class);
+                Intent settingsIntent = new Intent(this,SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
             case R.id.item_d:
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.item_e:
 
-                Intent aboutIntent = new Intent(AboutActivity.class);
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
                 break;
 
