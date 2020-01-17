@@ -390,14 +390,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
 
             case R.id.item_a:
+
+                Intent mainIntent = new Intent(String.valueOf(MainActivity.class));
+                startActivity(mainIntent);
                 break;
             case R.id.item_b:
+
+                Intent listIntent = new Intent(MyListActivity.class);
+                startActivity(listIntent);
                 break;
             case R.id.item_c:
+                Intent settingsIntent = new Intent(SettingsActivity.class);
+                startActivity(settingsIntent);
                 break;
             case R.id.item_d:
+                // log out
                 break;
             case R.id.item_e:
+
+                Intent aboutIntent = new Intent(AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
 
         }
@@ -646,7 +658,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (paperCodeValid != true){
 
-                    Toast.makeText(this, "Error in finding past paper, please try again", Toast.LENGTH_SHORT).show();
+
+                    Snackbar.make(textureView, "Could not find the past paper, please try again", Snackbar.LENGTH_LONG).show();
                 }
 
                 else {
@@ -724,7 +737,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             loadingDialog.dismissDialog();
 
-            Toast.makeText(this, "Text is not a valid exam code, please try again", Toast.LENGTH_LONG).show();
+
+            Snackbar.make(textureView, "Text is not a valid Cambridge exam format, please try again", Snackbar.LENGTH_LONG).show();
+
+
             loadingDialog.dismissDialog();
 
         }
@@ -763,7 +779,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (downloadFile.exists()) {
 
-                Toast.makeText(this, "File Already Exists", Toast.LENGTH_LONG).show();
+                Snackbar.make(textureView, "File already exists", Snackbar.LENGTH_LONG).show();
             } else {
 
                 try {
@@ -822,7 +838,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
-            Toast.makeText(ctxt, "received", Toast.LENGTH_SHORT).show();
 
             if(isQp) {
                 openPdf(paperCode); //issue
@@ -921,6 +936,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(allPermissionsGranted()){
                 startCamera();
             } else{
+
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
                 finish();
             }
