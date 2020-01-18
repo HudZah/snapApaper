@@ -392,31 +392,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         closeDrawer();
 
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
-
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.i("test", "Clickedddd");
-            }
-        });
 
         switch (item.getItemId()){
 
             case R.id.item_a:
 
-                Intent listIntent = new Intent(this,MyProfileActivity.class);
-                startActivity(listIntent);
+                Intent profileIntent = new Intent(this,MyProfileActivity.class);
+                startActivity(profileIntent);
                 break;
             case R.id.item_b:
 
-                Intent pricingIntent = new Intent(this ,MyListActivity.class);
-                startActivity(pricingIntent);
+                Intent listIntent = new Intent(this ,MyListActivity.class);
+                startActivity(listIntent);
                 break;
             case R.id.item_c:
-                Intent settingsIntent = new Intent(this,PricingActivity.class);
-                startActivity(settingsIntent);
+                Intent pricingIntent = new Intent(this,PricingActivity.class);
+                startActivity(pricingIntent);
                 break;
             case R.id.item_d:
                 // log out
