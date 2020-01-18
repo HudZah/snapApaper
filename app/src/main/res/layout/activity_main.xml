@@ -37,30 +37,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextureView
-                android:id="@+id/view_finder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="viewTouched"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextureView
+            android:id="@+id/view_finder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="viewTouched"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
-            <ImageView
-                android:id="@+id/imgCapture"
-                android:layout_width="98dp"
-                android:layout_height="84dp"
-                android:foregroundGravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.857"
-                app:srcCompat="@drawable/cameraoff" />
+        <ImageView
+            android:id="@+id/imgCapture"
+            android:layout_width="98dp"
+            android:layout_height="84dp"
+            android:foregroundGravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.865"
+            app:srcCompat="@drawable/cameraoff" />
 
-            <TextView
+        <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,8 +75,8 @@
 
         <Button
             android:id="@+id/torchButton"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
+            android:layout_width="38dp"
+            android:layout_height="39dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="25dp"
@@ -86,21 +88,33 @@
             app:layout_constraintHorizontal_bias="0.901"
             app:layout_constraintStart_toEndOf="@+id/picture"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.007" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
-            android:id="@+id/button"
-            android:layout_width="48dp"
-            android:layout_height="53dp"
+            android:id="@+id/helpButton"
+            android:layout_width="28dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="25dp"
-            android:background="@android:drawable/ic_menu_help"
-            android:text="Button"
-            app:layout_constraintBottom_toTopOf="@+id/toolbar"
+            android:background="@drawable/ic_help_outline_black_24dp"
+            android:onClick="help"
+            app:layout_constraintBottom_toBottomOf="@+id/torchButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.876"
+            app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.17000002" />
+
+        <Button
+            android:id="@+id/typeButton"
+            android:layout_width="44dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_keyboard_black_24dp"
+            android:onClick="typeCode"
+            app:layout_constraintBottom_toBottomOf="@+id/imgCapture"
+            app:layout_constraintEnd_toStartOf="@+id/imgCapture"
+            app:layout_constraintHorizontal_bias="0.651"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imgCapture" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

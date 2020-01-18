@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     Boolean isMs;
 
+    String LOG_TAG = "MainActivity";
+
 
     public void torchAction(View view){
 
@@ -999,6 +1001,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         return true;
+    }
+
+    public void typeCode(View view){
+
+        Log.i(LOG_TAG, "Type");
+        Intent typeIntent = new Intent(this, TypeActivity.class);
+        startActivity(typeIntent);
+    }
+
+    public void help(View view){
+
+        Log.i(LOG_TAG, "Help");
+        Intent helpIntent = new Intent(this,HelpActivity.class);
+        startActivity(helpIntent);
     }
 
 
