@@ -66,6 +66,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
@@ -144,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
 
     ConnectionDetector connectionDetector;
+
+    Boolean isMs;
 
 
     public void torchAction(View view){
@@ -391,13 +394,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.item_a:
 
-                Intent mainIntent = new Intent(this,MainActivity.class);
-                startActivity(mainIntent);
+                Intent listIntent = new Intent(this,MyListActivity.class);
+                startActivity(listIntent);
                 break;
             case R.id.item_b:
 
-                Intent listIntent = new Intent(this ,MyListActivity.class);
-                startActivity(listIntent);
+                Intent pricingIntent = new Intent(this ,PricingActivity.class);
+                startActivity(pricingIntent);
                 break;
             case R.id.item_c:
                 Intent settingsIntent = new Intent(this,SettingsActivity.class);
@@ -704,19 +707,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         choiceBuilder.setCancelable(true);
                         choiceBuilder.setTitle("Select an option for \n" + codeText);
                         //choiceBuilder.setMessage("Choose an option");
+
+                        String[] papersToDownload = {paperCode, paperCodeMs};
+                        String[] urlsToDownload = {pdfUrl, pdfUrlMs};
                         choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if(which == 0){
                                             isQp = true;
-                                            downloadPdf(which, pdfUrl, paperCode, isQp);
+                                            isMs = false;
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 1){
                                             isQp = false;
-                                            downloadPdf(which, pdfUrlMs, paperCodeMs, isQp);
+                                            isMs = true;
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 2){
-                                            // Download both
+                                            isQp = true;
+                                            isMs  = true;
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else{
                                             startCamera();
@@ -747,7 +757,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void downloadPdf(int which, String url, String fileName, Boolean isQp) {
+    public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs) {
+
 
         if (connectionDetector.checkConnection() == false) {
 
@@ -772,52 +783,80 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Log.i("Which", String.valueOf(which));
 
+            if(isQp && isMs){
 
-            Log.i("Downloader", "Download pdf " + url);
+                urlsToDownload = urlsToDownload;
+                fileNames = fileNames;
+            }
 
-            File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
+            else if(isQp && !isMs){
 
-            if (downloadFile.exists()) {
+                urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrlMs);
+                fileNames = ArrayUtils.removeAll(fileNames, paperCodeMs);
 
-                Snackbar.make(textureView, "File already exists", Snackbar.LENGTH_LONG).show();
-            } else {
+            }
+            else if(isMs && !isQp){
 
-                try {
+                urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrl);
+                fileNames = ArrayUtils.removeAll(fileNames, paperCode);
+            }
 
-                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
 
-                    DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    request.setMimeType("application/pdf");
+            Log.i("Array", urlsToDownload + " " + fileNames);
 
-                    if (isQp) {
 
-                        request.setTitle(paperCode);
-                        request.setDescription(paperCode);
-                    } else if (isQp == false) {
+            for(int i = 0; i < urlsToDownload.length; i++ ) {
 
-                        request.setTitle(paperCodeMs);
-                        request.setDescription(paperCodeMs);
+                String fileName = fileNames[i];
+                String url = urlsToDownload[i];
+
+                Log.i("Downloader", "Download pdf " + url);
+
+                File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
+
+                if (downloadFile.exists()) {
+
+                    Snackbar.make(textureView, "File already exists", Snackbar.LENGTH_LONG).show();
+                } else {
+
+                    try {
+
+                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+
+                        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                        request.setMimeType("application/pdf");
+
+                        if (fileName == paperCode) {
+
+                            request.setTitle(paperCode);
+                            request.setDescription(paperCode);
+                        } else if (fileName == paperCodeMs) {
+
+                            request.setTitle(paperCodeMs);
+                            request.setDescription(paperCodeMs);
+                        }
+                        request.allowScanningByMediaScanner();
+
+                        request.setVisibleInDownloadsUi(true);
+
+                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
+
+                        // get download service and enqueue file
+                        downloadManager.enqueue(request);
+
+                        Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
+
+                        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+
+                    } catch (Exception e) {
+
+                        Log.d("DOWNLOAD INFO", e.getMessage());
+                        e.printStackTrace();
                     }
-                    request.allowScanningByMediaScanner();
 
-                    request.setVisibleInDownloadsUi(true);
-
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName + ".pdf");
-
-                    // get download service and enqueue file
-                    downloadManager.enqueue(request);
-
-                    Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
-
-                    registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-
-                } catch (Exception e) {
-
-                    Log.d("DOWNLOAD INFO", e.getMessage());
-                    e.printStackTrace();
                 }
 
             }
@@ -839,12 +878,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onReceive(Context ctxt, Intent intent) {
 
 
-            if(isQp) {
-                openPdf(paperCode); //issue
+            if(isQp && isMs) {
+                openPdf(paperCode);
+                openPdf(paperCodeMs);
 
-            }else if(isQp == false){
+            }else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
+            }
+
+            else if(isQp && !isMs){
+
+                openPdf(paperCode);
             }
         }
 
