@@ -10,36 +10,36 @@
 
     <item
         android:id="@+id/item_a"
-        android:title="My List"
+        android:title="Profile"
         android:checkable="true"
-        android:icon="@drawable/ic_camera_foreground"
+        android:icon="@drawable/ic_account_circle_black_24dp"
         />
 
     <item
         android:id="@+id/item_b"
-        android:title="Prcing"
+        android:title="My List"
         android:checkable="true"
-        android:icon="@drawable/ic_mylist_foreground"
+        android:icon="@drawable/ic_format_list_bulleted_black_24dp"
         />
 
     <item
         android:id="@+id/item_c"
-        android:title="Settings"
+        android:title="Pricing"
         android:checkable="true"
-        android:icon="@drawable/ic_settings_foreground"
+        android:icon="@drawable/ic_monetization_on_black_24dp"
         />
 
     <item
         android:id="@+id/item_d"
         android:title="Log out"
         android:checkable="true"
-        android:icon="@drawable/ic_logout_foreground"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
         />
 
     <item
         android:id="@+id/item_e"
         android:title="About us"
         android:checkable="true"
-        android:icon="@drawable/ic_about_foreground"
+        android:icon="@drawable/ic_info_outline_black_24dp"
         />
 </menu>

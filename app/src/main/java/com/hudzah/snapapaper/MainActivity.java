@@ -61,6 +61,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         connectionDetector = new ConnectionDetector(this);
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView)findViewById(R.id.drawer);
@@ -390,20 +392,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         closeDrawer();
 
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear);
+
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i("test", "Clickedddd");
+            }
+        });
+
         switch (item.getItemId()){
 
             case R.id.item_a:
 
-                Intent listIntent = new Intent(this,MyListActivity.class);
+                Intent listIntent = new Intent(this,MyProfileActivity.class);
                 startActivity(listIntent);
                 break;
             case R.id.item_b:
 
-                Intent pricingIntent = new Intent(this ,PricingActivity.class);
+                Intent pricingIntent = new Intent(this ,MyListActivity.class);
                 startActivity(pricingIntent);
                 break;
             case R.id.item_c:
-                Intent settingsIntent = new Intent(this,SettingsActivity.class);
+                Intent settingsIntent = new Intent(this,PricingActivity.class);
                 startActivity(settingsIntent);
                 break;
             case R.id.item_d:
@@ -830,11 +842,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (fileName == paperCode) {
 
                             request.setTitle(paperCode);
-                            request.setDescription(paperCode);
+                            request.setDescription("SnapAPaper");
                         } else if (fileName == paperCodeMs) {
 
                             request.setTitle(paperCodeMs);
-                            request.setDescription(paperCodeMs);
+                            request.setDescription("SnapAPaper");
                         }
                         request.allowScanningByMediaScanner();
 
