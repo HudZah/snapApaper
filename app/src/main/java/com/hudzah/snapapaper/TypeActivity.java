@@ -1,5 +1,6 @@
 package com.hudzah.snapapaper;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -147,7 +148,13 @@ public class TypeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if there is any)
+            this.finish(); // close this activity and return to preview activity (if there is any)
+
+            IntentFilter intentFilter = new IntentFilter();
+
+            registerReceiver(onComplete, intentFilter);
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -381,15 +388,7 @@ public class TypeActivity extends AppCompatActivity {
             }
 
         }
-    }
 
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        unregisterReceiver(onComplete);
     }
 
 
@@ -410,13 +409,33 @@ public class TypeActivity extends AppCompatActivity {
 
                 openPdf(paperCode);
             }
+
         }
 
     };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        this.unregisterReceiver(onComplete);
+    }
+
+
+
+
     public void openPdf(String fileName){
 
         Log.i(LOG_TAG, "Open");
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
+
+        Log.i("pdf file name", fileName + ".pdf");
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
     }
 
 }
