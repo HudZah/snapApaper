@@ -106,15 +106,16 @@
 
         <Button
             android:id="@+id/typeButton"
-            android:layout_width="44dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:background="@drawable/ic_keyboard_black_24dp"
             android:onClick="typeCode"
             app:layout_constraintBottom_toBottomOf="@+id/imgCapture"
             app:layout_constraintEnd_toStartOf="@+id/imgCapture"
-            app:layout_constraintHorizontal_bias="0.651"
+            app:layout_constraintHorizontal_bias="0.76"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imgCapture" />
+            app:layout_constraintTop_toTopOf="@+id/imgCapture"
+            app:layout_constraintVertical_bias="0.51" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

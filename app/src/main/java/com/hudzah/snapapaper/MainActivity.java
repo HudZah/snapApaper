@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String paperCode;
 
-    Map<String, String> examCodesMap = new HashMap<String, String>();
+    static Map<String, String> examCodesMap = new HashMap<String, String>();
 
     String examLevel;
 
@@ -150,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Boolean isMs;
 
     String LOG_TAG = "MainActivity";
+
+    private static MainActivity instance;
+
 
 
     public void torchAction(View view){
@@ -386,6 +389,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -419,6 +426,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
                 break;
+
+            case R.id.item_f:
+                Intent searchIntent = new Intent(this, SearchActivity.class);
+                startActivity(searchIntent);
 
         }
 
@@ -626,8 +637,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 torchButton.setBackgroundResource(R.drawable.flashoff);
 
                 splitText = codeText.split("/");
-
-                System.out.println(Arrays.toString(splitText));
 
                 // Splits into 9709, 42, F, M, 19
                 // Splits into 9709, 42, M, J, 19

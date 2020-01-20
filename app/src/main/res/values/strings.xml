@@ -29,4 +29,14 @@
         <item>Download both</item>
         <item>Take another photo</item>
     </string-array>
+
+    <string-array name="choice_names_for_type">
+
+        <item>Download question paper</item>
+        <item>Download mark scheme</item>
+        <item>Download both</item>
+        <item>Take another photo</item>
+    </string-array>
+
+
 </resources>
