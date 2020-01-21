@@ -66,6 +66,13 @@ public class TypeActivity extends AppCompatActivity {
 
     Boolean isMs;
 
+    int dailyRemaining;
+
+    int monthlyRemaining;
+
+    int value;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +97,10 @@ public class TypeActivity extends AppCompatActivity {
         connectionDetector = new ConnectionDetector(this);
 
         layout = (ConstraintLayout)findViewById(R.id.view);
+
+        Intent intent = getIntent();
+        dailyRemaining = intent.getIntExtra("dailyRemaining", 0);
+        monthlyRemaining = intent.getIntExtra("monthlyRemaining", 0);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -148,6 +159,12 @@ public class TypeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("dailyRemaining", dailyRemaining);
+            resultIntent.putExtra("monthlyRemaining", monthlyRemaining);
+
+            setResult(RESULT_OK, resultIntent);
             this.finish(); // close this activity and return to preview activity (if there is any)
 
             IntentFilter intentFilter = new IntentFilter();
@@ -165,136 +182,166 @@ public class TypeActivity extends AppCompatActivity {
         String paperCodeBefore = userCode.getText().toString();
         Log.i(LOG_TAG, paperCodeBefore);
 
-        if (paperCodeBefore.isEmpty()) {
 
-            Snackbar.make(view, "Please enter an exam code to continue", Snackbar.LENGTH_LONG).show();
-        } else {
+        if(dailyRemaining > 0){
 
-            paperCodeBefore = paperCodeBefore.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
+            if(monthlyRemaining > 0) {
 
-            boolean isMatching = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(paperCodeBefore).find();
+                if (paperCodeBefore.isEmpty()) {
 
-            if (isMatching) {
+                    Snackbar.make(view, "Please enter an exam code to continue", Snackbar.LENGTH_LONG).show();
+                } else {
 
-                Log.i("in here", "In here");
+                    paperCodeBefore = paperCodeBefore.replaceAll("\\s+", "").replaceAll("\n", "").replaceAll("\r", "");
 
-                Pattern pattern = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}");
-                Matcher matcher = pattern.matcher(paperCodeBefore);
+                    boolean isMatching = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(paperCodeBefore).find();
 
-                while (matcher.find()) {
+                    if (isMatching) {
 
-                    codeText = matcher.group(0);
-                    codeText = codeText.toUpperCase();
-                    Log.i(LOG_TAG, "Matched text: " + codeText);
+                        Log.i("in here", "In here");
 
-                    splitText = codeText.split("/");
+                        Pattern pattern = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}");
+                        Matcher matcher = pattern.matcher(paperCodeBefore);
 
-                    // Splits into 9709, 42, F, M, 19
-                    // Splits into 9709, 42, M, J, 19
-                    // Splits into 9709, 42, O, N, 19
+                        while (matcher.find()) {
 
+                            codeText = matcher.group(0);
+                            codeText = codeText.toUpperCase();
+                            Log.i(LOG_TAG, "Matched text: " + codeText);
 
-                    paperCode = splitText[0] + "_";
+                            splitText = codeText.split("/");
 
-                    if(splitText[2].equals("F")){
-
-                        paperCode = paperCode + "m" + splitText[4] + "_qp_" + splitText[1];
-
-                    }
-                    else if(splitText[2].equals("M")){
-
-                        paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
-                    }
-                    else if(splitText[2].equals("O")) {
-
-                        paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
-                    }
-
-                    else{
-
-                        Log.i("paperCode", "Code is none");
-                    }
+                            // Splits into 9709, 42, F, M, 19
+                            // Splits into 9709, 42, M, J, 19
+                            // Splits into 9709, 42, O, N, 19
 
 
-                    Log.i(LOG_TAG, "Paper code is: " + paperCode);
+                            paperCode = splitText[0] + "_";
 
-                    paperCodeMs = paperCode.replace("_qp_", "_ms_");
+                            if (splitText[2].equals("F")) {
 
-                    String pdfUrlPart = MainActivity.examCodesMap.get(splitText[0]);
+                                paperCode = paperCode + "m" + splitText[4] + "_qp_" + splitText[1];
 
-                    if (pdfUrlPart != null) {
+                            } else if (splitText[2].equals("M")) {
 
-                        pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+                                paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
+                            } else if (splitText[2].equals("O")) {
 
-                        Log.i(LOG_TAG, "Exam subject name: " + pdfUrlPart);
+                                paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
+                            } else {
 
-
-                        if (Integer.valueOf(splitText[0]) > 8000) {
-
-                            examLevel = "A%20Levels";
-                        } else if (Integer.valueOf(splitText[0]) < 1000) {
-
-                            examLevel = "IGCSE";
-                        } else {
-
-                            examLevel = "O%20Levels";
-                        }
-
-                        pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
-
-                        pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
-
-                        Log.i(LOG_TAG, pdfUrl + "MS IS " + pdfUrlMs);
-
-                        choiceBuilder = new AlertDialog.Builder(this);
-
-                        // add a list
-
-                        String[] items = getResources().getStringArray(R.array.choice_names_for_type);
-
-                        choiceBuilder.setCancelable(true);
-                        choiceBuilder.setTitle("Select an option for \n" + codeText);
-                        //choiceBuilder.setMessage("Choose an option");
-
-                        String[] papersToDownload = {paperCode, paperCodeMs};
-                        String[] urlsToDownload = {pdfUrl, pdfUrlMs};
-                        choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                if(which == 0){
-                                    isQp = true;
-                                    isMs = false;
-                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                }
-                                else if(which == 1){
-                                    isQp = false;
-                                    isMs = true;
-                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                }
-                                else if(which == 2){
-                                    isQp = true;
-                                    isMs  = true;
-                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                }
-
+                                Log.i("paperCode", "Code is none");
                             }
 
-                        }).show();
 
+                            Log.i(LOG_TAG, "Paper code is: " + paperCode);
+
+                            paperCodeMs = paperCode.replace("_qp_", "_ms_");
+
+                            String pdfUrlPart = MainActivity.examCodesMap.get(splitText[0]);
+
+                            if (pdfUrlPart != null) {
+
+                                pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+
+                                Log.i(LOG_TAG, "Exam subject name: " + pdfUrlPart);
+
+
+                                if (Integer.valueOf(splitText[0]) > 8000) {
+
+                                    examLevel = "A%20Levels";
+                                } else if (Integer.valueOf(splitText[0]) < 1000) {
+
+                                    examLevel = "IGCSE";
+                                } else {
+
+                                    examLevel = "O%20Levels";
+                                }
+
+                                pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
+
+                                pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
+
+                                Log.i(LOG_TAG, pdfUrl + "MS IS " + pdfUrlMs);
+
+                                choiceBuilder = new AlertDialog.Builder(this);
+
+                                // add a list
+
+                                String[] items = getResources().getStringArray(R.array.choice_names_for_type);
+
+                                choiceBuilder.setCancelable(true);
+                                choiceBuilder.setTitle("Select an option for \n" + codeText);
+                                //choiceBuilder.setMessage("Choose an option");
+
+                                String[] papersToDownload = {paperCode, paperCodeMs};
+                                String[] urlsToDownload = {pdfUrl, pdfUrlMs};
+                                choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        if (which == 0) {
+                                            isQp = true;
+                                            isMs = false;
+                                            value = 1;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                        } else if (which == 1) {
+                                            isQp = false;
+                                            isMs = true;
+                                            value = 1;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                        } else if (which == 2) {
+                                            isQp = true;
+                                            isMs = true;
+                                            value = 2;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
+
+                                            if(dailyRemaining > 0){
+                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                            }
+                                            else{
+                                                dailyRemaining += value;
+                                                monthlyRemaining += value;
+                                                Snackbar.make(view, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
+                                            }
+                                        }
+
+                                    }
+
+                                }).show();
+
+                            }
+                        }
+                    } else {
+
+                        Snackbar.make(view, "Code is not valid, please enter a valid code", Snackbar.LENGTH_LONG).show();
                     }
                 }
             }
-            else {
+            else{
 
-                Snackbar.make(view, "Code is not valid, please enter a valid code", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "You have reached your monthly limit", Snackbar.LENGTH_LONG).show();
             }
+        }
+        else{
+
+            Snackbar.make(view, "You have reached your daily limit", Snackbar.LENGTH_LONG).show();
         }
     }
 
     public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs) {
 
+        Log.i("Remaining", String.valueOf(dailyRemaining));
+
 
         if (!connectionDetector.checkConnection()) {
+
+            dailyRemaining = dailyRemaining + value;
+            monthlyRemaining = monthlyRemaining + value;
 
             final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 

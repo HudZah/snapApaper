@@ -151,9 +151,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String LOG_TAG = "MainActivity";
 
-    private static MainActivity instance;
+    int dailyLimit = 5;
 
+    int monthlyLimit = 30;
 
+    int dailyRemaining;
+
+    int monthlyRemaining;
+
+    int value;
 
     public void torchAction(View view){
 
@@ -195,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         connectionDetector = new ConnectionDetector(this);
+
+        dailyRemaining = dailyLimit;
+
+        monthlyRemaining = monthlyLimit;
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -389,10 +399,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public static MainActivity getInstance() {
-        return instance;
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -532,31 +538,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 cameraImage.setImageResource(R.drawable.cameraon);
 
-                loadingDialog.startLoadingDialog();
+                if (dailyRemaining > 0) {
 
-                file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
+                    if(monthlyRemaining > 0) {
 
-                imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
-                    @Override
-                    public void onImageSaved(@NonNull File file) {
+                        loadingDialog.startLoadingDialog();
 
-                        String filePath = file.getPath();
+                        file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
 
-                        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                        imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
+                            @Override
+                            public void onImageSaved(@NonNull File file) {
 
-                        rotateImage(bitmap);
+                                String filePath = file.getPath();
 
+                                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+                                rotateImage(bitmap);
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
+                                String msg = "Image Capture Failed : " + message;
+                                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                                if (cause != null) {
+                                    cause.printStackTrace();
+                                }
+                            }
+                        });
                     }
+                    else{
 
-                    @Override
-                    public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                        String msg = "Image Capture Failed : " + message;
-                        Toast.makeText(getBaseContext(), msg,Toast.LENGTH_LONG).show();
-                        if(cause != null){
-                            cause.printStackTrace();
-                        }
+                        Snackbar.make(textureView, "You have reached your monthly limit", Snackbar.LENGTH_LONG).show();
+                        cameraImage.setImageResource(R.drawable.cameraoff);
                     }
-                });
+                }
+                else{
+
+                    Snackbar.make(textureView, "You have reached your daily limit", Snackbar.LENGTH_LONG).show();
+                    cameraImage.setImageResource(R.drawable.cameraoff);
+                }
             }
 
         });
@@ -730,17 +752,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         if(which == 0){
                                             isQp = true;
                                             isMs = false;
+                                            value = 1;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 1){
                                             isQp = false;
                                             isMs = true;
+                                            value = 1;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 2){
                                             isQp = true;
                                             isMs  = true;
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                            value = 2;
+                                            dailyRemaining = dailyRemaining - value;
+                                            monthlyRemaining = monthlyRemaining - value;
+
+                                            if(dailyRemaining > 0){
+                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                            }
+                                            else{
+                                                dailyRemaining += value;
+                                                monthlyRemaining += value;
+                                                Snackbar.make(textureView, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
+                                            }
                                         }
                                         else{
                                             startCamera();
@@ -773,8 +812,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs) {
 
+        Log.i("Remaining", String.valueOf(dailyRemaining));
 
         if (connectionDetector.checkConnection() == false) {
+
+            dailyRemaining = dailyRemaining + value;
+            monthlyRemaining = monthlyRemaining + value;
 
             final Snackbar snackBar = Snackbar.make(textureView, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
@@ -1016,7 +1059,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.i(LOG_TAG, "Type");
         Intent typeIntent = new Intent(this, TypeActivity.class);
-        startActivity(typeIntent);
+        typeIntent.putExtra("dailyRemaining", dailyRemaining);
+        typeIntent.putExtra("monthlyRemaining", monthlyRemaining);
+
+        startActivityForResult(typeIntent, 1);
     }
 
     public void help(View view){
@@ -1026,5 +1072,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(helpIntent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == 1){
+
+            if(resultCode == RESULT_OK){
+
+                dailyRemaining = data.getIntExtra("dailyRemaining", 0);
+                monthlyRemaining = data.getIntExtra("monthlyRemaining", 0);
+            }
+
+        }
+    }
 }
