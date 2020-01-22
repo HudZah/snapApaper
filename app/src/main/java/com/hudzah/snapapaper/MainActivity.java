@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
 import android.app.DownloadManager;
@@ -30,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -161,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     int value;
 
+    SharedPreferences sharedPreferences;
+
+    TextView limitTextView;
+
     public void torchAction(View view){
 
 
@@ -205,6 +211,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dailyRemaining = dailyLimit;
 
         monthlyRemaining = monthlyLimit;
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // do this every 24 hours, and 30 days
+
+        //sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
+//
+        //sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+
+        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
+
+        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
+
+        limitTextView = (TextView)findViewById(R.id.limitTextView);
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -397,6 +417,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else{
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
+
+    public void decreaseLimit(int amountToDecrease){
+
+        dailyRemaining -= amountToDecrease;
+        monthlyRemaining -= amountToDecrease;
+
+        sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
+        sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+
+        limitTextView.setText("Clicked");
+
+        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " +monthlyRemaining);
     }
 
 
@@ -753,31 +786,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             isQp = true;
                                             isMs = false;
                                             value = 1;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
+                                            decreaseLimit(value);
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 1){
                                             isQp = false;
                                             isMs = true;
                                             value = 1;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
+                                            decreaseLimit(value);
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         }
                                         else if(which == 2){
                                             isQp = true;
                                             isMs  = true;
                                             value = 2;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
 
-                                            if(dailyRemaining > 0){
+
+                                            if(value <= dailyRemaining){
+                                                decreaseLimit(value);
                                                 downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                             }
                                             else{
-                                                dailyRemaining += value;
-                                                monthlyRemaining += value;
+
                                                 Snackbar.make(textureView, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
                                             }
                                         }
@@ -816,8 +846,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (connectionDetector.checkConnection() == false) {
 
-            dailyRemaining = dailyRemaining + value;
-            monthlyRemaining = monthlyRemaining + value;
+            value = -1;
+
+            decreaseLimit(value);
 
             final Snackbar snackBar = Snackbar.make(textureView, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 

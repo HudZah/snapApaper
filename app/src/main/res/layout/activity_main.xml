@@ -117,6 +117,16 @@
             app:layout_constraintTop_toTopOf="@+id/imgCapture"
             app:layout_constraintVertical_bias="0.51" />
 
+        <TextView
+            android:id="@+id/limitTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/helpButton"
+            app:layout_constraintStart_toStartOf="@+id/toolbar" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

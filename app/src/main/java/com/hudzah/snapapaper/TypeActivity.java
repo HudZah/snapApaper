@@ -4,6 +4,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -72,6 +74,8 @@ public class TypeActivity extends AppCompatActivity {
 
     int value;
 
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +103,11 @@ public class TypeActivity extends AppCompatActivity {
         layout = (ConstraintLayout)findViewById(R.id.view);
 
         Intent intent = getIntent();
-        dailyRemaining = intent.getIntExtra("dailyRemaining", 0);
-        monthlyRemaining = intent.getIntExtra("monthlyRemaining", 0);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
+        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -153,6 +160,17 @@ public class TypeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void decreaseLimit(int amountToDecrease){
+
+        dailyRemaining -= amountToDecrease;
+        monthlyRemaining -= amountToDecrease;
+
+        sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
+        sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+
+        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
 
     @Override
@@ -283,29 +301,25 @@ public class TypeActivity extends AppCompatActivity {
                                             isQp = true;
                                             isMs = false;
                                             value = 1;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
+                                            decreaseLimit(value);
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         } else if (which == 1) {
                                             isQp = false;
                                             isMs = true;
                                             value = 1;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
+                                            decreaseLimit(value);
                                             downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                         } else if (which == 2) {
                                             isQp = true;
                                             isMs = true;
                                             value = 2;
-                                            dailyRemaining = dailyRemaining - value;
-                                            monthlyRemaining = monthlyRemaining - value;
 
-                                            if(dailyRemaining > 0){
+                                            if(value <= dailyRemaining){
+                                                decreaseLimit(value);
                                                 downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
                                             }
                                             else{
-                                                dailyRemaining += value;
-                                                monthlyRemaining += value;
+
                                                 Snackbar.make(view, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
                                             }
                                         }
@@ -340,8 +354,9 @@ public class TypeActivity extends AppCompatActivity {
 
         if (!connectionDetector.checkConnection()) {
 
-            dailyRemaining = dailyRemaining + value;
-            monthlyRemaining = monthlyRemaining + value;
+            value = -1;
+
+            decreaseLimit(value);
 
             final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
