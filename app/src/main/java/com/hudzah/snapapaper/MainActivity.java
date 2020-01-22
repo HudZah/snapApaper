@@ -167,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView limitTextView;
 
+    int REQUEST_CODE_PROFILE = 2;
+
     public void torchAction(View view){
 
 
@@ -226,6 +228,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         limitTextView = (TextView)findViewById(R.id.limitTextView);
 
+        limitTextView.setText("Downloads remaining for today " + dailyRemaining);
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView)findViewById(R.id.drawer);
@@ -234,6 +238,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         toolbar.setNavigationIcon(R.drawable.whitemenuverysmall);
+
+        limitTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
+                profileIntent.putExtra("dailyRemaining", dailyRemaining);
+                profileIntent.putExtra("monthlyRemaining", monthlyRemaining);
+                startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
+
+            }
+        });
 
 
         examCodesMap.put("7707" , "Accounting (7707)");
@@ -427,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
         sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
 
-        limitTextView.setText("Clicked");
+        limitTextView.setText("Downloads remaining for today " + dailyRemaining);
 
         Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " +monthlyRemaining);
     }
@@ -609,7 +625,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 else{
 
-                    Snackbar.make(textureView, "You have reached your daily limit", Snackbar.LENGTH_LONG).show();
+                    final Snackbar snackbar = Snackbar.make(textureView, "You have reached your daily limit", Snackbar.LENGTH_LONG);
+
+                    snackbar.setAction("ADD MORE", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Log.i(LOG_TAG, "Extend limit");
+                        }
+                    }).show();
                     cameraImage.setImageResource(R.drawable.cameraoff);
                 }
             }

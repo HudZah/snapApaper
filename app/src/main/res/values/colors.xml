@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#FF9B1D</color>
+    <color name="colorPrimaryDark">#DB4949</color>
+    <color name="colorAccent">#FF6C1D</color>
     <color name="textColor">#FFF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="gradEnd">#FF8663</color>
+    <color name="gradStart">#FF5722</color>
+    <color name="headings">#FF5900</color>
+    <color name="grey">#E5E5E5</color>
+    <color name="address">#943510</color>
+
+
+
 </resources>
