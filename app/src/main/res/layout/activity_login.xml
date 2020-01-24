@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="╰(◕ヮ◕)つ"
+                android:text=" ╰ (◕ヮ◕)つ"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
@@ -148,7 +148,7 @@
             android:id="@+id/registerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text=" Register"
             android:textColor="@color/headings"
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold"/>

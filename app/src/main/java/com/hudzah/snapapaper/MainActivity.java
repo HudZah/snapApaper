@@ -192,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     static ArrayList<String> myList;
 
+    static Boolean isLoggedIn = false;
+
     public void torchAction(View view){
 
 
@@ -224,13 +226,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         ParseInstallation.getCurrentInstallation().saveInBackground();
-
-        ParseObject object = new ParseObject("Test");
-        object.put("username", "NOOB");
-        object.saveInBackground();
 
         //ParseAnalytics.trackAppOpenedInBackground(getIntent());
 

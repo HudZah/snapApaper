@@ -2,9 +2,11 @@ package com.hudzah.snapapaper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,11 +19,24 @@ public class LoginActivity extends AppCompatActivity {
 
     TextView errorTextView;
 
+    TextView registerButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         errorTextView = (TextView)findViewById(R.id.errorTextView);
+
+        registerButton = (TextView)findViewById(R.id.registerButton);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent registerIntent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(registerIntent);
+            }
+        });
     }
 
     public void login(View view){
@@ -45,6 +60,9 @@ public class LoginActivity extends AppCompatActivity {
                     if(user != null){
 
                         Log.i("Signup", "Login successful");
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
                     }
                     else{
 
@@ -53,25 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
-//            ParseUser user = new ParseUser();
-//
-//            user.setUsername(usernameEditText.getText().toString());
-//            user.setPassword(passwordEditText.getText().toString());
-//
-//            user.signUpInBackground(new SignUpCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//
-//                    if(e == null){
-//
-//                        Log.i("Signup", "Successful");
-//                    }
-//                    else{
-//
-//                        errorTextView.setText(e.getMessage());
-//                    }
-//                }
-//            });
+
         }
     }
 }
