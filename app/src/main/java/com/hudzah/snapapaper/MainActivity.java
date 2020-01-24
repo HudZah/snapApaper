@@ -89,10 +89,10 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -103,6 +103,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.parse.ParseAnalytics;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
+
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 
@@ -184,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     static long downloadTime;
 
-    static HashMap<String, String> myListMap;
+    static ArrayList<String> myList;
 
     public void torchAction(View view){
 
@@ -220,6 +226,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ParseInstallation.getCurrentInstallation().saveInBackground();
+
+        ParseObject object = new ParseObject("Test");
+        object.put("username", "NOOB");
+        object.saveInBackground();
+
+        //ParseAnalytics.trackAppOpenedInBackground(getIntent());
+
         loadingDialog = new LoadingDialog(MainActivity.this);
 
         torchButton = (Button)findViewById(R.id.torchButton);
@@ -232,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         paperCode = "";
 
-        myListMap = new HashMap<String, String>();
+        myList = new ArrayList<String>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -1039,19 +1053,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openPdf(paperCode);
                 openPdf(paperCodeMs);
 
-                myListMap.put(todayDate, paperCode);
-                myListMap.put(todayDate, paperCodeMs);
+                myList.add(paperCode);
+                myList.add(paperCodeMs);
 
             }else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
-                myListMap.put(todayDate, paperCodeMs);
+                myList.add(paperCodeMs);
+
             }
 
             else if(isQp && !isMs){
 
                 openPdf(paperCode);
-                myListMap.put(todayDate, paperCode);
+                myList.add(paperCode);
             }
 
 

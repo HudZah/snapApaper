@@ -22,6 +22,13 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="server_url">http://3.18.108.111:80/parse/</string>
+
+
+    <string name="app_id">5a1022e40970e3190aacdf0164e9b96a862b2144</string>
+
+    <!-- Change the following strings as required -->
+    <string name="client_key">c170454528ae3af7944f67479177463c194e9dcc</string>
     <string-array name="choice_names">
 
         <item>Download question paper</item>
@@ -37,6 +44,8 @@
         <item>Download both</item>
         <item>Take another photo</item>
     </string-array>
+
+    <string name="hint">Exam board</string>
 
 
 </resources>

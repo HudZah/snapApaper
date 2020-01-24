@@ -27,11 +27,9 @@ public class MyListActivity extends AppCompatActivity {
 
     ListView listView;
 
-    ArrayAdapter<String> arrayAdapter;
+    static ArrayAdapter<String> arrayAdapter;
 
     ArrayList<String> arrayList;
-
-    ArrayList<String> downloadTimes;
 
     String key;
 
@@ -47,53 +45,11 @@ public class MyListActivity extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.listView);
 
-        arrayList = new ArrayList<String>();
+        arrayList = MainActivity.myList;
 
-        downloadTimes = new ArrayList<String>();
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, arrayList);
 
-        listItemsMap = new HashMap<>();
-
-        HashMap<String, String> myListMap = (HashMap<String, String>) MainActivity.myListMap;
-
-        List<HashMap<String, String>> listItems = new ArrayList<>();
-        SimpleAdapter adapter = new SimpleAdapter(this, listItems, R.layout.list_item,
-                new String[]{"First line", "Second line"},
-                new int[]{R.id.mainText, R.id.subText});
-
-
-        if(myListMap.size() > 0 ) {
-
-            for (Map.Entry<String, String> entry : myListMap.entrySet()) {
-
-                key = entry.getKey();
-                String value = entry.getValue();
-
-                arrayList.add(value);
-                downloadTimes.add(key);
-
-                listItemsMap.put("First line", value);
-
-                if(key != null) {
-
-                    listItemsMap.put("Second line", (String) key);
-
-                }
-                else{
-
-                    listItemsMap.put("Second line", "Just now");
-                }
-
-
-                listItems.add(listItemsMap);
-            }
-        }
-
-        else {
-
-            Log.i("wfawfawfagaw", "EMpty");
-        }
-
-        listView.setAdapter(adapter);
+        listView.setAdapter(arrayAdapter);
 
 
 
