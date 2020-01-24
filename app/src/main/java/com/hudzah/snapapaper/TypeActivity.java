@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,8 @@ import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +49,7 @@ public class TypeActivity extends AppCompatActivity {
 
     String text;
 
-    ConstraintLayout layout;
+    RelativeLayout layout;
 
     String[] splitText;
 
@@ -76,6 +79,10 @@ public class TypeActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
+    String todayDate;
+
+    String currentMonth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +107,17 @@ public class TypeActivity extends AppCompatActivity {
 
         connectionDetector = new ConnectionDetector(this);
 
-        layout = (ConstraintLayout)findViewById(R.id.view);
+        layout = (RelativeLayout)findViewById(R.id.view);
 
         Intent intent = getIntent();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
-        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
+        todayDate = getDateFromFormat("dd-MM-yyyy");
+        currentMonth = getDateFromFormat("MM-yyyy");
+
+        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
+        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -142,8 +152,10 @@ public class TypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
-                startActivity(searchIntent);
+                Toast.makeText(TypeActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
+
+//                Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
+//                startActivity(searchIntent);
             }
         });
 
@@ -162,13 +174,23 @@ public class TypeActivity extends AppCompatActivity {
 
     }
 
+    public String getDateFromFormat(String format) {
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String date = formatter.format(today.getTime());
+
+        Log.i("date", date);
+
+        return date;
+    }
+
     public void decreaseLimit(int amountToDecrease){
 
         dailyRemaining -= amountToDecrease;
         monthlyRemaining -= amountToDecrease;
 
-        sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
-        sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+        sharedPreferences.edit().putInt(todayDate, dailyRemaining).apply(); //5
+        sharedPreferences.edit().putInt(currentMonth, monthlyRemaining).apply(); //30
 
         Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
@@ -461,15 +483,19 @@ public class TypeActivity extends AppCompatActivity {
             if(isQp && isMs) {
                 openPdf(paperCode);
                 openPdf(paperCodeMs);
+                //myListMap.put((String) ago, paperCode);
+                //myListMap.put((String) ago, paperCodeMs);
 
             }else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
+                //myListMap.put((String) ago, paperCodeMs);
             }
 
             else if(isQp && !isMs){
 
                 openPdf(paperCode);
+                //myListMap.put((String) ago, paperCode);
             }
 
         }
@@ -480,7 +506,13 @@ public class TypeActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        this.unregisterReceiver(onComplete);
+        try {
+
+            unregisterReceiver(onComplete);
+        }catch (Exception e){
+
+            e.getMessage();
+        }
     }
 
 

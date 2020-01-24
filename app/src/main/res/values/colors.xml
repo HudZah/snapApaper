@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FF9B1D</color>
-    <color name="colorPrimaryDark">#DB4949</color>
+    <color name="colorPrimaryDark"></color>
     <color name="colorAccent">#FF6C1D</color>
     <color name="textColor">#FFF</color>
     <color name="solidCircle">#AAFFFFFF</color>
@@ -11,6 +11,8 @@
     <color name="headings">#FF5900</color>
     <color name="grey">#E5E5E5</color>
     <color name="address">#943510</color>
+    <color name="black">#000000</color>
+    <color name="dark_orange">#CA4E00</color>
 
 
 

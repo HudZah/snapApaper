@@ -50,6 +50,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
@@ -88,9 +89,15 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -169,6 +176,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     int REQUEST_CODE_PROFILE = 2;
 
+    static String todayDate;
+
+    CharSequence ago;
+
+    static String currentMonth;
+
+    static long downloadTime;
+
+    static HashMap<String, String> myListMap;
+
     public void torchAction(View view){
 
 
@@ -190,6 +207,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+//        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
+//        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -206,6 +232,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         paperCode = "";
 
+        myListMap = new HashMap<String, String>();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         connectionDetector = new ConnectionDetector(this);
@@ -218,17 +246,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // do this every 24 hours, and 30 days
 
-        //sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
+        todayDate = getDateFromFormat("dd-MM-yyyy");
+
+        currentMonth = getDateFromFormat("MM-yyyy");
+
+//        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
+//        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
+
+        Log.i("Limits", String.valueOf(dailyRemaining));
+
+
+        //sharedPreferences.edit().putInt(todayDate, 50).apply(); //5
 //
-        //sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+        //sharedPreferences.edit().putInt(currentMonth, 300).apply(); //30
 
-        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
+//        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
+//
+//        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
 
-        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
-
-        limitTextView = (TextView)findViewById(R.id.limitTextView);
-
-        limitTextView.setText("Downloads remaining for today " + dailyRemaining);
 
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -238,18 +273,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         toolbar.setNavigationIcon(R.drawable.whitemenuverysmall);
-
-        limitTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
-                profileIntent.putExtra("dailyRemaining", dailyRemaining);
-                profileIntent.putExtra("monthlyRemaining", monthlyRemaining);
-                startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
-
-            }
-        });
 
 
         examCodesMap.put("7707" , "Accounting (7707)");
@@ -435,15 +458,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public String getDateFromFormat(String format) {
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String date = formatter.format(today.getTime());
+
+        Log.i("date", date);
+
+        return date;
+    }
+
+    public void callProfileIntent(){
+
+        Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
+        profileIntent.putExtra("dailyRemaining", dailyRemaining);
+        profileIntent.putExtra("monthlyRemaining", monthlyRemaining);
+        startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
+    }
+
     public void decreaseLimit(int amountToDecrease){
 
         dailyRemaining -= amountToDecrease;
         monthlyRemaining -= amountToDecrease;
 
-        sharedPreferences.edit().putInt("dailyRemaining", dailyRemaining).apply(); //5
-        sharedPreferences.edit().putInt("monthlyRemaining", monthlyRemaining).apply(); //30
+        sharedPreferences.edit().putInt(todayDate, dailyRemaining).apply(); //5
+        sharedPreferences.edit().putInt(currentMonth, monthlyRemaining).apply(); //30
 
-        limitTextView.setText("Downloads remaining for today " + dailyRemaining);
 
         Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " +monthlyRemaining);
     }
@@ -461,8 +501,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.item_a:
 
-                Intent profileIntent = new Intent(this,MyProfileActivity.class);
-                startActivity(profileIntent);
+                callProfileIntent();
                 break;
             case R.id.item_b:
 
@@ -483,8 +522,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.item_f:
-                Intent searchIntent = new Intent(this, SearchActivity.class);
-                startActivity(searchIntent);
+                Intent typeIntent = new Intent(this, TypeActivity.class);
+                startActivity(typeIntent);
 
         }
 
@@ -515,7 +554,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         CameraX.unbindAll();
 
-
+        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
+        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
 
         //CameraControl cameraControl = CameraX.getCameraControl(CameraX.LensFacing.BACK);
 
@@ -632,6 +672,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(View v) {
 
                             Log.i(LOG_TAG, "Extend limit");
+                            Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
+                            startActivity(profileIntent);
                         }
                     }).show();
                     cameraImage.setImageResource(R.drawable.cameraoff);
@@ -716,6 +758,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 torchButton.setBackgroundResource(R.drawable.flashoff);
 
                 splitText = codeText.split("/");
+
 
                 // Splits into 9709, 42, F, M, 19
                 // Splits into 9709, 42, M, J, 19
@@ -855,7 +898,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadingDialog.dismissDialog();
 
 
-            Snackbar.make(textureView, "Text is not a valid Cambridge exam format, please try again", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(textureView, "Text is not a valid Cambridge exam format", Snackbar.LENGTH_LONG).show();
 
 
             loadingDialog.dismissDialog();
@@ -990,19 +1033,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public void onReceive(Context ctxt, Intent intent) {
 
 
+            //downloadTime = Long.parseLong(getDateFromFormat("yyyy-MM-dd"));
+
             if(isQp && isMs) {
                 openPdf(paperCode);
                 openPdf(paperCodeMs);
 
+                myListMap.put(todayDate, paperCode);
+                myListMap.put(todayDate, paperCodeMs);
+
             }else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
+                myListMap.put(todayDate, paperCodeMs);
             }
 
             else if(isQp && !isMs){
 
                 openPdf(paperCode);
+                myListMap.put(todayDate, paperCode);
             }
+
+
+
+
+
         }
 
     };

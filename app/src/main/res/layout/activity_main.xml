@@ -117,20 +117,6 @@
             app:layout_constraintTop_toTopOf="@+id/imgCapture"
             app:layout_constraintVertical_bias="0.51" />
 
-        <TextView
-            android:id="@+id/limitTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Downloads remaining for today are 5"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintEnd_toStartOf="@+id/helpButton"
-            app:layout_constraintHorizontal_bias="0.616"
-            app:layout_constraintStart_toStartOf="@+id/toolbar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.437" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

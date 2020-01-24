@@ -8,6 +8,7 @@
 <!--        android:icon="@drawable/ic_login_foreground"-->
 <!--         />-->
 
+    <group android:checkableBehavior="single">
     <item
         android:id="@+id/item_a"
         android:title="Profile"
@@ -49,4 +50,6 @@
         android:checkable="true"
         android:icon="@drawable/ic_info_outline_black_24dp"
         />
+
+    </group>
 </menu>

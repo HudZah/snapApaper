@@ -47,7 +47,7 @@
             android:layout_centerHorizontal="true"
             android:text="HudZah"
             android:textSize="32sp"
-            android:textColor="@color/textColor"
+            android:textColor="@color/black"
             android:fontFamily="sans-serif-light"
             android:layout_marginTop="15sp"></TextView>
 
@@ -197,6 +197,7 @@
 
 
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -210,12 +211,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif"
                 android:text="Details"
                 android:textAllCaps="true"
-                android:textColor="@color/headings"
+                android:textColor="@color/black"
                 android:textSize="28sp"
-                android:textStyle="bold|italic" />
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -227,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:text="Username"
                     android:textColor="@color/headings"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -235,11 +236,11 @@
                     android:fontFamily="sans-serif-light"
                     android:text="HudZah"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
+                    android:layout_height="1.5dp"
                     android:layout_marginTop="15dp"
                     android:background="@color/grey" />
 
@@ -256,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:text="Email"
                     android:textColor="@color/headings"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -264,11 +265,11 @@
                     android:fontFamily="sans-serif-light"
                     android:text="chiefhudhayfa@gmail.com"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
+                    android:layout_height="1.5dp"
                     android:layout_marginTop="15dp"
                     android:background="@color/grey" />
 
@@ -285,7 +286,7 @@
                     android:layout_height="wrap_content"
                     android:text="Phone Number"
                     android:textColor="@color/headings"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -293,120 +294,11 @@
                     android:fontFamily="sans-serif-light"
                     android:text="+94 0775040348"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="false"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif-light"
-                android:text="Details"
-                android:textAllCaps="true"
-                android:textColor="@color/headings"
-                android:textSize="28sp"
-                android:textStyle="bold|italic" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Username"
-                    android:textColor="@color/headings"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="HudZah"
-                    android:textColor="#000000"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textColor="@color/headings"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="chiefhudhayfa@gmail.com"
-                    android:textColor="#000000"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Phone Number"
-                    android:textColor="@color/headings"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="+94 0775040348"
-                    android:textColor="#000000"
-                    android:textSize="18sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
+                    android:layout_height="1.5dp"
                     android:layout_marginTop="15dp"
                     android:background="@color/grey" />
 
@@ -437,13 +329,72 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif"
                 android:text="Package"
                 android:textAllCaps="true"
-                android:textColor="@color/headings"
+                android:textColor="@color/black"
                 android:textSize="28sp"
-                android:textStyle="bold|italic" />
+                android:textStyle="bold" />
 
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limit remaining today"
+                android:textColor="@color/headings"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/dailyRemainingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/grey" />
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Limit remaining for the month"
+                    android:textColor="@color/headings"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/monthlyRemainingTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text=""
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.5dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/grey"
+                    />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -451,9 +402,9 @@
                 android:text="To extend your limit you can : "
                 android:textColor="@color/headings"
                 android:textSize="18sp"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-light"/>
+/>
 
             <LinearLayout
                 android:id="@+id/linear2"
@@ -463,14 +414,18 @@
                 android:layout_below="@id/rellay1">
 
                 <RelativeLayout
+                    android:clickable="true"
+                    android:id="@+id/watchAnAd"
                     android:layout_width="match_parent"
-                    android:background="@color/gradEnd"
+                    android:background="@drawable/grad3"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="15dp"
                     android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     >
 
@@ -495,14 +450,18 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:clickable="true"
+                    android:id="@+id/share"
                     android:layout_width="match_parent"
-                    android:background="@color/gradEnd"
+                    android:background="@drawable/grad2"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="15dp"
                     android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     >
 
@@ -526,14 +485,18 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:clickable="true"
+                    android:id="@+id/upgradePackage"
                     android:layout_width="match_parent"
-                    android:background="@color/gradEnd"
+                    android:background="@drawable/grad4"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="15dp"
                     android:gravity="center"
-                    android:paddingBottom="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     >
 

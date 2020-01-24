@@ -1,22 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:backgroundTint="@color/colorAccent"
         android:minHeight="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_marginBottom="40dp"/>
+
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your exam paper"
+            android:textColor="@color/headings"
+            android:textSize="28sp"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-light"
+            android:paddingBottom="40dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your exam board"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/headings"/>
+
+        <Spinner
+            android:id="@+id/spinnerExamBoard"
+            android:layout_width="320dp"
+            android:layout_height="55dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your subject"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/headings"/>
+
+        <Spinner
+            android:id="@+id/spinnerSubject"
+            android:layout_width="320dp"
+            android:layout_height="55dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your session"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/headings"/>
+
+        <Spinner
+            android:id="@+id/spinnerSession"
+            android:layout_width="320dp"
+            android:layout_height="55dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your year"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/headings"/>
+
+        <Spinner
+            android:id="@+id/spinnerYear"
+            android:layout_width="320dp"
+            android:layout_height="55dp"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter your paper number"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/headings"/>
+
+        <EditText
+            android:id="@+id/paperNumberEditText"
+            android:layout_width="320dp"
+            android:layout_height="55dp"
+            android:inputType="number"
+            android:layout_marginBottom="15dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Such as : 12, 22 or others"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/grey" />
+
+
+        <TextView
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="If you want to search by typing a complete exam code then click here"
+            android:textStyle="bold"
+            android:textColor="@color/headings"
+            android:textSize="18sp"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="30dp"
+            android:background="@color/colorAccent"
+            android:onClick="search"
+            android:text="Search"
+            android:textColor="@color/textColor" />
+
+    </LinearLayout>
+
+
+
+
+
+
+
+</RelativeLayout>
+
+</ScrollView>
