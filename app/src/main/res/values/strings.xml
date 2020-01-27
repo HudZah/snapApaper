@@ -29,6 +29,8 @@
 
     <!-- Change the following strings as required -->
     <string name="client_key">c170454528ae3af7944f67479177463c194e9dcc</string>
+    <string name="hint">Exam board</string>
+
     <string-array name="choice_names">
 
         <item>Download question paper</item>
@@ -44,8 +46,6 @@
         <item>Download both</item>
         <item>Take another photo</item>
     </string-array>
-
-    <string name="hint">Exam board</string>
 
 
 </resources>

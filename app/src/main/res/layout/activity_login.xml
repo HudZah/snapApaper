@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/relativeLayout"
     tools:context=".LoginActivity">
 
     <TextView
@@ -63,7 +64,8 @@
             android:hint="Username"
             android:paddingLeft="20dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/passwordEditText"
@@ -75,7 +77,8 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -99,15 +102,19 @@
                 android:id="@+id/button"
                 />
 
+
+
             <TextView
                 android:id="@+id/helpButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Need help?"
                 android:textSize="16sp"
+                android:singleLine="true"
                 android:textColor="@color/headings"
                 android:fontFamily="sans-serif-medium"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="70dp"
+                android:onClick="help"
                 />
 
         </LinearLayout>

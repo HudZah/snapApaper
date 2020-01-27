@@ -96,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -103,10 +104,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.concurrent.CancellationException;
@@ -148,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String pdfUrl;
 
+    ParseObject object;
+
     String pdfUrlMs;
 
     String paperCodeMs;
@@ -176,8 +182,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     int value;
 
-    SharedPreferences sharedPreferences;
-
     TextView limitTextView;
 
     int REQUEST_CODE_PROFILE = 2;
@@ -193,6 +197,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static ArrayList<String> myList;
 
     static Boolean isLoggedIn = false;
+
+    ParseObject userLimits;
+
+    String username;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.setLimit(1);
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            try {
+
+                                Log.i("Limits", "" + object.getString("dailyRemaining"));
+                                Log.i("Limits", "" + object.getString("monthlyRemaining"));
+
+                                dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
+                                monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
+                            }
+                            catch (Exception ex){
+
+                                String err = (ex.getMessage()==null)?"Failed":ex.getMessage();
+                                Log.e("sdcard-err2:",err);
+                            }
+
+
+                            Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
+                        }
+                    }
+                }
+                else{
+
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     public void torchAction(View view){
 
@@ -214,14 +267,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-//        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
-//        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +289,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         textureView = findViewById(R.id.view_finder);
 
+        object = new ParseObject("Papers");
+
         paperCode = "";
 
         myList = new ArrayList<String>();
@@ -251,40 +299,69 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         connectionDetector = new ConnectionDetector(this);
 
-        dailyRemaining = dailyLimit;
+        Intent loginIntentUsername = getIntent();
+        username = loginIntentUsername.getStringExtra("username");
 
-        monthlyRemaining = monthlyLimit;
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.setLimit(1);
 
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            try {
+
+                                Log.i("Limits", "" + object.getString("dailyRemaining"));
+                                Log.i("Limits", "" + object.getString("monthlyRemaining"));
+
+                                dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
+                                monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
+                            }
+                            catch (Exception ex){
+
+                                String err = (ex.getMessage()==null)?"Failed":ex.getMessage();
+                                Log.e("sdcard-err2:",err);
+                            }
+
+
+                            Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
+                        }
+                    }
+                }
+                else{
+
+                    e.printStackTrace();
+                }
+            }
+        });
         // do this every 24 hours, and 30 days
 
         todayDate = getDateFromFormat("dd-MM-yyyy");
 
         currentMonth = getDateFromFormat("MM-yyyy");
 
-//        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
-//        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
-
         Log.i("Limits", String.valueOf(dailyRemaining));
 
 
-        //sharedPreferences.edit().putInt(todayDate, 50).apply(); //5
-//
-        //sharedPreferences.edit().putInt(currentMonth, 300).apply(); //30
-
-//        dailyRemaining = sharedPreferences.getInt("dailyRemaining", 0);
-//
-//        monthlyRemaining = sharedPreferences.getInt("monthlyRemaining", 0);
-
-
-
         drawerLayout = findViewById(R.id.drawer_layout);
+
         NavigationView navigationView = (NavigationView)findViewById(R.id.drawer);
+
         navigationView.setNavigationItemSelectedListener(this);
+
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar , R.string.drawer_open, R.string.drawer_close);
+
         drawerLayout.addDrawerListener(drawerToggle);
+
         drawerToggle.syncState();
+
         toolbar.setNavigationIcon(R.drawable.whitemenuverysmall);
 
 
@@ -491,14 +568,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void decreaseLimit(int amountToDecrease){
 
-        dailyRemaining -= amountToDecrease;
-        monthlyRemaining -= amountToDecrease;
+        dailyRemaining = dailyRemaining - amountToDecrease;
+        monthlyRemaining = monthlyRemaining - amountToDecrease;
 
-        sharedPreferences.edit().putInt(todayDate, dailyRemaining).apply(); //5
-        sharedPreferences.edit().putInt(currentMonth, monthlyRemaining).apply(); //30
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
 
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
 
-        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " +monthlyRemaining);
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
+                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
+                            object.saveInBackground();
+                        }
+                    }
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
 
 
@@ -527,6 +624,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.item_d:
                 // log out
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Log out?")
+                        .setMessage("Are you sure you want to log out")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                ParseUser.logOut();
+                                Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(loginIntent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
                 break;
             case R.id.item_e:
 
@@ -567,8 +678,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         CameraX.unbindAll();
 
-        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
-        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
 
         //CameraControl cameraControl = CameraX.getCameraControl(CameraX.LensFacing.BACK);
 
@@ -638,63 +747,80 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                cameraImage.setImageResource(R.drawable.cameraon);
 
-                if (dailyRemaining > 0) {
+                if (connectionDetector.checkConnection() == false) {
 
-                    if(monthlyRemaining > 0) {
+                    final Snackbar snackBar = Snackbar.make(textureView, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
-                        loadingDialog.startLoadingDialog();
+                    snackBar.setAction("OK",
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
 
-                        file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
-
-                        imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
-                            @Override
-                            public void onImageSaved(@NonNull File file) {
-
-                                String filePath = file.getPath();
-
-                                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-
-                                rotateImage(bitmap);
-
-                            }
-
-                            @Override
-                            public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                                String msg = "Image Capture Failed : " + message;
-                                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-                                if (cause != null) {
-                                    cause.printStackTrace();
+                                    snackBar.dismiss();
                                 }
-                            }
-                        });
-                    }
-                    else{
+                            }).show();
 
-                        Snackbar.make(textureView, "You have reached your monthly limit", Snackbar.LENGTH_LONG).show();
+
+                    Log.i("Internet", "Not connected");
+                }
+                else {
+
+                    cameraImage.setImageResource(R.drawable.cameraon);
+
+                    if (dailyRemaining > 0) {
+
+                        if (monthlyRemaining > 0) {
+
+                            loadingDialog.startLoadingDialog();
+
+                            file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".png");
+
+                            imgCap.takePicture(file, new ImageCapture.OnImageSavedListener() {
+                                @Override
+                                public void onImageSaved(@NonNull File file) {
+
+                                    String filePath = file.getPath();
+
+                                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+                                    rotateImage(bitmap);
+
+                                }
+
+                                @Override
+                                public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
+                                    String msg = "Image Capture Failed : " + message;
+                                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                                    if (cause != null) {
+                                        cause.printStackTrace();
+                                    }
+                                }
+                            });
+                        } else {
+
+                            Snackbar.make(textureView, "You have reached your monthly limit", Snackbar.LENGTH_LONG).show();
+                            cameraImage.setImageResource(R.drawable.cameraoff);
+                        }
+                    } else {
+
+                        final Snackbar snackbar = Snackbar.make(textureView, "You have reached your daily limit", Snackbar.LENGTH_LONG);
+
+                        snackbar.setAction("ADD MORE", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Log.i(LOG_TAG, "Extend limit");
+                                Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
+                                startActivity(profileIntent);
+                            }
+                        }).show();
                         cameraImage.setImageResource(R.drawable.cameraoff);
                     }
-                }
-                else{
-
-                    final Snackbar snackbar = Snackbar.make(textureView, "You have reached your daily limit", Snackbar.LENGTH_LONG);
-
-                    snackbar.setAction("ADD MORE", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            Log.i(LOG_TAG, "Extend limit");
-                            Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
-                            startActivity(profileIntent);
-                        }
-                    }).show();
-                    cameraImage.setImageResource(R.drawable.cameraoff);
                 }
             }
 
         });
-
 
         //bind to lifecycle:
         CameraX.bindToLifecycle((LifecycleOwner)this, preview, imgCap);
@@ -860,43 +986,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         String[] papersToDownload = {paperCode, paperCodeMs};
                         String[] urlsToDownload = {pdfUrl, pdfUrlMs};
                         choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(DialogInterface dialog, int which) {
 
-                                        if(which == 0){
-                                            isQp = true;
-                                            isMs = false;
-                                            value = 1;
-                                            decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                        }
-                                        else if(which == 1){
-                                            isQp = false;
-                                            isMs = true;
-                                            value = 1;
-                                            decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                        }
-                                        else if(which == 2){
-                                            isQp = true;
-                                            isMs  = true;
-                                            value = 2;
+                                if(which == 0){
+                                    isQp = true;
+                                    isMs = false;
+                                    value = 1;
+                                    decreaseLimit(value);
+                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                }
+                                else if(which == 1){
+                                    isQp = false;
+                                    isMs = true;
+                                    value = 1;
+                                    decreaseLimit(value);
+                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                }
+                                else if(which == 2){
+                                    isQp = true;
+                                    isMs  = true;
+                                    value = 2;
 
 
-                                            if(value <= dailyRemaining){
-                                                decreaseLimit(value);
-                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
-                                            }
-                                            else{
-
-                                                Snackbar.make(textureView, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
-                                            }
-                                        }
-                                        else{
-                                            startCamera();
-                                        }
+                                    if(value <= dailyRemaining){
+                                        decreaseLimit(value);
+                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
                                     }
+                                    else{
 
-                                }).show();
+                                        Snackbar.make(textureView, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
+                                    }
+                                }
+                                else{
+                                    startCamera();
+                                }
+                            }
+
+                        }).show();
 
                     }
 
@@ -920,15 +1046,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs) {
+    public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs, int value) {
 
         Log.i("Remaining", String.valueOf(dailyRemaining));
 
         if (connectionDetector.checkConnection() == false) {
 
-            value = -1;
-
-            decreaseLimit(value);
+            decreaseLimit(-value);
 
             final Snackbar snackBar = Snackbar.make(textureView, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
@@ -946,6 +1070,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else {
+
 
             loadingDialog.dismissDialog();
 
@@ -1038,7 +1163,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(onComplete);
+        try {
+
+            unregisterReceiver(onComplete);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -1049,32 +1180,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //downloadTime = Long.parseLong(getDateFromFormat("yyyy-MM-dd"));
 
             if(isQp && isMs) {
-                openPdf(paperCode);
-                openPdf(paperCodeMs);
 
-                myList.add(paperCode);
-                myList.add(paperCodeMs);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCode);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCodeMs);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCode);
+                            openPdf(paperCodeMs);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
 
             }else if(!isQp && isMs){
 
-                openPdf(paperCodeMs);
-                myList.add(paperCodeMs);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCodeMs);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCodeMs);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
             }
 
             else if(isQp && !isMs){
 
-                openPdf(paperCode);
-                myList.add(paperCode);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCode);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCode);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
-
-
-
 
 
         }
 
     };
+
 
 
     public void openPdf(String fileName){

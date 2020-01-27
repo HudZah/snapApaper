@@ -52,6 +52,8 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
 
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+
 
 }
 

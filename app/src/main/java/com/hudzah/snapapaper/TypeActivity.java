@@ -32,10 +32,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,6 +74,8 @@ public class TypeActivity extends AppCompatActivity {
 
     Boolean isQp;
 
+    ParseObject object;
+
     ConnectionDetector connectionDetector;
 
     Boolean isMs;
@@ -82,6 +91,8 @@ public class TypeActivity extends AppCompatActivity {
     String todayDate;
 
     String currentMonth;
+
+    ParseQuery<ParseUser> query;
 
 
     @Override
@@ -105,19 +116,41 @@ public class TypeActivity extends AppCompatActivity {
 
         spinner.setAdapter(arrayAdapter);
 
+        object = new ParseObject("Papers");
+
         connectionDetector = new ConnectionDetector(this);
 
         layout = (RelativeLayout)findViewById(R.id.view);
 
         Intent intent = getIntent();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         todayDate = getDateFromFormat("dd-MM-yyyy");
         currentMonth = getDateFromFormat("MM-yyyy");
 
-        dailyRemaining = sharedPreferences.getInt(todayDate, 5);
-        monthlyRemaining = sharedPreferences.getInt(currentMonth, 30);
+        query = ParseUser.getQuery();
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            Log.i("Limits", object.getString("dailyRemaining"));
+                            Log.i("Limits", object.getString("monthlyRemaining"));
+
+                            dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
+                            monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
+
+                            Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
+                        }
+                    }
+                }
+            }
+        });
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {
@@ -189,8 +222,29 @@ public class TypeActivity extends AppCompatActivity {
         dailyRemaining -= amountToDecrease;
         monthlyRemaining -= amountToDecrease;
 
-        sharedPreferences.edit().putInt(todayDate, dailyRemaining).apply(); //5
-        sharedPreferences.edit().putInt(currentMonth, monthlyRemaining).apply(); //30
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
+                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
+                            object.saveInBackground();
+                        }
+                    }
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+        });
 
         Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
@@ -324,13 +378,13 @@ public class TypeActivity extends AppCompatActivity {
                                             isMs = false;
                                             value = 1;
                                             decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
                                         } else if (which == 1) {
                                             isQp = false;
                                             isMs = true;
                                             value = 1;
                                             decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
                                         } else if (which == 2) {
                                             isQp = true;
                                             isMs = true;
@@ -338,7 +392,7 @@ public class TypeActivity extends AppCompatActivity {
 
                                             if(value <= dailyRemaining){
                                                 decreaseLimit(value);
-                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs);
+                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
                                             }
                                             else{
 
@@ -369,16 +423,15 @@ public class TypeActivity extends AppCompatActivity {
         }
     }
 
-    public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs) {
+    public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs, int value) {
 
         Log.i("Remaining", String.valueOf(dailyRemaining));
 
 
         if (!connectionDetector.checkConnection()) {
 
-            value = -1;
-
-            decreaseLimit(value);
+            // If no connection, refund limits
+            decreaseLimit(-value);
 
             final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
@@ -481,21 +534,71 @@ public class TypeActivity extends AppCompatActivity {
 
 
             if(isQp && isMs) {
+
                 openPdf(paperCode);
                 openPdf(paperCodeMs);
-                //myListMap.put((String) ago, paperCode);
-                //myListMap.put((String) ago, paperCodeMs);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCode);
 
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCodeMs);
+
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCode);
+                            openPdf(paperCodeMs);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                object.saveInBackground();
             }else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
-                //myListMap.put((String) ago, paperCodeMs);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCodeMs);
+
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCodeMs);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
 
             else if(isQp && !isMs){
 
                 openPdf(paperCode);
-                //myListMap.put((String) ago, paperCode);
+                object.put("username", ParseUser.getCurrentUser().getUsername());
+                object.put("paper", paperCode);
+
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if(e == null){
+
+                            openPdf(paperCode);
+                        }
+                        else{
+
+                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
 
         }
@@ -532,7 +635,12 @@ public class TypeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
 }
+
+
+
 
 
 

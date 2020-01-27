@@ -2,18 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyListActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:backgroundTint="@color/colorAccent"
-        android:minHeight="?attr/actionBarSize" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,27 +14,35 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
-        <TextView
-            android:id="@+id/text"
-            android:paddingTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="sans-serif"
-            android:text="your list"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
         <ListView
             android:id="@+id/listView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text" />
 
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif"
+            android:paddingTop="20dp"
+            android:text="your list"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
     </RelativeLayout>
 
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:backgroundTint="@color/colorAccent"
+        android:minHeight="?attr/actionBarSize" />
 
 
 </RelativeLayout>

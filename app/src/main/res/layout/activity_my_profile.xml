@@ -8,6 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/layout"
     android:layout_height="match_parent"
     tools:context=".MyProfileActivity">
 
@@ -45,20 +46,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgUser"
             android:layout_centerHorizontal="true"
-            android:text="HudZah"
+            android:text="User"
             android:textSize="32sp"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-light"
             android:layout_marginTop="15sp"></TextView>
 
         <TextView
-            android:id="@+id/tv_address"
+            android:id="@+id/tv_examboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"
-            android:text="cambridge (caie)"
+            android:text="Exam board"
             android:layout_marginTop="2dp"
             android:textAllCaps="true"
             android:textColor="@color/address"
@@ -91,10 +92,11 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/packageName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="Free"
+                    android:text="Package"
                     android:textColor="@color/textColor"
                     android:textSize="25sp"/>
 
@@ -129,14 +131,16 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/dailyPackageDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="5"
+                    android:text="Value"
                     android:textColor="@color/textColor"
                     android:textSize="25sp"/>
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
@@ -167,10 +171,11 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/monthlyPackageDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="30"
+                    android:text="Value"
                     android:textColor="@color/textColor"
                     android:textSize="25sp"/>
 
@@ -231,10 +236,11 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/detailsUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="HudZah"
+                    android:text="Username"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -260,10 +266,11 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/detailsEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="chiefhudhayfa@gmail.com"
+                    android:text="username@email.com"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -289,10 +296,11 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/detailsPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="+94 0775040348"
+                    android:text=""
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -353,7 +361,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
-                android:text=""
+                android:text="value"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -383,7 +391,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text=""
+                    android:text="value"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
@@ -414,16 +422,18 @@
                 android:layout_below="@id/rellay1">
 
                 <RelativeLayout
+                    android:layout_marginTop="20dp"
                     android:clickable="true"
                     android:id="@+id/watchAnAd"
                     android:layout_width="match_parent"
-                    android:background="@drawable/grad3"
+                    android:background="@drawable/roundedbutton"
+                    android:backgroundTint="@color/headings"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:paddingTop="15dp"
                     android:gravity="center"
                     android:paddingBottom="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
@@ -453,13 +463,13 @@
                     android:clickable="true"
                     android:id="@+id/share"
                     android:layout_width="match_parent"
-                    android:background="@drawable/grad2"
-                    android:layout_gravity="center"
+                    android:background="@drawable/roundedbutton"
+                    android:backgroundTint="@color/headings"                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:paddingTop="15dp"
                     android:gravity="center"
                     android:paddingBottom="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
@@ -488,13 +498,14 @@
                     android:clickable="true"
                     android:id="@+id/upgradePackage"
                     android:layout_width="match_parent"
-                    android:background="@drawable/grad4"
+                    android:background="@drawable/roundedbutton"
+                    android:backgroundTint="@color/headings"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:paddingTop="15dp"
                     android:gravity="center"
                     android:paddingBottom="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"

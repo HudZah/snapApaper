@@ -3,14 +3,17 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:id="@+id/view"
+    >
 
     <LinearLayout
         android:id="@+id/linear1"
@@ -68,7 +71,8 @@
             android:hint="Username"
             android:paddingLeft="20dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/emailEditText"
@@ -80,7 +84,8 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/passwordEditText"
@@ -92,7 +97,8 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/passwordEditText2"
@@ -104,7 +110,8 @@
             android:hint="Re-enter password"
             android:inputType="textPassword"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/phoneNumber"
@@ -116,7 +123,8 @@
             android:hint="Phone number (Optional)"
             android:inputType="phone"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"/>
 
         <TextView
             android:layout_marginLeft="25dp"
@@ -124,7 +132,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/headings"
-            android:text="Choose your exam board"
+            android:text="Choose your preferred exam board"
             android:layout_marginBottom="20dp"/>
 
         <Spinner
@@ -149,7 +157,7 @@
                 android:onClick="signup"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:text="Sign up"
+                android:text="Next"
                 android:textAllCaps="false"
                 android:background="@drawable/roundedbutton"
                 android:backgroundTint="@color/headings"
@@ -159,16 +167,7 @@
                 android:id="@+id/button"
                 />
 
-            <TextView
-                android:id="@+id/helpButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Need help?"
-                android:textSize="16sp"
-                android:textColor="@color/headings"
-                android:fontFamily="sans-serif-medium"
-                android:layout_marginLeft="100dp"
-                />
+
 
         </LinearLayout>
 
@@ -179,6 +178,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/error_text"
             android:text=""
+            android:layout_marginTop="10dp"
+            android:textSize="17sp"
             android:layout_marginBottom="50dp"
             />
 
@@ -202,14 +203,15 @@
             />
 
         <TextView
-            android:id="@+id/registerButton"
+            android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" Login"
             android:textColor="@color/headings"
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="40dp"
+            android:onClick="login"/>
 
     </LinearLayout>
 
