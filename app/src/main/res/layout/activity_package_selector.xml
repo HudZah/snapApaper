@@ -26,7 +26,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:background="@drawable/bg5"/>
+                    android:background="@drawable/rocketmanmdpi"/>
 
                 <TextView
                     android:layout_width="match_parent"

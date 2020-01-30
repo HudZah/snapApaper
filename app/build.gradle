@@ -47,13 +47,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.3.1'
     implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
+    implementation 'com.google.firebase:firebase-ads:18.3.0'
+
     implementation "androidx.camera:camera-view:1.0.0-alpha02"
     implementation 'com.google.android.material:material:1.0.0-alpha3'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
 
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
-
+    implementation "android.arch.work:work-runtime:1.0.1"
 
 }
 

@@ -28,15 +28,19 @@
             >
 
 
-            <ImageView
-                android:layout_width="120dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="120dp"
                 android:layout_margin="9dp"
                 android:paddingLeft="3dp"
-                android:src="@drawable/ic_account_circle_black_24dp"
-                android:background="@drawable/circle"
+                android:text="╰ (◕ヮ◕)つ"
+                android:textStyle="bold"
+                android:textSize="50sp"
+                android:gravity="center"
                 android:adjustViewBounds="true"
+                android:textColor="@color/black"
                 android:scaleType="fitCenter"/>
+            <!--                android:background="@drawable/circle"-->
 
         </RelativeLayout>
 
@@ -424,6 +428,7 @@
                 <RelativeLayout
                     android:layout_marginTop="20dp"
                     android:clickable="true"
+                    android:onClick="startVideoAd"
                     android:id="@+id/watchAnAd"
                     android:layout_width="match_parent"
                     android:background="@drawable/roundedbutton"

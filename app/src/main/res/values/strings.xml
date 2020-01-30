@@ -27,6 +27,10 @@
 
     <string name="app_id">5a1022e40970e3190aacdf0164e9b96a862b2144</string>
 
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ad_unit_id">ca-app-pub-3940256099942544/5224354917</string>
+
+
     <!-- Change the following strings as required -->
     <string name="client_key">c170454528ae3af7944f67479177463c194e9dcc</string>
     <string name="hint">Exam board</string>

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name=".PaperDetailsActivity"></activity>
+        <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".PackageSelectorActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity" />
@@ -22,6 +23,7 @@
         <activity android:name=".MyProfileActivity" />
         <activity android:name=".PricingActivity" />
         <activity android:name=".AboutActivity" />
+        <activity android:name=".DrawerHeaderActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -43,12 +45,34 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/client_key" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+
+        <provider
+            android:authorities="${applicationId}.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+
+        </provider>
+
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
 
 </manifest>

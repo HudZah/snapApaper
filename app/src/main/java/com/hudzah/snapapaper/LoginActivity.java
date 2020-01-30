@@ -61,7 +61,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("username", ParseUser.getCurrentUser().getUsername());
+            overridePendingTransition(0, 0);
             startActivity(intent);
+            overridePendingTransition(0, 0);
         }
 
         registerButton.setOnClickListener(new View.OnClickListener() {

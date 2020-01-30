@@ -475,7 +475,7 @@ public class TypeActivity extends AppCompatActivity {
                 String fileName = fileNames[i];
                 String url = urlsToDownload[i];
 
-                File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
+                File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
 
                 if (downloadFile.exists()) {
 
@@ -585,6 +585,7 @@ public class TypeActivity extends AppCompatActivity {
                 openPdf(paperCode);
                 object.put("username", ParseUser.getCurrentUser().getUsername());
                 object.put("paper", paperCode);
+                object.put("paper", paperCode);
 
                 object.saveInBackground(new SaveCallback() {
                     @Override
@@ -625,7 +626,7 @@ public class TypeActivity extends AppCompatActivity {
 
         Log.i(LOG_TAG, "Open");
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + fileName + ".pdf");
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
 
         Log.i("pdf file name", fileName + ".pdf");
 

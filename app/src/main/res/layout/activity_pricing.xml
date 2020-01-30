@@ -36,7 +36,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:background="@drawable/bg5"/>
+                android:background="@drawable/rocketmanmdpi"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -464,23 +464,8 @@
 
             </LinearLayout>
 
-
-
-
         </LinearLayout>
 
-        <TextView
-            android:layout_marginLeft="25dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="30sp"
-            android:text="snapApaper"
-            android:layout_marginTop="60dp"
-            android:layout_marginBottom="30dp"
-            android:textColor="@color/textColor"/>
-
     </RelativeLayout>
-
 
 </ScrollView>

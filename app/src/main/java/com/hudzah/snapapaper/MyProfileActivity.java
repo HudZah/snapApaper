@@ -1,9 +1,11 @@
 package com.hudzah.snapapaper;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Preview;
 import androidx.preference.PreferenceManager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
@@ -14,7 +16,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -26,7 +34,7 @@ import java.util.List;
 import static com.hudzah.snapapaper.MainActivity.currentMonth;
 import static com.hudzah.snapapaper.MainActivity.todayDate;
 
-public class MyProfileActivity extends AppCompatActivity {
+public class MyProfileActivity extends AppCompatActivity implements RewardedVideoAdListener {
 
     TextView dailyRemainingTextView;
 
@@ -66,12 +74,29 @@ public class MyProfileActivity extends AppCompatActivity {
 
     LoadingDialog loadingDialog;
 
+    AlertDialog.Builder choiceBuilder;
+
+    //public static final String app_id = "ca-app-pub-9334007634623344~4718773124";
+
+    //public static final String ad_id = "ca-app-pub-9334007634623344/5447554958";
+
+
+    private RewardedVideoAd videoAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
 
         loadingDialog = new LoadingDialog(this);
+
+        MobileAds.initialize(getApplicationContext(), getString(R.string.admob_app_id));
+
+        videoAd = MobileAds.getRewardedVideoAdInstance(this);
+
+        videoAd.setRewardedVideoAdListener(MyProfileActivity.this);
+
+        loadRewardedAd();
 
         RelativeLayout layout = (RelativeLayout)findViewById(R.id.layout);
 
@@ -202,45 +227,6 @@ public class MyProfileActivity extends AppCompatActivity {
 
 
 
-        watchAnAd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                value = 3;
-
-                dailyRemaining += value;
-                monthlyRemaining += value;
-
-                //watchAd();
-
-                query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-                query.findInBackground(new FindCallback<ParseUser>() {
-                    @Override
-                    public void done(List<ParseUser> objects, ParseException e) {
-
-                        if(e == null){
-
-                            if(objects.size() > 0){
-
-                                for(ParseUser object : objects){
-
-                                    object.put("dailyRemaining", String.valueOf(dailyRemaining));
-                                    object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-                                    object.saveInBackground();
-                                    updateRemaining(dailyRemaining, monthlyRemaining);
-
-                                }
-                            }
-                        }
-                        else{
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }
-        });
-
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,4 +255,120 @@ public class MyProfileActivity extends AppCompatActivity {
         monthlyRemainingTextView.setText(monthlyRemaining + " more");
     }
 
+
+    public void startVideoAd(View view) {
+
+
+        if (videoAd.isLoaded()) {
+            Log.i("MyProfile", "Load ad");
+            videoAd.show();
+        }
+        else{
+
+            Toast.makeText(this, "Sorry your ad has not loaded yet, pleas try again", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void loadRewardedAd(){
+
+
+        if(!videoAd.isLoaded()) {
+            videoAd.loadAd(getString(R.string.ad_unit_id), new AdRequest.Builder().build());
+        }
+    }
+
+        //watchAd();
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+//        Toast.makeText(getBaseContext(),
+//                "Ad loaded.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+//        Toast.makeText(getBaseContext(),
+//                "Ad opened.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(getBaseContext(),
+                "Ad started.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+//        Toast.makeText(getBaseContext(),
+//                "Ad closed.", Toast.LENGTH_SHORT).show();
+        loadRewardedAd();
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+
+        value = 2;
+
+        dailyRemaining += value;
+        monthlyRemaining += value;
+
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
+                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
+                            object.saveInBackground();
+                            updateRemaining(dailyRemaining, monthlyRemaining);
+
+                            showRewardDialog(value);
+
+                        }
+                    }
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+//        Toast.makeText(getBaseContext(),
+//                "Ad left application.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        Toast.makeText(getBaseContext(),
+                "Ad failed to load.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+//        Toast.makeText(this, "Ad complete", Toast.LENGTH_SHORT).show();
+    }
+
+    public void showRewardDialog(int value){
+
+        new AlertDialog.Builder(MyProfileActivity.this)
+            .setTitle("Congratulations!")
+            .setMessage("You have earned an additional " + value + " " + "limits")
+            .setPositiveButton("OK", null)
+                .show();
+    }
+
 }
+
+
+
