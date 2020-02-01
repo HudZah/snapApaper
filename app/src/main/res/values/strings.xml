@@ -37,10 +37,10 @@
 
     <string-array name="choice_names">
 
-        <item>Download question paper</item>
-        <item>Download mark scheme</item>
-        <item>Download both</item>
-        <item>Take another photo</item>
+        <item>Download Single Paper</item>
+        <item>Download Multiple Papers</item>
+        <item>My Papers</item>
+        <item>Scan Another Paper</item>
     </string-array>
 
     <string-array name="choice_names_for_type">
@@ -48,8 +48,9 @@
         <item>Download question paper</item>
         <item>Download mark scheme</item>
         <item>Download both</item>
-        <item>Take another photo</item>
     </string-array>
+
+
 
 
 </resources>

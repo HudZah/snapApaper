@@ -6,7 +6,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.FocusMeteringAction;
@@ -16,47 +15,37 @@ import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.Preview;
 import androidx.camera.core.PreviewConfig;
 import androidx.camera.view.TextureViewMeteringPointFactory;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.preference.PreferenceManager;
 import androidx.work.Constraints;
 import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
-import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.DownloadManager;
-import android.app.ProgressDialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
-import android.media.Image;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
-import android.text.format.DateUtils;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
@@ -66,12 +55,12 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,44 +75,27 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.parse.FindCallback;
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.Future;
-
-
-import static com.hudzah.snapapaper.R.drawable.cameraon;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -158,7 +130,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String pdfUrl;
 
-    ParseObject object;
+    Dialog multipleDownload;
+
+    ParseObject papersObject;
 
     String pdfUrlMs;
 
@@ -177,10 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Boolean isMs;
 
     String LOG_TAG = "MainActivity";
-
-    int dailyLimit = 5;
-
-    int monthlyLimit = 30;
 
     int dailyRemaining;
 
@@ -209,6 +179,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String username;
 
     String packageSelected;
+
+    Date resetLimitDate;
+
+    CardView cardViewDuo;
+
+    String[] papersToDownload;
+
+    String[] urlsToDownload;
+
+    ImageView closeOverlay;
+
+    TextView yearTextView;
+
+    Button downloadDuo;
+
+    Button downloadFullSet;
+
+    Button downloadMultipleYears;
+
+    Button dropdownButtonFullSet;
+
+    Button dropdownButtonMultipleYears;
+
+    LinearLayout linearFullSet;
+
+    LinearLayout linearMultipleYears;
+
+    CardView cardViewFullSet;
+    CardView cardViewManyPerYear;
+
+    String pdfUrlPart;
+
+    String[] filenamesMultiple;
+
+    String[] urlsToDownloadMultiple;
+
+    Boolean singlePaper;
+
 
     public static final String KEY_TASK = "key_task";
 
@@ -300,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         textureView = findViewById(R.id.view_finder);
 
-        object = new ParseObject("Papers");
+        multipleDownload = new Dialog(this);
 
         paperCode = "";
 
@@ -309,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         connectionDetector = new ConnectionDetector(this);
+
 
         if(connectionDetector.checkConnection()) {
 
@@ -320,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             queryPackage.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
             queryPackage.setLimit(1);
 
+
             queryPackage.findInBackground(new FindCallback<ParseUser>() {
                 @Override
                 public void done(List<ParseUser> objects, ParseException e) {
@@ -330,43 +340,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             for (ParseUser object : objects) {
 
                                 packageSelected = object.getString("package");
-                                Log.i("Package", packageSelected);
+                                resetLimitDate = object.getCreatedAt();
+                                setAlarmDailyLimit(resetLimitDate.getTime());
+                                setAlarmMonthlyLimit(resetLimitDate.getTime());
+                                Log.i("Date", String.valueOf(object.getCreatedAt().getTime()));
                             }
                         }
+                    }
+                    else{
+
+                        Log.i("Alarm", e.getMessage());
                     }
                 }
             });
 
-            Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-
-            Data data = new Data.Builder()
-                    .putString(ParseUser.getCurrentUser().getUsername(), packageSelected)
-                    .build();
-
-            PeriodicWorkRequest periodicDailyWorkRequest = new PeriodicWorkRequest.Builder(
-                    MyDailyWork.class, 1, TimeUnit.DAYS)
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .build();
-
-            PeriodicWorkRequest periodicMonthlyWorkRequest = new PeriodicWorkRequest.Builder(
-                    MyMonthlyWork.class, 2, TimeUnit.DAYS) // Change to 30 later and make this run for every unique tag of username
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
-                    ParseUser.getCurrentUser().getUsername(),
-                    ExistingPeriodicWorkPolicy.KEEP,
-                    periodicDailyWorkRequest);
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
-                    ParseUser.getCurrentUser().getUsername(),
-                    ExistingPeriodicWorkPolicy.KEEP,
-                    periodicMonthlyWorkRequest);
 
             ParseQuery<ParseUser> query = ParseUser.getQuery();
-
             query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
             query.setLimit(1);
 
@@ -636,6 +625,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
     }
+
 
     public String getDateFromFormat(String format) {
         Calendar today = Calendar.getInstance();
@@ -1035,7 +1025,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     paperCodeMs = paperCode.replace("_qp_", "_ms_");
 
-                    String pdfUrlPart = examCodesMap.get(splitText[0]);
+                    pdfUrlPart = examCodesMap.get(splitText[0]);
 
                     if (pdfUrlPart != null) {
 
@@ -1078,37 +1068,88 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if(which == 0){
-                                    isQp = true;
-                                    isMs = false;
-                                    value = 1;
-                                    decreaseLimit(value);
-                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+
+
+                                    String[] array = {"Download Question Paper", "Download Mark Scheme"};
+
+                                    new AlertDialog.Builder(MainActivity.this)
+                                            .setItems(array, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    singlePaper = true;
+
+                                                    if(which == 0){
+
+                                                        isQp = true;
+                                                        isMs = false;
+                                                        value = 1;
+                                                        decreaseLimit(value);
+                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                    }
+
+                                                    else if(which == 1){
+
+                                                        isQp = false;
+                                                        isMs = true;
+                                                        value = 1;
+                                                        decreaseLimit(value);
+                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                    }
+                                                }
+                                            }).show();
+
+                                    dialog.dismiss();
+
                                 }
+
                                 else if(which == 1){
-                                    isQp = false;
-                                    isMs = true;
-                                    value = 1;
-                                    decreaseLimit(value);
-                                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
-                                }
-                                else if(which == 2){
-                                    isQp = true;
-                                    isMs  = true;
-                                    value = 2;
 
+                                    singlePaper = false;
 
-                                    if(value <= dailyRemaining){
-                                        decreaseLimit(value);
-                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                    if(packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                                        isQp = true;
+                                        isMs  = true;
+                                        value = 2;
+
+                                        showMultipleDownloads(which, urlsToDownload, papersToDownload, isQp, isMs, codeText);
+                                        dialog.dismiss();
+
                                     }
                                     else{
 
-                                        Snackbar.make(textureView, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
+                                        new AlertDialog.Builder(MainActivity.this)
+                                                .setTitle("Sorry you need a better package to use this")
+                                                .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                                                .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                                        startActivity(pricingIntent);
+                                                    }
+                                                })
+                                                .setNegativeButton("Not now", null)
+                                                .create()
+                                                .show();
+
+                                        dialog.dismiss();
                                     }
+
+                                    // FIXME: 1/31/2020
                                 }
-                                else{
+                                else if(which == 2){
+
+                                    Intent listIntent = new Intent(getApplicationContext(), MyListActivity.class);
+                                    startActivity(listIntent);
+                                }
+
+                                else if(which == 3){
+
                                     startCamera();
                                 }
+
                             }
 
                         }).show();
@@ -1161,30 +1202,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
 
 
-            loadingDialog.dismissDialog();
+            try {
+                loadingDialog.dismissDialog();
 
-            Log.i("Which", String.valueOf(which));
 
-            if(isQp && isMs){
 
-                urlsToDownload = urlsToDownload;
-                fileNames = fileNames;
+                Log.i("Which", String.valueOf(which));
+
+                if(isQp && isMs){
+
+                    urlsToDownload = urlsToDownload;
+                    fileNames = fileNames;
+                }
+
+                else if(isQp && !isMs){
+
+                    urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrlMs);
+                    fileNames = ArrayUtils.removeAll(fileNames, paperCodeMs);
+
+                }
+                else if(isMs && !isQp){
+
+                    urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrl);
+                    fileNames = ArrayUtils.removeAll(fileNames, paperCode);
+                }
             }
 
-            else if(isQp && !isMs){
-
-                urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrlMs);
-                fileNames = ArrayUtils.removeAll(fileNames, paperCodeMs);
-
-            }
-            else if(isMs && !isQp){
-
-                urlsToDownload = ArrayUtils.removeAll(urlsToDownload, pdfUrl);
-                fileNames = ArrayUtils.removeAll(fileNames, paperCode);
+            catch (Exception e){
+                e.printStackTrace();
             }
 
 
-            Log.i("Array", urlsToDownload + " " + fileNames);
+            Log.i("Array", Arrays.toString(urlsToDownload) + " " + Arrays.toString(fileNames));
 
 
             for(int i = 0; i < urlsToDownload.length; i++ ) {
@@ -1209,15 +1258,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                         request.setMimeType("application/pdf");
 
-                        if (fileName == paperCode) {
 
-                            request.setTitle(paperCode);
-                            request.setDescription("snapApaper");
-                        } else if (fileName == paperCodeMs) {
+                        request.setTitle(fileName);
+                        request.setDescription("snapApaper");
 
-                            request.setTitle(paperCodeMs);
-                            request.setDescription("snapApaper");
-                        }
                         request.allowScanningByMediaScanner();
 
                         request.setVisibleInDownloadsUi(true);
@@ -1230,7 +1274,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
 
-                        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                        papersObject = new ParseObject("Papers");
+
+
+                        String[] finalUrlsToDownload = urlsToDownload;
+
+                        for(int c = 0; c < urlsToDownload.length; c++ ) {
+
+                            papersObject.put("username", ParseUser.getCurrentUser().getUsername());
+                            papersObject.put("paper", fileName);
+                            papersObject.saveInBackground();
+
+                        }
+
+
+                        if(finalUrlsToDownload.length <= 2 && singlePaper) {
+
+                            registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                        }
+                        else{
+
+                            Intent listIntent = new Intent(MainActivity.this, MyListActivity.class);
+                            startActivity(listIntent);
+                        }
 
 
                     } catch (Exception e) {
@@ -1270,65 +1336,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(isQp && isMs) {
 
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCode);
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCodeMs);
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
+                openPdf(paperCode);
+                openPdf(paperCodeMs);
 
-                            openPdf(paperCode);
-                            openPdf(paperCodeMs);
-                        }
-                        else{
+            }
+            else if(!isQp && isMs){
 
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-
-
-            }else if(!isQp && isMs){
-
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCodeMs);
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
-
-                            openPdf(paperCodeMs);
-                        }
-                        else{
-
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
+                openPdf(paperCodeMs);
             }
 
             else if(isQp && !isMs){
 
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCode);
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
+                openPdf(paperCode);
 
-                            openPdf(paperCode);
-                        }
-                        else{
-
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
+
 
 
         }
@@ -1471,6 +1493,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+
         Log.i("This is very sad", "The fact that I am typing this message" +
                 " to get that 1500 line mark is extremely sad." +
                 "Although it exactly isn't 1500 lines for this whole project, rather close to 10,000" +
@@ -1499,6 +1522,291 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "And I don't have a mac so I can't make this app for IOS" +
                 "God damn it apple why do you have to be overpriced" +
                 "Oh I passed the milestone ffs");
+    }
+
+    public void setAlarmDailyLimit(long currentDay){
+
+        if(currentDay != 0) {
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, MyAlarmDaily.class);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentDay, AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            Log.i("Alarm", "Alarm is running");
+
+        }
+    }
+
+    public void setAlarmMonthlyLimit(long currentMonth){
+
+        if(currentMonth != 0) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, MyAlarmMonthly.class);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentMonth, AlarmManager.INTERVAL_DAY * 2, pendingIntent);
+
+            Log.i("Alarm", "Alarm is running (monthly)");
+
+
+            // test with 2 days for now
+        }
+    }
+
+    public void showMultipleDownloads(int which, String[] urlsToDownload, String[] papersToDownload, Boolean isQp, Boolean isMs, String examCode){
+
+
+
+        multipleDownload.setContentView(R.layout.overlay_multiple_papers);
+
+        // Download Buttons
+        downloadDuo = (Button) multipleDownload.findViewById(R.id.downloadDuo);
+        downloadFullSet = (Button)multipleDownload.findViewById(R.id.downloadFullSet);
+        downloadMultipleYears = (Button)multipleDownload.findViewById(R.id.downloadMultipleYears);
+
+        // Dropdown Buttons
+
+        dropdownButtonFullSet = (Button)multipleDownload.findViewById(R.id.dropdownButtonFullSet);
+        dropdownButtonMultipleYears = (Button)multipleDownload.findViewById(R.id.dropdownButtonMultipleYears);
+
+        // Linear layouts
+
+        linearFullSet = (LinearLayout)multipleDownload.findViewById(R.id.linearFullSet);
+        linearMultipleYears = (LinearLayout)multipleDownload.findViewById(R.id.linearMultipleYears);
+
+        // Card Views
+
+        cardViewFullSet = (CardView)multipleDownload.findViewById(R.id.cardViewFullSet);
+        cardViewManyPerYear = (CardView)multipleDownload.findViewById(R.id.cardViewManyPerYear);
+
+        // Spinners
+
+        Spinner spinnerNumberOfPapers= (Spinner) multipleDownload.findViewById(R.id.spinnerNumberOfPapers);
+        Spinner spinnerTypeOfPaperFullSet = (Spinner) multipleDownload.findViewById(R.id.spinnerTypeOfPaperFullSet);
+
+        Spinner spinnerFromYear = (Spinner)multipleDownload.findViewById(R.id.spinnerFromYear);
+        Spinner spinnerToYear = (Spinner)multipleDownload.findViewById(R.id.spinnerToYear);
+        Spinner spinnerTypeOfPaperMultipleYears = (Spinner) multipleDownload.findViewById(R.id.spinnerTypeOfPaperMultipleYears);
+
+        closeOverlay = (ImageView) multipleDownload.findViewById(R.id.closeOverlay);
+        yearTextView = (TextView)multipleDownload.findViewById(R.id.yearTextView);
+
+        yearTextView.setText("For " + examCode);
+
+        closeOverlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                multipleDownload.dismiss();
+            }
+        });
+
+        multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        multipleDownload.show();
+
+        dropdownButtonFullSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(linearFullSet.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewFullSet, new AutoTransition());
+                    linearFullSet.setVisibility(View.VISIBLE);
+                    dropdownButtonFullSet.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewFullSet);
+                    linearFullSet.setVisibility(View.GONE);
+                    dropdownButtonFullSet.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+        dropdownButtonMultipleYears.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(linearMultipleYears.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewManyPerYear, new AutoTransition());
+                    linearMultipleYears.setVisibility(View.VISIBLE);
+                    dropdownButtonMultipleYears.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewManyPerYear);
+                    linearMultipleYears.setVisibility(View.GONE);
+                    dropdownButtonMultipleYears.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+
+        downloadDuo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int val = 2;
+
+                if(val <= dailyRemaining){
+                    decreaseLimit(val);
+                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, val);
+                }
+                else{
+
+                    Snackbar.make(textureView, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        downloadFullSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
+
+                    String vale = String.valueOf(spinnerNumberOfPapers.getSelectedItem());
+
+                    int val = Integer.parseInt(vale);
+
+                    if(val == 0) {
+
+                        Snackbar.make(linearFullSet, "Please select a valid number of papers", Snackbar.LENGTH_LONG).show();
+
+                        if(linearFullSet.getVisibility() == View.GONE){
+
+                            TransitionManager.beginDelayedTransition(cardViewFullSet, new AutoTransition());
+                            linearFullSet.setVisibility(View.VISIBLE);
+                            dropdownButtonFullSet.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                        }
+
+
+                    }
+                    else if(val > 0){
+
+                        if (val <= dailyRemaining) {
+                            //decreaseLimit(val);
+                            Log.i("Worked", paperCode);
+
+                            // 9701_w16_qp_42
+
+                            String[] splitCode = paperCode.split("_");
+                            String splitVariant = splitCode[3].substring(1, 2);
+                            Log.i("Worked", splitVariant);
+                            String[] filenamesMultiple = new String[val];
+                            String[] urlsToDownloadMultiple = new String[val];
+                            String paperType = splitCode[2];
+
+
+                            if(spinnerTypeOfPaperFullSet.getSelectedItemPosition() == 0){
+
+                                paperType = "_qp_";
+                                Log.i("Worked", "Question");
+                                Boolean isQp = true;
+                                Boolean isMs = false;
+
+
+                            }
+                            else{
+
+                                paperType = "_ms_";
+                                Log.i("Worked", "Mark");
+                                Boolean isQp = false;
+                                Boolean isMs = true;
+
+                            }
+
+
+
+                            for(int i = 1; i < val + 1; i++){
+
+                                String paperNumber = i + splitVariant;
+                                Log.i("Worked", paperNumber);
+
+                                String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
+
+                                filenamesMultiple[i -1] = newPaperCode;
+
+                                String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
+
+                                urlsToDownloadMultiple[i -1] = newPdfUrl;
+
+                                Log.i("Worked", Arrays.toString(filenamesMultiple) + "Paper codes are " + Arrays.toString(urlsToDownloadMultiple));
+                            }
+
+                            multipleDownload.dismiss();
+                            decreaseLimit(val);
+                            downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
+
+                        } else {
+
+                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                }
+                else{
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Sorry you need a better package to use this")
+                            .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                            .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                    startActivity(pricingIntent);
+                                }
+                            })
+                            .setNegativeButton("Not now", null)
+                            .create()
+                            .show();
+                }
+            }
+        });
+
+        downloadMultipleYears.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(packageSelected.equals("Premium")){
+
+
+
+
+                }
+                else{
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Sorry you need a better package to use this")
+                            .setMessage("Would you like to upgrade to Premium to unlock this feature?")
+                            .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                    startActivity(pricingIntent);
+                                }
+                            })
+                            .setNegativeButton("Not now", null)
+                            .create()
+                            .show();
+
+                }
+
+
+            }
+        });
+
+
+
+
+
+
     }
 
 
