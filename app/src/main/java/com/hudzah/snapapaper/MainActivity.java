@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static String username;
 
-    String packageSelected;
+    static String packageSelected;
 
     Date resetLimitDate;
 
@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout linearMultipleYears;
 
     CardView cardViewFullSet;
+
     CardView cardViewManyPerYear;
 
     String pdfUrlPart;
@@ -276,12 +277,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //int id = getResources().getIdentifier("yourpackagename:drawable/" + StringGenerated, null, null);
 
-            torchButton.setBackgroundResource(R.drawable.flashon);
+            torchButton.setBackgroundResource(R.drawable.flashonicon);
         }
         else{
 
             preview.enableTorch(false);
-            torchButton.setBackgroundResource(R.drawable.flashoff);
+            torchButton.setBackgroundResource(R.drawable.flashofficon);
         }
     }
 
@@ -302,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         torchButton = (Button)findViewById(R.id.torchButton);
 
-        torchButton.setBackgroundResource(R.drawable.flashoff);
+        torchButton.setBackgroundResource(R.drawable.flashofficon);
 
         cameraImage = (ImageView)findViewById(R.id.imgCapture);
 
@@ -373,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     Log.i("Limits", "" + object.getString("dailyRemaining"));
                                     Log.i("Limits", "" + object.getString("monthlyRemaining"));
 
+                                    packageSelected = object.getString("package");
                                     dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
                                     monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
                                 } catch (Exception ex) {
@@ -973,7 +975,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("Matched text", codeText);
 
                 preview.enableTorch(false);
-                torchButton.setBackgroundResource(R.drawable.flashoff);
+                torchButton.setBackgroundResource(R.drawable.flashofficon);
 
                 splitText = codeText.split("/");
 
@@ -1248,6 +1250,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (downloadFile.exists()) {
 
                     Snackbar.make(textureView, "File already exists", Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(this, fileName + " already exists", Toast.LENGTH_SHORT).show();
+
                 } else {
 
                     try {
@@ -1279,7 +1283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         String[] finalUrlsToDownload = urlsToDownload;
 
-                        for(int c = 0; c < urlsToDownload.length; c++ ) {
+                        for (int c = 0; c < urlsToDownload.length; c++) {
 
                             papersObject.put("username", ParseUser.getCurrentUser().getUsername());
                             papersObject.put("paper", fileName);
@@ -1288,14 +1292,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
 
-                        if(finalUrlsToDownload.length <= 2 && singlePaper) {
+                        if (finalUrlsToDownload.length <= 2 && singlePaper) {
 
                             registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-                        }
-                        else{
-
-                            Intent listIntent = new Intent(MainActivity.this, MyListActivity.class);
-                            startActivity(listIntent);
                         }
 
 
@@ -1307,7 +1306,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }
 
+                }
+
             }
+            if(!singlePaper){
+
+                Intent listIntent = new Intent(MainActivity.this, MyListActivity.class);
+                startActivity(listIntent);
 
         }
     }
@@ -1333,6 +1338,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             //downloadTime = Long.parseLong(getDateFromFormat("yyyy-MM-dd"));
+
+
 
             if(isQp && isMs) {
 
@@ -1530,10 +1537,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, MyAlarmDaily.class);
-
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentDay, AlarmManager.INTERVAL_DAY, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, currentDay, AlarmManager.INTERVAL_DAY, pendingIntent);
 
             Log.i("Alarm", "Alarm is running");
 
@@ -1542,13 +1548,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setAlarmMonthlyLimit(long currentMonth){
 
+        // FIXME: 2/2/2020
+
         if(currentMonth != 0) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, MyAlarmMonthly.class);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentMonth, AlarmManager.INTERVAL_DAY * 2, pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentMonth, AlarmManager.INTERVAL_DAY * 30, pendingIntent);
 
             Log.i("Alarm", "Alarm is running (monthly)");
 
@@ -1773,9 +1781,104 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                if(packageSelected.equals("Premium")){
+                if(packageSelected.equals("Premium")) {
+
+                    if (packageSelected.equals("Premium")) {
+
+                        int fromYear = Integer.parseInt(spinnerFromYear.getSelectedItem().toString());
+
+                        int toYear = Integer.parseInt(spinnerToYear.getSelectedItem().toString());
+
+                        int val = (toYear - fromYear);
 
 
+                        if (val <= 0) {
+
+                            Snackbar.make(linearFullSet, "Please select a valid number of papers", Snackbar.LENGTH_LONG).show();
+
+                            if (linearMultipleYears.getVisibility() == View.GONE) {
+
+                                TransitionManager.beginDelayedTransition(cardViewManyPerYear, new AutoTransition());
+                                linearMultipleYears.setVisibility(View.VISIBLE);
+                                dropdownButtonMultipleYears.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+
+                                // 2018, 2017, 2016, 2015, 2014
+
+                            }
+
+                        } else {
+
+                            if (val <= dailyRemaining) {
+
+                                Log.i("ArraySize", String.valueOf(val));
+
+                                String[] filenamesMultiple = new String[val + 1];
+
+                                String[] splitCode = paperCode.split("_");
+
+                                String paperSeason = splitCode[1].substring(0, 1); //w
+
+                                String paperYear = splitCode[1].substring(1); //16
+
+                                String paperType = splitCode[2];
+
+                                String[] urlsToDownloadMultiple = new String[val + 1];
+                                // 9701_w16_qp_42
+
+                                if (spinnerTypeOfPaperMultipleYears.getSelectedItemPosition() == 0) {
+
+                                    paperType = "_qp_";
+                                    Log.i("Worked", "Question");
+                                    Boolean isQp = true;
+                                    Boolean isMs = false;
+
+
+                                } else {
+
+                                    paperType = "_ms_";
+                                    Log.i("Worked", "Mark");
+                                    Boolean isQp = false;
+                                    Boolean isMs = true;
+
+                                }
+
+                                int nextYear = fromYear;
+
+                                for (int i = 0; i < val + 1; i++) {
+
+                                    //paperYears[i] = String.valueOf(nextYear).substring(2);
+                                    String newPaperYear = paperSeason + nextYear;
+
+                                    newPaperYear = paperSeason + newPaperYear.substring(3);
+
+                                    Log.i("PaperYear", newPaperYear);
+
+                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + splitCode[3];
+
+                                    filenamesMultiple[i] = newPaperCode;
+
+                                    String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
+
+                                    urlsToDownloadMultiple[i] = newPdfUrl;
+
+                                    nextYear = nextYear + 1;
+
+                                }
+
+                                Log.i("Years", Arrays.toString(filenamesMultiple) + " and urls are " + Arrays.toString(urlsToDownloadMultiple));
+
+                                multipleDownload.dismiss();
+                                decreaseLimit(val);
+                                downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
+
+                            }
+                            else{
+
+                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }
 
 
                 }

@@ -10,12 +10,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -35,6 +38,7 @@ import com.parse.ParseUser;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +70,8 @@ public class MyListActivity extends AppCompatActivity {
 
     String paperSelected;
 
+    EditText search;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class MyListActivity extends AppCompatActivity {
 
         TextView emptyText = (TextView)findViewById(R.id.emptyText);
 
-
+        search = (EditText)findViewById(R.id.search);
 
 
         // add back arrow to toolbar
@@ -98,6 +104,26 @@ public class MyListActivity extends AppCompatActivity {
         arrayList = new ArrayList<String>();
 
         arrayAdapter = new ArrayAdapter<>(MyListActivity.this, android.R.layout.simple_list_item_1, arrayList);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                (MyListActivity.this).arrayAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -136,12 +162,11 @@ public class MyListActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if(which == 0){
+                        if (which == 0) {
 
                             // Share
                             share(position);
-                        }
-                        else if(which == 1){
+                        } else if (which == 1) {
 
                             // Are you sure you want to Dialog
                             File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
@@ -157,11 +182,11 @@ public class MyListActivity extends AppCompatActivity {
                             query.findInBackground(new FindCallback<ParseObject>() {
                                 @Override
                                 public void done(List<ParseObject> objects, ParseException e) {
-                                    if(e == null){
+                                    if (e == null) {
 
-                                        if(objects.size() > 0){
+                                        if (objects.size() > 0) {
 
-                                            for(ParseObject object : objects){
+                                            for (ParseObject object : objects) {
 
                                                 object.deleteInBackground();
                                                 Log.i("Database paper", "Deleted");
@@ -171,14 +196,28 @@ public class MyListActivity extends AppCompatActivity {
                                 }
                             });
 
-                            if(file.exists()) {
+                            if (file.exists()) {
 
                                 file.delete();
                             }
 
+                        } else if (which == 2) {
+
+                            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
+
+                            Date creationDate = new Date(file.lastModified());
+
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                            new AlertDialog.Builder(MyListActivity.this)
+                                    .setTitle("Details for " + arrayList.get(position))
+                                    .setMessage("File was created on \n\n" + sdf.format(creationDate))
+                                    .setPositiveButton("OK", null)
+                                    .setNegativeButton("No", null)
+                                    .show();
                         }
                     }
-                }).show();
+                }); choiceBuilder.show();
 
 
                 return true;

@@ -75,34 +75,34 @@
 
         <Button
             android:id="@+id/torchButton"
-            android:layout_width="38dp"
-            android:layout_height="39dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="25dp"
-            android:background="@drawable/flashoff"
+            android:background="@drawable/flashofficon"
             android:onClick="torchAction"
             app:layout_constraintBottom_toTopOf="@+id/picture"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.901"
+            app:layout_constraintHorizontal_bias="0.959"
             app:layout_constraintStart_toEndOf="@+id/picture"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.032" />
 
         <Button
             android:id="@+id/helpButton"
-            android:layout_width="28dp"
-            android:layout_height="30dp"
+            android:layout_width="29dp"
+            android:layout_height="29dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/ic_help_outline_black_24dp"
             android:onClick="help"
             app:layout_constraintBottom_toBottomOf="@+id/torchButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintHorizontal_bias="0.94"
             app:layout_constraintStart_toEndOf="@+id/toolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.17000002" />
+            app:layout_constraintVertical_bias="0.235" />
 
         <Button
             android:id="@+id/typeButton"

@@ -63,6 +63,7 @@
         </provider>
 
         <receiver android:name=".MyAlarmDaily"
+
             android:enabled="true"
             android:exported="true" />
 

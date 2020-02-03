@@ -11,9 +11,12 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +77,8 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     LoadingDialog loadingDialog;
 
+    ImageView settingsButton;
+
     AlertDialog.Builder choiceBuilder;
 
     //public static final String app_id = "ca-app-pub-9334007634623344~4718773124";
@@ -95,8 +100,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
         videoAd = MobileAds.getRewardedVideoAdInstance(this);
 
         videoAd.setRewardedVideoAdListener(MyProfileActivity.this);
-
-        loadRewardedAd();
 
         RelativeLayout layout = (RelativeLayout)findViewById(R.id.layout);
 
@@ -126,8 +129,58 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
         detailsPhone = (TextView)findViewById(R.id.detailsPhone);
 
+        settingsButton = (ImageView)findViewById(R.id.settingsButton);
 
         ConnectionDetector connectionDetector = new ConnectionDetector(this);
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PopupMenu popupMenu = new PopupMenu(MyProfileActivity.this, v);
+
+                MenuInflater inflater = popupMenu.getMenuInflater();
+
+                inflater.inflate(R.menu.settings_menu, popupMenu.getMenu());
+
+                popupMenu.show();
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if(item.getItemId() == R.id.settingsProfile){
+
+                            // Open settings
+                            Intent settingsIntent = new Intent(MyProfileActivity.this ,SettingsActivity.class);
+                            startActivity(settingsIntent);
+
+                            return true;
+                        }
+                        else if(item.getItemId() == R.id.logoutProfile){
+
+                            new AlertDialog.Builder(MyProfileActivity.this)
+                                    .setTitle("Log out?")
+                                    .setMessage("Are you sure you want to log out")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            ParseUser.logOut();
+                                            Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            startActivity(loginIntent);
+                                        }
+                                    })
+                                    .setNegativeButton("No", null)
+                                    .show();
+                            return true;
+                        }
+
+                        return false;
+                    }
+                });
+            }
+        });
 
 
         if (connectionDetector.checkConnection() == false) {
@@ -163,6 +216,8 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
                         if (objects.size() > 0) {
 
                             for (ParseUser object : objects) {
+
+                                loadRewardedAd();
 
                                 dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
                                 monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
@@ -265,7 +320,7 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
         }
         else{
 
-            Toast.makeText(this, "Sorry your ad has not loaded yet, pleas try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sorry your ad has not loaded yet, please try again", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -294,8 +349,7 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     @Override
     public void onRewardedVideoStarted() {
-        Toast.makeText(getBaseContext(),
-                "Ad started.", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -350,8 +404,7 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        Toast.makeText(getBaseContext(),
-                "Ad failed to load.", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

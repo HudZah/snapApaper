@@ -41,8 +41,7 @@
                 android:text="Select your exam paper"
                 android:textColor="@color/black"
                 android:textSize="28sp"
-                android:textAllCaps="true"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif"
                 android:paddingBottom="40dp"/>
 
             <TextView
@@ -98,6 +97,7 @@
                 android:layout_height="55dp"
                 android:singleLine="true"
                 android:layout_marginBottom="15dp"
+                android:hint="Enter your exam code"
                 />
 
 
@@ -130,7 +130,8 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="51dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/roundedbutton"
+                android:backgroundTint="@color/headings"
                 android:onClick="search"
                 android:text="Search"
                 android:textColor="@color/textColor"

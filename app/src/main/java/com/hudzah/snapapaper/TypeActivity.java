@@ -3,9 +3,11 @@ package com.hudzah.snapapaper;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,18 +15,24 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,11 +48,15 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.hudzah.snapapaper.MainActivity.packageSelected;
 
 public class TypeActivity extends AppCompatActivity {
 
@@ -94,6 +106,37 @@ public class TypeActivity extends AppCompatActivity {
 
     ParseQuery<ParseUser> query;
 
+    Boolean singlePaper;
+
+    ImageView closeOverlay;
+
+    TextView yearTextView;
+
+    Button downloadDuo;
+
+    Button downloadFullSet;
+
+    Button downloadMultipleYears;
+
+    Button dropdownButtonFullSet;
+
+    Button dropdownButtonMultipleYears;
+
+    LinearLayout linearFullSet;
+
+    LinearLayout linearMultipleYears;
+
+    CardView cardViewFullSet;
+
+    CardView cardViewManyPerYear;
+
+    Dialog multipleDownload;
+
+    String pdfUrlPart;
+
+    ParseObject papersObject;
+;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +150,9 @@ public class TypeActivity extends AppCompatActivity {
         ImageView helpText = (ImageView) findViewById(R.id.helpText);
 
         TextView textCode = (TextView) findViewById(R.id.textCode);
+
+        multipleDownload = new Dialog(this);
+
 
         userCode = (EditText) findViewById(R.id.paperCode);
 
@@ -332,7 +378,7 @@ public class TypeActivity extends AppCompatActivity {
 
                             paperCodeMs = paperCode.replace("_qp_", "_ms_");
 
-                            String pdfUrlPart = MainActivity.examCodesMap.get(splitText[0]);
+                            pdfUrlPart = MainActivity.examCodesMap.get(splitText[0]);
 
                             if (pdfUrlPart != null) {
 
@@ -360,8 +406,6 @@ public class TypeActivity extends AppCompatActivity {
 
                                 choiceBuilder = new AlertDialog.Builder(this);
 
-                                // add a list
-
                                 String[] items = getResources().getStringArray(R.array.choice_names_for_type);
 
                                 choiceBuilder.setCancelable(true);
@@ -370,34 +414,80 @@ public class TypeActivity extends AppCompatActivity {
 
                                 String[] papersToDownload = {paperCode, paperCodeMs};
                                 String[] urlsToDownload = {pdfUrl, pdfUrlMs};
+
                                 choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         if (which == 0) {
-                                            isQp = true;
-                                            isMs = false;
-                                            value = 1;
-                                            decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+
+
+                                            String[] array = {"Download Question Paper", "Download Mark Scheme"};
+
+                                            new AlertDialog.Builder(TypeActivity.this)
+                                                    .setItems(array, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                            singlePaper = true;
+
+                                                            if (which == 0) {
+
+                                                                isQp = true;
+                                                                isMs = false;
+                                                                value = 1;
+                                                                decreaseLimit(value);
+                                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                            } else if (which == 1) {
+
+                                                                isQp = false;
+                                                                isMs = true;
+                                                                value = 1;
+                                                                decreaseLimit(value);
+                                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                            }
+                                                        }
+                                                    }).show();
+
+                                            dialog.dismiss();
+
                                         } else if (which == 1) {
-                                            isQp = false;
-                                            isMs = true;
-                                            value = 1;
-                                            decreaseLimit(value);
-                                            downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+
+                                            singlePaper = false;
+
+                                            if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                                                isQp = true;
+                                                isMs = true;
+                                                value = 2;
+
+                                                showMultipleDownloads(which, urlsToDownload, papersToDownload, isQp, isMs, codeText);
+                                                dialog.dismiss();
+
+                                            } else {
+
+                                                new AlertDialog.Builder(TypeActivity.this)
+                                                        .setTitle("Sorry you need a better package to use this")
+                                                        .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                                                        .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                                Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                                                startActivity(pricingIntent);
+                                                            }
+                                                        })
+                                                        .setNegativeButton("Not now", null)
+                                                        .create()
+                                                        .show();
+
+                                                dialog.dismiss();
+                                            }
+
+                                            // FIXME: 1/31/2020
                                         } else if (which == 2) {
-                                            isQp = true;
-                                            isMs = true;
-                                            value = 2;
 
-                                            if(value <= dailyRemaining){
-                                                decreaseLimit(value);
-                                                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
-                                            }
-                                            else{
-
-                                                Snackbar.make(view, "Required limit to download this is " + value, Snackbar.LENGTH_LONG).show();
-                                            }
+                                            Intent listIntent = new Intent(getApplicationContext(), MyListActivity.class);
+                                            startActivity(listIntent);
                                         }
 
                                     }
@@ -406,6 +496,7 @@ public class TypeActivity extends AppCompatActivity {
 
                             }
                         }
+
                     } else {
 
                         Snackbar.make(view, "Code is not valid, please enter a valid code", Snackbar.LENGTH_LONG).show();
@@ -480,6 +571,7 @@ public class TypeActivity extends AppCompatActivity {
                 if (downloadFile.exists()) {
 
                     Snackbar.make(layout, "File already exists", Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(this, fileName + " already exists", Toast.LENGTH_SHORT).show();
                 } else {
 
                     try {
@@ -490,15 +582,10 @@ public class TypeActivity extends AppCompatActivity {
                         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                         request.setMimeType("application/pdf");
 
-                        if (fileName == paperCode) {
 
-                            request.setTitle(paperCode);
-                            request.setDescription("SnapAPaper");
-                        } else if (fileName == paperCodeMs) {
+                        request.setTitle(fileName);
+                        request.setDescription("snapApaper");
 
-                            request.setTitle(paperCodeMs);
-                            request.setDescription("SnapAPaper");
-                        }
                         request.allowScanningByMediaScanner();
 
                         request.setVisibleInDownloadsUi(true);
@@ -511,7 +598,25 @@ public class TypeActivity extends AppCompatActivity {
 
                         Toast.makeText(this, "Downloading : " + fileName + ".pdf", Toast.LENGTH_LONG).show();
 
-                        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                        papersObject = new ParseObject("Papers");
+
+
+                        String[] finalUrlsToDownload = urlsToDownload;
+
+                        for(int c = 0; c < urlsToDownload.length; c++ ) {
+
+                            papersObject.put("username", ParseUser.getCurrentUser().getUsername());
+                            papersObject.put("paper", fileName);
+                            papersObject.saveInBackground();
+
+                        }
+
+
+                        if(finalUrlsToDownload.length <= 2 && singlePaper) {
+
+                            registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                        }
+
 
 
                     } catch (Exception e) {
@@ -520,9 +625,17 @@ public class TypeActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+
+                    }
+
                 }
+            if(!singlePaper){
+
+                Intent listIntent = new Intent(TypeActivity.this, MyListActivity.class);
+                startActivity(listIntent);
 
             }
+
 
         }
 
@@ -533,73 +646,23 @@ public class TypeActivity extends AppCompatActivity {
         public void onReceive(Context ctxt, Intent intent) {
 
 
+
+
             if(isQp && isMs) {
 
                 openPdf(paperCode);
                 openPdf(paperCodeMs);
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCode);
 
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCodeMs);
-
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
-
-                            openPdf(paperCode);
-                            openPdf(paperCodeMs);
-                        }
-                        else{
-
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-                object.saveInBackground();
-            }else if(!isQp && isMs){
+            }
+            else if(!isQp && isMs){
 
                 openPdf(paperCodeMs);
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCodeMs);
-
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
-
-                            openPdf(paperCodeMs);
-                        }
-                        else{
-
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
 
             else if(isQp && !isMs){
 
                 openPdf(paperCode);
-                object.put("username", ParseUser.getCurrentUser().getUsername());
-                object.put("paper", paperCode);
-                object.put("paper", paperCode);
 
-                object.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e == null){
-
-                            openPdf(paperCode);
-                        }
-                        else{
-
-                            Toast.makeText(ctxt, "Error in saving file", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
 
         }
@@ -636,7 +699,348 @@ public class TypeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void showMultipleDownloads(int which, String[] urlsToDownload, String[] papersToDownload, Boolean isQp, Boolean isMs, String examCode){
 
+
+
+        multipleDownload.setContentView(R.layout.overlay_multiple_papers);
+
+        // Download Buttons
+        downloadDuo = (Button) multipleDownload.findViewById(R.id.downloadDuo);
+        downloadFullSet = (Button)multipleDownload.findViewById(R.id.downloadFullSet);
+        downloadMultipleYears = (Button)multipleDownload.findViewById(R.id.downloadMultipleYears);
+
+        // Dropdown Buttons
+
+        dropdownButtonFullSet = (Button)multipleDownload.findViewById(R.id.dropdownButtonFullSet);
+        dropdownButtonMultipleYears = (Button)multipleDownload.findViewById(R.id.dropdownButtonMultipleYears);
+
+        // Linear layouts
+
+        linearFullSet = (LinearLayout)multipleDownload.findViewById(R.id.linearFullSet);
+        linearMultipleYears = (LinearLayout)multipleDownload.findViewById(R.id.linearMultipleYears);
+
+        // Card Views
+
+        cardViewFullSet = (CardView)multipleDownload.findViewById(R.id.cardViewFullSet);
+        cardViewManyPerYear = (CardView)multipleDownload.findViewById(R.id.cardViewManyPerYear);
+
+        // Spinners
+
+        Spinner spinnerNumberOfPapers= (Spinner) multipleDownload.findViewById(R.id.spinnerNumberOfPapers);
+        Spinner spinnerTypeOfPaperFullSet = (Spinner) multipleDownload.findViewById(R.id.spinnerTypeOfPaperFullSet);
+
+        Spinner spinnerFromYear = (Spinner)multipleDownload.findViewById(R.id.spinnerFromYear);
+        Spinner spinnerToYear = (Spinner)multipleDownload.findViewById(R.id.spinnerToYear);
+        Spinner spinnerTypeOfPaperMultipleYears = (Spinner) multipleDownload.findViewById(R.id.spinnerTypeOfPaperMultipleYears);
+
+        closeOverlay = (ImageView) multipleDownload.findViewById(R.id.closeOverlay);
+        yearTextView = (TextView)multipleDownload.findViewById(R.id.yearTextView);
+
+        yearTextView.setText("For " + examCode);
+
+        closeOverlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                multipleDownload.dismiss();
+            }
+        });
+
+        multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        multipleDownload.show();
+
+        dropdownButtonFullSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(linearFullSet.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewFullSet, new AutoTransition());
+                    linearFullSet.setVisibility(View.VISIBLE);
+                    dropdownButtonFullSet.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewFullSet);
+                    linearFullSet.setVisibility(View.GONE);
+                    dropdownButtonFullSet.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+        dropdownButtonMultipleYears.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(linearMultipleYears.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewManyPerYear, new AutoTransition());
+                    linearMultipleYears.setVisibility(View.VISIBLE);
+                    dropdownButtonMultipleYears.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewManyPerYear);
+                    linearMultipleYears.setVisibility(View.GONE);
+                    dropdownButtonMultipleYears.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+
+        downloadDuo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int val = 2;
+
+                if(val <= dailyRemaining){
+                    decreaseLimit(val);
+                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, val);
+                }
+                else{
+
+                    Snackbar.make(layout, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        downloadFullSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
+
+                    String vale = String.valueOf(spinnerNumberOfPapers.getSelectedItem());
+
+                    int val = Integer.parseInt(vale);
+
+                    if(val == 0) {
+
+                        Snackbar.make(linearFullSet, "Please select a valid number of papers", Snackbar.LENGTH_LONG).show();
+
+                        if(linearFullSet.getVisibility() == View.GONE){
+
+                            TransitionManager.beginDelayedTransition(cardViewFullSet, new AutoTransition());
+                            linearFullSet.setVisibility(View.VISIBLE);
+                            dropdownButtonFullSet.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                        }
+
+
+                    }
+                    else if(val > 0){
+
+                        if (val <= dailyRemaining) {
+                            //decreaseLimit(val);
+                            Log.i("Worked", paperCode);
+
+                            // 9701_w16_qp_42
+
+                            String[] splitCode = paperCode.split("_");
+                            String splitVariant = splitCode[3].substring(1, 2);
+                            Log.i("Worked", splitVariant);
+                            String[] filenamesFullSet = new String[val];
+                            String[] urlsToDownloadFullSet = new String[val];
+                            String paperType = splitCode[2];
+
+
+                            if(spinnerTypeOfPaperFullSet.getSelectedItemPosition() == 0){
+
+                                paperType = "_qp_";
+                                Log.i("Worked", "Question");
+                                Boolean isQp = true;
+                                Boolean isMs = false;
+
+
+                            }
+                            else{
+
+                                paperType = "_ms_";
+                                Log.i("Worked", "Mark");
+                                Boolean isQp = false;
+                                Boolean isMs = true;
+
+                            }
+
+
+
+                            for(int i = 1; i < val + 1; i++){
+
+                                String paperNumber = i + splitVariant;
+                                Log.i("Worked", paperNumber);
+
+                                String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
+
+                                filenamesFullSet[i -1] = newPaperCode;
+
+                                String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
+
+                                urlsToDownloadFullSet[i -1] = newPdfUrl;
+
+                                Log.i("Worked", Arrays.toString(filenamesFullSet) + "Paper codes are " + Arrays.toString(urlsToDownloadFullSet));
+                            }
+
+                            multipleDownload.dismiss();
+                            decreaseLimit(val);
+                            downloadPdf(0, urlsToDownloadFullSet, filenamesFullSet, isQp, isMs, val);
+
+                        } else {
+
+                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                }
+                else{
+
+                    new AlertDialog.Builder(TypeActivity.this)
+                            .setTitle("Sorry you need a better package to use this")
+                            .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                            .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                    startActivity(pricingIntent);
+                                }
+                            })
+                            .setNegativeButton("Not now", null)
+                            .create()
+                            .show();
+                }
+            }
+        });
+
+        downloadMultipleYears.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(packageSelected.equals("Premium")) {
+
+                    if (packageSelected.equals("Premium")) {
+
+                        int fromYear = Integer.parseInt(spinnerFromYear.getSelectedItem().toString());
+
+                        int toYear = Integer.parseInt(spinnerToYear.getSelectedItem().toString());
+
+                        int val = (toYear - fromYear);
+
+
+                        if (val <= 0) {
+
+                            Snackbar.make(linearFullSet, "Please select a valid number of papers", Snackbar.LENGTH_LONG).show();
+
+                            if (linearMultipleYears.getVisibility() == View.GONE) {
+
+                                TransitionManager.beginDelayedTransition(cardViewManyPerYear, new AutoTransition());
+                                linearMultipleYears.setVisibility(View.VISIBLE);
+                                dropdownButtonMultipleYears.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+
+                                // 2018, 2017, 2016, 2015, 2014
+
+                            }
+
+                        } else {
+
+                            if (val <= dailyRemaining) {
+
+                                Log.i("ArraySize", String.valueOf(val));
+
+                                String[] filenamesMultiple = new String[val + 1];
+
+                                String[] splitCode = paperCode.split("_");
+
+                                String paperSeason = splitCode[1].substring(0, 1); //w
+
+                                String paperYear = splitCode[1].substring(1); //16
+
+                                String paperType = splitCode[2];
+
+                                String[] urlsToDownloadMultiple = new String[val + 1];
+                                // 9701_w16_qp_42
+
+                                if (spinnerTypeOfPaperMultipleYears.getSelectedItemPosition() == 0) {
+
+                                    paperType = "_qp_";
+                                    Log.i("Worked", "Question");
+                                    Boolean isQp = true;
+                                    Boolean isMs = false;
+
+
+                                } else {
+
+                                    paperType = "_ms_";
+                                    Log.i("Worked", "Mark");
+                                    Boolean isQp = false;
+                                    Boolean isMs = true;
+
+                                }
+
+                                int nextYear = fromYear;
+
+                                for (int i = 0; i < val + 1; i++) {
+
+                                    //paperYears[i] = String.valueOf(nextYear).substring(2);
+                                    String newPaperYear = paperSeason + nextYear;
+
+                                    newPaperYear = paperSeason + newPaperYear.substring(3);
+
+                                    Log.i("PaperYear", newPaperYear);
+
+                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + splitCode[3];
+
+                                    filenamesMultiple[i] = newPaperCode;
+
+                                    String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
+
+                                    urlsToDownloadMultiple[i] = newPdfUrl;
+
+                                    nextYear = nextYear + 1;
+
+                                }
+
+                                Log.i("Years", Arrays.toString(filenamesMultiple) + " and urls are " + Arrays.toString(urlsToDownloadMultiple));
+
+                                multipleDownload.dismiss();
+                                decreaseLimit(val);
+                                downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
+
+                            }
+                            else{
+
+                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }
+
+
+                }
+                else{
+
+                    new AlertDialog.Builder(TypeActivity.this)
+                            .setTitle("Sorry you need a better package to use this")
+                            .setMessage("Would you like to upgrade to Premium to unlock this feature?")
+                            .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                    startActivity(pricingIntent);
+                                }
+                            })
+                            .setNegativeButton("Not now", null)
+                            .create()
+                            .show();
+
+                }
+
+
+            }
+        });
+
+
+    }
 
 }
 

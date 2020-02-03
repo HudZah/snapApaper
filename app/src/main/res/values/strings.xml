@@ -45,9 +45,9 @@
 
     <string-array name="choice_names_for_type">
 
-        <item>Download question paper</item>
-        <item>Download mark scheme</item>
-        <item>Download both</item>
+        <item>Download Single Paper</item>
+        <item>Download Multiple Papers</item>
+        <item>My Papers</item>
     </string-array>
 
 
