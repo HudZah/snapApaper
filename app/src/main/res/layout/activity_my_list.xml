@@ -7,66 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MyListActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your List"
-                android:textSize="35sp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:textColor="@color/black"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="20dp"/>
-
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="10dp"
-                android:hint="Search"/>
-
-            <TextView
-                android:id="@+id/emptyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="visible"
-                android:fontFamily="sans-serif-medium"
-                android:text="Wow Much Empty \n >_>"
-                android:textAlignment="center"
-                android:textSize="32sp"
-                android:textColor="#CACACA"
-                android:layout_marginTop="120dp"/>
-
-
-
-                <ListView
-                android:id="@+id/listView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text"
-                    android:visibility="gone"/>
-
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
-
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -75,6 +15,69 @@
         android:background="@color/colorAccent"
         android:backgroundTint="@color/colorAccent"
         android:minHeight="?attr/actionBarSize" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="28sp"
+            android:text="Much Empty"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#707070"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_below="@id/textV"
+            android:visibility="gone"
+            android:src="@drawable/papericongrey"
+            android:id="@+id/paperIcon"/>
+
+
+
+
+    </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginRight="32dp"
+        app:fabSize="normal"
+        android:src="@drawable/ic_camera_alt_black_24dp"
+        android:id="@+id/fab"
+        />
+
+
 
 
 </RelativeLayout>

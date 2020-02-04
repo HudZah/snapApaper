@@ -3,9 +3,12 @@ package com.hudzah.snapapaper;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -28,7 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.common.internal.IAccountAccessor;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.api.Distribution;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -38,6 +45,7 @@ import com.parse.ParseUser;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,12 +56,8 @@ import static com.hudzah.snapapaper.MainActivity.todayDate;
 
 public class MyListActivity extends AppCompatActivity {
 
-    ListView listView;
-
     static ArrayAdapter<String> arrayAdapter;
-
-    ArrayList<String> arrayList;
-
+    
     String key;
 
     CharSequence ago;
@@ -70,8 +74,23 @@ public class MyListActivity extends AppCompatActivity {
 
     String paperSelected;
 
+    private static final String TAG = "MyListActivity";
+
     EditText search;
 
+    private RecyclerView recyclerView;
+
+    private RecyclerViewAdapter adapter;
+
+    private RecyclerView.LayoutManager layoutManager;
+
+    ArrayList<ListItem> listItems;
+
+    TextView emptyView;
+
+    ImageView paperIcon;
+
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +107,24 @@ public class MyListActivity extends AppCompatActivity {
 
         view = (RelativeLayout)findViewById(R.id.view);
 
-        TextView emptyText = (TextView)findViewById(R.id.emptyText);
+        listItems = new ArrayList<>();
 
-        search = (EditText)findViewById(R.id.search);
+        emptyView = (TextView) findViewById(R.id.textV);
+
+        paperIcon = (ImageView) findViewById(R.id.paperIcon);
+
+        paperIcon.setVisibility(View.GONE);
+
+        emptyView.setVisibility(View.GONE);
+
+        fab = (FloatingActionButton)findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabOnClick();
+            }
+        });
 
 
         // add back arrow to toolbar
@@ -99,130 +133,7 @@ public class MyListActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        listView = (ListView)findViewById(R.id.listView);
 
-        arrayList = new ArrayList<String>();
-
-        arrayAdapter = new ArrayAdapter<>(MyListActivity.this, android.R.layout.simple_list_item_1, arrayList);
-
-        search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                (MyListActivity.this).arrayAdapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
-            }
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.i("Paper deets" ,arrayList.get(position));
-
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
-
-                if(file.exists()){
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
-                }
-                else{
-
-                    Snackbar.make(view, "Paper may have been deleted or moved", Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                choiceBuilder = new AlertDialog.Builder(MyListActivity.this);
-
-                paperSelected = arrayList.get(position);
-
-                String[] items = getResources().getStringArray(R.array.paper_options);
-                choiceBuilder.setTitle("Select an option for \n" + arrayList.get(position));
-                choiceBuilder.setCancelable(true);
-                choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (which == 0) {
-
-                            // Share
-                            share(position);
-                        } else if (which == 1) {
-
-                            // Are you sure you want to Dialog
-                            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
-                            Log.i("FilePath", String.valueOf(file));
-                            arrayList.remove(position);
-                            arrayAdapter.notifyDataSetChanged();
-
-                            // remove from db
-
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Papers");
-                            query.whereEqualTo("paper", paperSelected);
-                            query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-                            query.findInBackground(new FindCallback<ParseObject>() {
-                                @Override
-                                public void done(List<ParseObject> objects, ParseException e) {
-                                    if (e == null) {
-
-                                        if (objects.size() > 0) {
-
-                                            for (ParseObject object : objects) {
-
-                                                object.deleteInBackground();
-                                                Log.i("Database paper", "Deleted");
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-
-                            if (file.exists()) {
-
-                                file.delete();
-                            }
-
-                        } else if (which == 2) {
-
-                            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
-
-                            Date creationDate = new Date(file.lastModified());
-
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-                            new AlertDialog.Builder(MyListActivity.this)
-                                    .setTitle("Details for " + arrayList.get(position))
-                                    .setMessage("File was created on \n\n" + sdf.format(creationDate))
-                                    .setPositiveButton("OK", null)
-                                    .setNegativeButton("No", null)
-                                    .show();
-                        }
-                    }
-                }); choiceBuilder.show();
-
-
-                return true;
-            }
-        });
 
         if(connectionDetector.checkConnection()) {
 
@@ -242,20 +153,48 @@ public class MyListActivity extends AppCompatActivity {
 
                             for (ParseObject object : objects) {
 
-                                listView.setVisibility(View.VISIBLE);
-                                emptyText.setVisibility(View.GONE);
-                                Log.i("Paper", "" + object.getString("paper"));
-                                arrayList.add(object.getString("paper"));
-                                Log.i("Paper", arrayList.get(0));
+                                Log.d(TAG, "done: preparing items");
+
+
+                                listItems.add(new ListItem(object.getString("subject"), object.getString("paper"),object.getString("examLevel")));
+
+
+                                recyclerView = findViewById(R.id.recycler_view);
+                                layoutManager = new LinearLayoutManager(MyListActivity.this);
+                                adapter = new RecyclerViewAdapter(listItems);
+
+                                recyclerView.setLayoutManager(layoutManager);
+                                recyclerView.setAdapter(adapter);
+                                adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void OnItemClick(int position) {
+
+                                        openPdf(position);
+                                    }
+
+                                    @Override
+                                    public void OnDeleteClick(int position) {
+
+                                        deleteItem(position);
+                                    }
+
+                                    @Override
+                                    public void OnLongClick(int position) {
+                                        fileOptions(position);
+                                    }
+                                });
 
 
                             }
-                            arrayAdapter.notifyDataSetChanged();
 
+                        }
+                        else{
+
+                            emptyView.setVisibility(View.VISIBLE);
+                            paperIcon.setVisibility(View.VISIBLE);
                         }
                     }
 
-                    listView.setAdapter(arrayAdapter);
                     loadingDialog.dismissDialog();
                 }
             });
@@ -277,9 +216,34 @@ public class MyListActivity extends AppCompatActivity {
             Log.i("Internet", "Not connected");
         }
 
-
-
     }
+
+    public void openPdf(int position){
+
+        listItems.get(position).openPdf(position, MyListActivity.this, recyclerView);
+    }
+
+    public void deleteItem(int position){
+
+        listItems.get(position).deleteFile(position, MyListActivity.this);
+
+        listItems.remove(position);
+
+        adapter.notifyItemRemoved(position);
+    }
+
+    public void fileOptions(int position){
+
+        listItems.get(position).fileOptions(position, MyListActivity.this);
+    }
+
+    public void fabOnClick(){
+
+        Intent cameraIntent = new Intent(MyListActivity.this, MainActivity.class);
+        startActivity(cameraIntent);
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -291,37 +255,5 @@ public class MyListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void share(int position){
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), arrayList.get(position) + ".pdf");
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-
-                final String AUTHORITY = view.getContext().getPackageName() + ".fileprovider";
-
-                Uri contentUri = FileProvider.getUriForFile(view.getContext(), AUTHORITY, file);
-
-                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                shareIntent.setType("application/pdf");
-                view.getContext().startActivity(Intent.createChooser(shareIntent, "Share audio via"));
-
-            } else {
-
-                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-                Uri fileUri = Uri.parse(file.getAbsolutePath());
-
-                shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                shareIntent.setType("application/pdf");
-                view.getContext().startActivity(Intent.createChooser(shareIntent, "Share audio via"));
-
-            }
-        }
-        catch (Exception e){
-
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
 }

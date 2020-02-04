@@ -56,7 +56,6 @@
 
     <string-array name="paper_options">
         <item>Share</item>
-        <item>Delete</item>
         <item>Details</item>
     </string-array>
 

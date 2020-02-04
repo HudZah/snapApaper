@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     Boolean singlePaper;
 
+    String subjectName;
+
+    String examLevelFull;
+
 
     public static final String KEY_TASK = "key_task";
 
@@ -1029,6 +1033,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     pdfUrlPart = examCodesMap.get(splitText[0]);
 
+                    subjectName = examCodesMap.get(splitText[0]);
+
                     if (pdfUrlPart != null) {
 
                         Log.i("pdfUrlPart", pdfUrlPart);
@@ -1040,12 +1046,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (Integer.valueOf(splitText[0]) > 8000) {
 
                             examLevel = "A%20Levels";
+                            examLevelFull = "A Level";
                         } else if (Integer.valueOf(splitText[0]) < 1000) {
 
                             examLevel = "IGCSE";
+                            examLevelFull = "IGCSE";
                         } else {
 
                             examLevel = "O%20Levels";
+                            examLevelFull = "O Level";
                         }
 
                         pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
@@ -1287,6 +1296,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             papersObject.put("username", ParseUser.getCurrentUser().getUsername());
                             papersObject.put("paper", fileName);
+                            papersObject.put("subject", subjectName);
+                            papersObject.put("examLevel", examLevelFull);
                             papersObject.saveInBackground();
 
                         }

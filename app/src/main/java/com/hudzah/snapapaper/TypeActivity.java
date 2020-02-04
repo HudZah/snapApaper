@@ -135,7 +135,10 @@ public class TypeActivity extends AppCompatActivity {
     String pdfUrlPart;
 
     ParseObject papersObject;
-;
+
+    String subjectName;
+
+    String examLevelFull;
 
 
     @Override
@@ -152,7 +155,6 @@ public class TypeActivity extends AppCompatActivity {
         TextView textCode = (TextView) findViewById(R.id.textCode);
 
         multipleDownload = new Dialog(this);
-
 
         userCode = (EditText) findViewById(R.id.paperCode);
 
@@ -379,6 +381,7 @@ public class TypeActivity extends AppCompatActivity {
                             paperCodeMs = paperCode.replace("_qp_", "_ms_");
 
                             pdfUrlPart = MainActivity.examCodesMap.get(splitText[0]);
+                            subjectName = MainActivity.examCodesMap.get(splitText[0]);
 
                             if (pdfUrlPart != null) {
 
@@ -390,12 +393,15 @@ public class TypeActivity extends AppCompatActivity {
                                 if (Integer.valueOf(splitText[0]) > 8000) {
 
                                     examLevel = "A%20Levels";
+                                    examLevelFull = "A Level";
                                 } else if (Integer.valueOf(splitText[0]) < 1000) {
 
                                     examLevel = "IGCSE";
+                                    examLevelFull = "IGCSE";
                                 } else {
 
                                     examLevel = "O%20Levels";
+                                    examLevelFull = "O level";
                                 }
 
                                 pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
@@ -607,6 +613,8 @@ public class TypeActivity extends AppCompatActivity {
 
                             papersObject.put("username", ParseUser.getCurrentUser().getUsername());
                             papersObject.put("paper", fileName);
+                            papersObject.put("subject", subjectName);
+                            papersObject.put("examLevel", examLevelFull);
                             papersObject.saveInBackground();
 
                         }
