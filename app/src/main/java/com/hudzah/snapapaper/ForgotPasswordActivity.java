@@ -19,11 +19,22 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     Button resetPasswordButton;
     EditText passwordEmail;
     TextView errorTextView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,30 +52,39 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                 String email = passwordEmail.getText().toString().trim();
 
-                if(email.equals("")){
+                if(email.matches("^(.+)@(.+)$")){
 
-                    errorTextView.setText("Please enter a valid email");
+                    sendEmail();
+
                 }
                 else{
 
-                   ParseUser.requestPasswordResetInBackground("chiefhudhayfa@gmail.com", new RequestPasswordResetCallback() {
-                       @Override
-                       public void done(ParseException e) {
+                    errorTextView.setText("Please enter a valid email");
 
-                           if(e == null){
 
-                               Toast.makeText(ForgotPasswordActivity.this, "An email was sent to your email address to reset your password", Toast.LENGTH_SHORT).show();
-
-                           }
-                           else{
-                                Log.i("error", e.getMessage());
-
-                               errorTextView.setText("Please enter a valid email address");
-                           }
-                       }
-                   });
+//                   ParseUser.requestPasswordResetInBackground("chiefhudhayfa@gmail.com", new RequestPasswordResetCallback() {
+//                       @Override
+//                       public void done(ParseException e) {
+//
+//                           if(e == null){
+//
+//                               Toast.makeText(ForgotPasswordActivity.this, "An email was sent to your email address to reset your password", Toast.LENGTH_SHORT).show();
+//
+//                           }
+//                           else{
+//                                Log.i("error", e.getMessage());
+//
+//                               errorTextView.setText("Please enter a valid email address");
+//                           }
+//                       }
+//                   });
                 }
             }
         });
     }
+
+
 }
+
+
+

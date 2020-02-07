@@ -715,7 +715,7 @@ public class TypeActivity extends AppCompatActivity {
                         paperCode = paperCode + "w" + examYear;
                     }
 
-                    if(Integer.parseInt(paperNumberEditText.getText().toString()) < 10){
+                    if(Integer.parseInt(paperNumberEditText.getText().toString()) <  10){
 
                         paperNumber = paperNumberEditText.getText().toString().substring(1);
                         Log.i("YearBelow", "Year below 2009 is " + splitText[1]);

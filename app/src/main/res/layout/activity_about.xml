@@ -65,7 +65,7 @@
                     android:text="Created early January by Hudhayfa Zaheem. Being in charge of all programming and UI design. By my side my cousin helped me with certain posters that really bring out that fun, playful and colourful vibe into this app."
                     android:textColor="@color/black"
                     android:textAlignment="center"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     />
 
                 <TextView
@@ -76,7 +76,9 @@
                     android:paddingBottom="5dp"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:paddingTop="5dp"
+                    android:textAlignment="center"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingRight="12dp"
                     android:paddingLeft="12dp"

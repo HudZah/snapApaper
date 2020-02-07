@@ -55,6 +55,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -131,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String pdfUrl;
 
     Dialog multipleDownload;
+
+    Dialog help;
 
     ParseObject papersObject;
 
@@ -314,6 +317,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         textureView = findViewById(R.id.view_finder);
 
         multipleDownload = new Dialog(this);
+
+        help = new Dialog(this);
 
         paperCode = "";
 
@@ -1139,6 +1144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         dialog.dismiss();
 
                                     }
+
                                     else{
 
                                         new AlertDialog.Builder(MainActivity.this)
@@ -1173,6 +1179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
 
                             }
+
 
                         }).show();
 
@@ -1502,9 +1509,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void help(View view){
 
+        showHelpDialog();
+
+    }
+
+    public void showHelpDialog(){
+
+
+        help.setContentView(R.layout.overlay_help);
+
+        ImageView closeOverlay = (ImageView) help.findViewById(R.id.closeOverlay);
+
         Log.i(LOG_TAG, "Help");
-        Intent helpIntent = new Intent(this,HelpActivity.class);
-        startActivity(helpIntent);
+
+        closeOverlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                help.dismiss();
+            }
+        });
+
+        help.show();
     }
 
     @Override

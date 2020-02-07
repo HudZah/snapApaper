@@ -18,7 +18,6 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".HelpActivity" />
         <activity android:name=".TypeActivity" />
         <activity android:name=".MyProfileActivity" />
         <activity android:name=".PricingActivity" />

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/closeOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_black_24dp"
+            android:layout_alignParentRight="true"
+            android:elevation="5dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="12dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp">
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="How To Use snapApaper"
+                        android:textSize="22sp"
+                        android:layout_marginLeft="25dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/headings"/>
+
+                    <TextView
+                        android:id="@+id/yearTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:layout_marginLeft="25dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="10dp"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewDuo"
+                        android:layout_width="match_parent"
+                        android:background="@color/textColor"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:gravity="center"
+                        android:paddingBottom="5dp"
+                        app:cardCornerRadius="10dp"
+                        android:layout_weight="0.4"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:clickable="true">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Scan Code"
+                                android:textColor="@color/headings"
+                                android:textSize="26sp"
+                                android:paddingTop="10dp"
+                                android:paddingLeft="12dp"
+                                android:fontFamily="sans-serif-medium"/>
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                android:textAlignment="center"
+                                android:src="@drawable/scanimage"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginBottom="10dp"/>
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="To start using snapApaper, there are 3 ways to finding your paper code. The first way would be to use the camera and capture a picture of your exam code found on your exam paper.\n\n Keep your phone steady and focus the camera, once it is clear enough, capture and wait for us to recognize code. \n\n If you don't have a past paper to scan, you can always type a code or search for a specific paper by clicking the 'Keyboard' icon next to the capture button"
+                                android:textColor="@color/black"
+                                android:textSize="14sp"
+                                android:layout_marginLeft="12dp"
+                                android:paddingBottom="10dp"/>
+
+
+
+
+
+
+                        </LinearLayout>
+
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewFullSet"
+                        android:layout_width="match_parent"
+                        android:background="@color/textColor"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:gravity="center"
+                        android:paddingBottom="5dp"
+                        app:cardCornerRadius="10dp"
+                        android:layout_weight="0.4"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:clickable="true">
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Select Papers"
+                                        android:textColor="@color/headings"
+                                        android:textSize="26sp"
+                                        android:paddingTop="10dp"
+                                        android:paddingLeft="12dp"
+                                        android:fontFamily="sans-serif-medium"/>
+
+
+
+                                </LinearLayout>
+
+
+                                <TextView
+
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Once your code has been successfully scanned, you will be give an option to select what papers you would like to download.\n\nFor free users they can only download one paper at a time, that is the question or mark paper.\n\nIf you have Plus or Premium you can download multiple papers at once. Under multiple papers there are 3 choices. Download Duo which allows a user to download both the question and mark scheme.\n\nUnder Download Full Set, you can download all papers of that year and session, this is available for Plus and Premium.\n\nLastly with Download Multiple Years, you can download your selected paper for a range of years, this is available ONLY for Premium.\n\nNote depending on the number of papers downloaded your limit decreases by that amount. If you download 10 years of one paper, your limit is decremented by 10."
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:layout_marginLeft="12dp"
+                                    android:paddingBottom="10dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardViewManyPerYear"
+                        android:layout_width="match_parent"
+                        android:background="@color/textColor"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:gravity="center"
+                        android:paddingBottom="5dp"
+                        app:cardCornerRadius="10dp"
+                        android:layout_weight="0.4"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:clickable="true">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="View Your Papers"
+                                        android:textColor="@color/headings"
+                                        android:textSize="26sp"
+                                        android:paddingTop="10dp"
+                                        android:paddingLeft="12dp"
+                                        android:fontFamily="sans-serif-medium"/>
+
+
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:paddingRight="3dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Once your paper has completed downloading, it will automatically be added to your list, if the paper already exists it will not be added. In your list you can delete certain papers, which will delete them off your device and from your list.\n\nYou can also Share a paper to a friend by holding down on a specific paper and selecting Share."
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp"
+                                    android:layout_marginLeft="12dp"
+                                    android:paddingBottom="10dp"/>
+
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+
+
+
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+    </RelativeLayout>
+
+</ScrollView>
