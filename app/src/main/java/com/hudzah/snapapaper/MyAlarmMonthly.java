@@ -1,5 +1,8 @@
 package com.hudzah.snapapaper;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +20,8 @@ public class MyAlarmMonthly extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         try{
+
+
 
             ParseQuery<ParseUser> query = ParseUser.getQuery();
             query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());

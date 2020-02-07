@@ -160,6 +160,20 @@
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold"/>
 
+
+
     </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linear1"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-medium"
+        android:textAlignment="center"
+        android:text="A HudZah Production"
+        android:textColor="@color/headings" />
 
 </RelativeLayout>

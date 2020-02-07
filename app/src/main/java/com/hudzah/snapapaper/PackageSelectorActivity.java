@@ -20,6 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
 
@@ -60,6 +61,13 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
         parseSave(packageSelected);
 
+    }
+
+    public void plusOnClick(View view){
+
+        String packageSelected = "Plus";
+
+        parseSave(packageSelected);
     }
 
     @Override
@@ -107,20 +115,10 @@ public class PackageSelectorActivity extends AppCompatActivity {
             }
         });
 
-        cardViewPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Purchase
-                String packageSelected = "Plus";
-
-                parseSave(packageSelected);
-
-            }
-        });
-
 
     }
+
+
 
     public void parseSave(String packageSelected) {
 
@@ -128,6 +126,8 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
             Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_LONG).show();
         } else {
+
+            Log.i("PackageSelected", packageSelected);
 
             userQuery.findInBackground(new FindCallback<ParseUser>() {
                 @Override
@@ -141,17 +141,25 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
                                 loadingDialog.startLoadingDialog();
 
-                                ParseUser.logOut();
-
                                 Log.i("User is", object.getUsername());
                                 object.put("package", packageSelected);
-                                object.saveInBackground();
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if(e == null){
+
+                                            Log.i("Saved", "Saved Package");
+                                        }
+                                        else{
+                                            Log.i("Error", e.getMessage());
+                                        }
+                                    }
+                                });
 
                                 if(packageSelected.equals("Free")){
 
                                     object.put("dailyRemaining", "5");
                                     object.put("monthlyRemaining", "30");
-                                    object.put("package", packageSelected);
                                     object.saveInBackground();
 
                                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -160,11 +168,10 @@ public class PackageSelectorActivity extends AppCompatActivity {
                                     startActivity(loginIntent);
                                 }
 
-                                if (packageSelected.equals("Plus")) {
+                                else if (packageSelected.equals("Plus")) {
 
                                     object.put("dailyRemaining", "10");
                                     object.put("monthlyRemaining", "60");
-                                    object.put("package", packageSelected);
                                     object.saveInBackground();
 
                                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -176,7 +183,6 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
                                     object.put("dailyRemaining", "20");
                                     object.put("monthlyRemaining", "120");
-                                    object.put("package", packageSelected);
                                     object.saveInBackground();
 
                                     Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);

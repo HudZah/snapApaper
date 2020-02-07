@@ -28,6 +28,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,9 +51,12 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,8 +71,6 @@ public class TypeActivity extends AppCompatActivity {
     String codeText;
 
     String text;
-
-    RelativeLayout layout;
 
     String[] splitText;
 
@@ -140,6 +142,48 @@ public class TypeActivity extends AppCompatActivity {
 
     String examLevelFull;
 
+    Button typeCodeButtonDropDown;
+
+    Button searchCodeButtonDropDown;
+
+    LinearLayout typeCodeLayout;
+
+    LinearLayout searchCodeLayout;
+
+    CardView cardViewType;
+
+    CardView cardViewSearch;
+
+    RelativeLayout layout;
+
+    EditText paperNumberEditText;
+
+    Spinner spinnerExamLevel;
+
+    Spinner spinnerSubject;
+
+    Spinner spinnerSession;
+
+    Spinner spinnerYear;
+
+    ArrayList<String> arrayListAL;
+
+    ArrayList<String> arrayListOL;
+
+    ArrayList<String> arrayListIG;
+
+    String selectedExamLevel;
+
+    String entryKey;
+
+    String entryValue;
+
+    ArrayAdapter<String> arrayAdapterSubject;
+
+    String selectedExamCode;
+
+    String paperNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,9 +212,79 @@ public class TypeActivity extends AppCompatActivity {
 
         connectionDetector = new ConnectionDetector(this);
 
-        layout = (RelativeLayout)findViewById(R.id.view);
+        layout = (RelativeLayout)findViewById(R.id.layout);
 
         Intent intent = getIntent();
+
+        typeCodeButtonDropDown = (Button) findViewById(R.id.typeCodeButton);
+
+        searchCodeButtonDropDown = (Button)findViewById(R.id.searchCodeButton);
+
+        typeCodeLayout = (LinearLayout)findViewById(R.id.typeCodeLayout);
+
+        searchCodeLayout = (LinearLayout)findViewById(R.id.searchCodeLayout);
+
+        cardViewType = (CardView) findViewById(R.id.cardViewType);
+
+        cardViewSearch = (CardView)findViewById(R.id.cardViewSearch);
+
+        paperNumberEditText = (EditText)findViewById(R.id.paperNumberEditText);
+
+        spinnerExamLevel = (Spinner)findViewById(R.id.spinnerExamLevel);
+
+        spinnerSubject = (Spinner)findViewById(R.id.spinnerSubject);
+
+        spinnerSession = (Spinner)findViewById(R.id.spinnerSession);
+
+        spinnerYear = (Spinner)findViewById(R.id.spinnerYear);
+
+        ArrayAdapter<CharSequence> arrayAdapterSpinner = ArrayAdapter.createFromResource(this, R.array.exam_level_spinner, android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerExamLevel.setAdapter(arrayAdapterSpinner);
+
+        ArrayAdapter<CharSequence> arrayAdapterSession = ArrayAdapter.createFromResource(this, R.array.session_spinner_cambridge, android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerSession.setAdapter(arrayAdapterSession);
+
+        ArrayAdapter<CharSequence> arrayAdapterYear = ArrayAdapter.createFromResource(this, R.array.years_spinner, android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerYear.setAdapter(arrayAdapterYear);
+
+        HashMap<String, String> examCodesMap = (HashMap<String, String>) MainActivity.examCodesMap;
+
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        ArrayList<String> examCodesArrayList = new ArrayList<String>();
+
+        for(Map.Entry<String, String> entry : examCodesMap.entrySet()) {
+
+            entryKey = entry.getKey();
+            entryValue = entry.getValue();
+
+            arrayList.add(entryValue);
+            examCodesArrayList.add(entryKey);
+
+
+        }
+
+        spinnerSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedExamCode = examCodesArrayList.get(position);
+                Log.i("ExamCodeSelected", selectedExamCode);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        ArrayAdapter<String> arrayAdapterSubject = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayList);
+        spinnerSubject.setAdapter(arrayAdapterSubject);
+
 
         todayDate = getDateFromFormat("dd-MM-yyyy");
         currentMonth = getDateFromFormat("MM-yyyy");
@@ -206,7 +320,43 @@ public class TypeActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        TextView redirect = (TextView) findViewById(R.id.redirect);
+        typeCodeButtonDropDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(typeCodeLayout.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewType, new AutoTransition());
+                    typeCodeLayout.setVisibility(View.VISIBLE);
+                    typeCodeButtonDropDown.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewType);
+                    typeCodeLayout.setVisibility(View.GONE);
+                    typeCodeButtonDropDown.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+        searchCodeButtonDropDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(searchCodeLayout.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewSearch, new AutoTransition());
+                    searchCodeLayout.setVisibility(View.VISIBLE);
+                    searchCodeButtonDropDown.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewSearch);
+                    searchCodeLayout.setVisibility(View.GONE);
+                    searchCodeButtonDropDown.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
 
         userCode.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -214,7 +364,20 @@ public class TypeActivity extends AppCompatActivity {
 
                 if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
 
-                    search(v);
+                    typeToFind(v);
+                }
+
+                return false;
+            }
+        });
+
+        paperNumberEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
+
+                    searchToFind(v);
                 }
 
                 return false;
@@ -229,16 +392,6 @@ public class TypeActivity extends AppCompatActivity {
             }
         });
 
-        redirect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(TypeActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
-
-//                Intent searchIntent = new Intent(getApplicationContext(), SearchActivity.class);
-//                startActivity(searchIntent);
-            }
-        });
 
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,7 +472,7 @@ public class TypeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void search(View view) {
+    public void typeToFind(View view) {
 
         String paperCodeBefore = userCode.getText().toString();
         Log.i(LOG_TAG, paperCodeBefore);
@@ -356,6 +509,11 @@ public class TypeActivity extends AppCompatActivity {
                             // Splits into 9709, 42, F, M, 19
                             // Splits into 9709, 42, M, J, 19
                             // Splits into 9709, 42, O, N, 19
+
+                            if(Integer.parseInt(splitText[1]) < 10){
+                                splitText[1] = splitText[1].substring(1);
+                                Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+                            }
 
 
                             paperCode = splitText[0] + "_";
@@ -517,6 +675,193 @@ public class TypeActivity extends AppCompatActivity {
         else{
 
             Snackbar.make(view, "You have reached your daily limit", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    public void searchToFind(View view){
+
+        if(paperNumberEditText.getText().toString().isEmpty() || paperNumberEditText.getText().length() != 2){
+
+            Snackbar.make(view, "Please enter a valid paper number that is 2 digits", Snackbar.LENGTH_LONG).show();
+        }
+        else{
+
+            if(dailyRemaining > 0) {
+
+                if (monthlyRemaining > 0) {
+
+                    String examLevel = spinnerExamLevel.getSelectedItem().toString();
+
+                    paperCode = selectedExamCode + "_";
+
+                    String examYear = spinnerYear.getSelectedItem().toString().substring(2);
+
+                    Log.i("Session", spinnerSession.getSelectedItem().toString());
+
+
+
+
+                    if (spinnerSession.getSelectedItem().toString().equals("Feb/Mar")) {
+
+                        paperCode = paperCode + "m" + examYear;
+
+                    } else if (spinnerSession.getSelectedItem().toString().equals("May/Jun")) {
+
+                        paperCode = paperCode + "s" + examYear;
+
+                    } else if (spinnerSession.getSelectedItem().toString().equals("Oct/Nov")) {
+
+
+                        paperCode = paperCode + "w" + examYear;
+                    }
+
+                    if(Integer.parseInt(paperNumberEditText.getText().toString()) < 10){
+
+                        paperNumber = paperNumberEditText.getText().toString().substring(1);
+                        Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+                    }
+
+                    else{
+
+                        paperNumber = paperNumberEditText.getText().toString();
+                    }
+
+                    paperCodeMs = paperCode + "_ms_" + paperNumber;
+
+                    paperCode = paperCode + "_qp_" + paperNumber;
+
+                    pdfUrlPart = MainActivity.examCodesMap.get(selectedExamCode);
+                    subjectName = MainActivity.examCodesMap.get(selectedExamCode);
+
+                    if (pdfUrlPart != null) {
+
+                        pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+
+                        Log.i(LOG_TAG, "Exam subject name: " + pdfUrlPart);
+
+
+                        if (Integer.valueOf(selectedExamCode) > 8000) {
+
+                            examLevel = "A%20Levels";
+                            examLevelFull = "A Level";
+                        } else if (Integer.valueOf(selectedExamCode) < 1000) {
+
+                            examLevel = "IGCSE";
+                            examLevelFull = "IGCSE";
+                        } else {
+
+                            examLevel = "O%20Levels";
+                            examLevelFull = "O level";
+                        }
+
+                        pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
+
+                        pdfUrlMs = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCodeMs + ".pdf";
+
+                        Log.i(LOG_TAG, pdfUrl + "MS IS " + pdfUrlMs);
+
+                        choiceBuilder = new AlertDialog.Builder(this);
+
+                        String[] items = getResources().getStringArray(R.array.choice_names_for_type);
+
+                        choiceBuilder.setCancelable(true);
+                        choiceBuilder.setTitle("Select an option for \n" + paperCode);
+                        //choiceBuilder.setMessage("Choose an option");
+
+                        String[] papersToDownload = {paperCode, paperCodeMs};
+                        String[] urlsToDownload = {pdfUrl, pdfUrlMs};
+
+                        choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (which == 0) {
+
+
+                                    String[] array = {"Download Question Paper", "Download Mark Scheme"};
+
+                                    new AlertDialog.Builder(TypeActivity.this)
+                                            .setItems(array, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    singlePaper = true;
+
+                                                    if (which == 0) {
+
+                                                        isQp = true;
+                                                        isMs = false;
+                                                        value = 1;
+                                                        decreaseLimit(value);
+                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                    } else if (which == 1) {
+
+                                                        isQp = false;
+                                                        isMs = true;
+                                                        value = 1;
+                                                        decreaseLimit(value);
+                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
+                                                    }
+                                                }
+                                            }).show();
+
+                                    dialog.dismiss();
+
+                                } else if (which == 1) {
+
+                                    singlePaper = false;
+
+                                    if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                                        isQp = true;
+                                        isMs = true;
+                                        value = 2;
+
+                                        showMultipleDownloads(which, urlsToDownload, papersToDownload, isQp, isMs, paperCode);
+                                        dialog.dismiss();
+
+                                    } else {
+
+                                        new AlertDialog.Builder(TypeActivity.this)
+                                                .setTitle("Sorry you need a better package to use this")
+                                                .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                                                .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                                        startActivity(pricingIntent);
+                                                    }
+                                                })
+                                                .setNegativeButton("Not now", null)
+                                                .create()
+                                                .show();
+
+                                        dialog.dismiss();
+                                    }
+
+                                    // FIXME: 1/31/2020
+                                } else if (which == 2) {
+
+                                    Intent listIntent = new Intent(getApplicationContext(), MyListActivity.class);
+                                    startActivity(listIntent);
+                                }
+
+                            }
+
+                        }).show();
+
+                    }
+                }else{
+
+                    Snackbar.make(view, "You have reached your monthly limit", Snackbar.LENGTH_LONG).show();
+                }
+            }else{
+
+                Snackbar.make(view, "You have reached your daily     limit", Snackbar.LENGTH_LONG).show();
+            }
+
+
+            Log.i("PaperCodeForSearch", paperCode + paperCodeMs);
         }
     }
 
@@ -695,16 +1040,23 @@ public class TypeActivity extends AppCompatActivity {
 
     public void openPdf(String fileName){
 
-        Log.i(LOG_TAG, "Open");
+        try {
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
+            Log.i(LOG_TAG, "Open");
 
-        Log.i("pdf file name", fileName + ".pdf");
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
+            Log.i("pdf file name", fileName + ".pdf");
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
+        catch (Exception e){
+
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void showMultipleDownloads(int which, String[] urlsToDownload, String[] papersToDownload, Boolean isQp, Boolean isMs, String examCode){

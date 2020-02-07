@@ -24,28 +24,28 @@
         />
 
     <item
-        android:id="@+id/item_f"
+        android:id="@+id/item_c"
         android:title="Find a paper"
         android:checkable="true"
         android:icon="@drawable/ic_search_black_24dp"
         />
 
     <item
-        android:id="@+id/item_c"
+        android:id="@+id/item_d"
         android:title="Pricing"
         android:checkable="true"
         android:icon="@drawable/ic_monetization_on_black_24dp"
         />
 
     <item
-        android:id="@+id/item_d"
+        android:id="@+id/item_e"
         android:title="Log out"
         android:checkable="true"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         />
 
     <item
-        android:id="@+id/item_e"
+        android:id="@+id/item_f"
         android:title="About us"
         android:checkable="true"
         android:icon="@drawable/ic_info_outline_black_24dp"

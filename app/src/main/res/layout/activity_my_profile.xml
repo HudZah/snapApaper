@@ -28,19 +28,18 @@
             >
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_margin="9dp"
                 android:paddingLeft="3dp"
-                android:text="╰ (◕ヮ◕)つ"
                 android:textStyle="bold"
+                android:src="@drawable/profileiconmdpi"
                 android:textSize="50sp"
                 android:gravity="center"
                 android:adjustViewBounds="true"
                 android:textColor="@color/black"
                 android:scaleType="fitCenter"/>
-            <!--                android:background="@drawable/circle"-->
 
         </RelativeLayout>
 
@@ -546,7 +545,19 @@
 
                     </LinearLayout>
 
+
+
                 </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:textColor="@color/headings"
+                    android:layout_gravity="center_horizontal"
+                    android:text="A HudZah Production"/>
 
             </LinearLayout>
 

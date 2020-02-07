@@ -704,11 +704,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(listIntent);
                 break;
             case R.id.item_c:
-                Intent pricingIntent = new Intent(this,PricingActivity.class);
-                startActivity(pricingIntent);
+                Intent typeIntent = new Intent(this, TypeActivity.class);
+                startActivity(typeIntent);
+
                 break;
             case R.id.item_d:
-                // log out
+                Intent pricingIntent = new Intent(this,PricingActivity.class);
+                startActivity(pricingIntent);
+
+                break;
+            case R.id.item_e:
+
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Log out?")
                         .setMessage("Are you sure you want to log out")
@@ -723,16 +729,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         })
                         .setNegativeButton("No", null)
                         .show();
-                break;
-            case R.id.item_e:
 
+
+                break;
+
+            case R.id.item_f:
                 Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
                 break;
 
-            case R.id.item_f:
-                Intent typeIntent = new Intent(this, TypeActivity.class);
-                startActivity(typeIntent);
 
         }
 
@@ -992,6 +997,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 paperCode = splitText[0] + "_";
 
                 Log.i("Test value", splitText[0] + splitText[1]  + splitText[2] + splitText[3] + splitText[4]);
+
+                if(Integer.parseInt(splitText[1]) < 10){
+                    splitText[1] = splitText[1].substring(1);
+                    Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+                }
+
 
                 if(splitText[2].equals("F")){
 

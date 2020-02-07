@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/roundedbutton"
-            android:hint="Email eg: idontwantit@jonsnow.com"
+            android:hint="Email"
             android:inputType="textEmailAddress"
             android:paddingLeft="20dp"
             android:layout_marginBottom="20dp"
