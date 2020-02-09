@@ -27,8 +27,8 @@
 
     <string name="app_id">5a1022e40970e3190aacdf0164e9b96a862b2144</string>
 
-    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="ad_unit_id">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="admob_app_id">ca-app-pub-9334007634623344~4718773124</string>
+    <string name="ad_unit_id">ca-app-pub-9334007634623344/5447554958</string>
 
 
     <!-- Change the following strings as required -->
@@ -49,8 +49,6 @@
         <item>Download Multiple Papers</item>
         <item>My Papers</item>
     </string-array>
-
-
 
 
 </resources>

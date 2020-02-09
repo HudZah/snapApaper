@@ -14,14 +14,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.List;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
@@ -123,8 +128,13 @@ public class LoginActivity extends AppCompatActivity {
         }
         else{
 
+//            ParseObject userChanges = new ParseObject("UserChanges");
 
-            ParseUser.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(), new LogInCallback() {
+
+            String username = usernameEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+
+            ParseUser.logInInBackground(username,  password, new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
 
@@ -134,14 +144,16 @@ public class LoginActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.putExtra("username", usernameEditText.getText().toString());
+                        intent.putExtra("username", username);
                         startActivity(intent);
+
                     } else {
 
                         errorTextView.setText(e.getMessage());
                     }
                 }
             });
+
 
             loadingDialog.dismissDialog();
 

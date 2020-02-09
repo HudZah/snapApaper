@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PaperDetailsActivity"></activity>
+        <activity android:name=".ChangePasswordActivity"></activity>
+        <activity android:name=".EnterCodeActivity" />
+        <activity android:name=".PaperDetailsActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".PackageSelectorActivity" />
         <activity android:name=".SignupActivity" />
@@ -46,41 +48,33 @@
             android:value="@string/client_key" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <provider
-            android:authorities="${applicationId}.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-
         </provider>
 
-        <receiver android:name=".MyAlarmDaily"
-
+        <receiver
+            android:name=".MyAlarmDaily"
             android:enabled="true"
             android:exported="true" />
-
-        <receiver android:name=".MyAlarmMonthly"
+        <receiver
+            android:name=".MyAlarmMonthly"
             android:enabled="true"
-            android:exported="true"/>
-
+            android:exported="true" />
     </application>
-
-
-
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

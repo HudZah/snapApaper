@@ -141,6 +141,8 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
                                 loadingDialog.startLoadingDialog();
 
+                                ParseUser.logOut();
+
                                 Log.i("User is", object.getUsername());
                                 object.put("package", packageSelected);
                                 object.saveInBackground(new SaveCallback() {

@@ -217,7 +217,7 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
                             for (ParseUser object : objects) {
 
-                                loadRewardedAd();
+
 
                                 dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
                                 monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
@@ -267,6 +267,8 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
                                     packageName.setText("Premium");
                                 }
                             }
+
+                            loadRewardedAd();
 
                             loadingDialog.dismissDialog();
                         }
@@ -320,7 +322,9 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
         }
         else{
 
-            Toast.makeText(this, "Sorry your ad has not loaded yet, please try again", Toast.LENGTH_SHORT).show();
+
+
+            Toast.makeText(this, "Your ad is loading", Toast.LENGTH_SHORT).show();
         }
 
     }

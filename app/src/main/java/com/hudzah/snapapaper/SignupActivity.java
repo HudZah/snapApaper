@@ -106,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
 
                                 loadingDialog.startLoadingDialog();
 
-
+                                ParseUser.logOut();
 
                                 user = new ParseUser();
 
