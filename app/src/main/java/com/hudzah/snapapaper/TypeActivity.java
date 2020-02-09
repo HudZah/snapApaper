@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
@@ -183,6 +184,8 @@ public class TypeActivity extends AppCompatActivity {
     String selectedExamCode;
 
     String paperNumber;
+
+    TextView multipleYearsText;
 
 
     @Override
@@ -1096,6 +1099,7 @@ public class TypeActivity extends AppCompatActivity {
 
         closeOverlay = (ImageView) multipleDownload.findViewById(R.id.closeOverlay);
         yearTextView = (TextView)multipleDownload.findViewById(R.id.yearTextView);
+        multipleYearsText = (TextView) multipleDownload.findViewById(R.id.multipleYearsText);
 
         yearTextView.setText("For " + examCode);
 
@@ -1108,6 +1112,16 @@ public class TypeActivity extends AppCompatActivity {
 
         multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         multipleDownload.show();
+
+        if(packageSelected.equals("Plus")){
+
+
+            cardViewManyPerYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
+            downloadMultipleYears.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#c2c2c2")));
+            multipleYearsText.setTextColor(Color.parseColor("#ababab"));
+            downloadMultipleYears.setTextColor(Color.parseColor("#666666"));
+
+        }
 
         dropdownButtonFullSet.setOnClickListener(new View.OnClickListener() {
             @Override

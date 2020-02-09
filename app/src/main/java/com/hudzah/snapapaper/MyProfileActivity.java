@@ -3,12 +3,15 @@ package com.hudzah.snapapaper;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Preview;
+import androidx.core.content.FileProvider;
 import androidx.preference.PreferenceManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuInflater;
@@ -288,7 +291,28 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
             @Override
             public void onClick(View v) {
 
-                // Nothing for now
+                String text = "Tired of using ad-filled and shady websites to get your past papers? Switch to snapApaper \n link";
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1){
+
+
+                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                    shareIntent.setType("text/plain");
+                    MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                }
+                else{
+
+                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+                    shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                    shareIntent.setType("text/plain");
+                    MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                }
             }
 
         });

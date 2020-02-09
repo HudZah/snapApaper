@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -97,6 +98,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -224,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String subjectName;
 
     String examLevelFull;
+
+    TextView multipleYearsText;
 
 
     public static final String KEY_TASK = "key_task";
@@ -1649,6 +1654,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         closeOverlay = (ImageView) multipleDownload.findViewById(R.id.closeOverlay);
         yearTextView = (TextView)multipleDownload.findViewById(R.id.yearTextView);
+        multipleYearsText = (TextView) multipleDownload.findViewById(R.id.multipleYearsText);
 
         yearTextView.setText("For " + examCode);
 
@@ -1661,6 +1667,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         multipleDownload.show();
+
+        if(packageSelected.equals("Plus")){
+
+
+            cardViewManyPerYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
+            downloadMultipleYears.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#c2c2c2")));
+            multipleYearsText.setTextColor(Color.parseColor("#ababab"));
+            downloadMultipleYears.setTextColor(Color.parseColor("#666666"));
+
+        }
 
         dropdownButtonFullSet.setOnClickListener(new View.OnClickListener() {
             @Override
