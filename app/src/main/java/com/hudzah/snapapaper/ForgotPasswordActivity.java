@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -92,32 +94,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                                     for (ParseUser object : objects) {
 
-                                        List toEmailList = Arrays.asList(email
-                                                .split("\\s*,\\s*"));
+                                        ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
 
-                                        if (email.matches("^(.+)@(.+)$")) {
+                                                if(e == null){
 
-                                            String key = generateKey();
+                                                    Intent intent = new Intent(ForgotPasswordActivity.this, EnterCodeActivity.class);
+                                                    startActivity(intent);
 
-                                            SharedPreferences sharedPreferences = ForgotPasswordActivity.this.getSharedPreferences("com.hudzah.snapapaper", Context.MODE_PRIVATE);
-
-                                            String newline = System.getProperty("line.separator");
-
-                                            sharedPreferences.edit().putString("key", key).apply();
-
-                                            sharedPreferences.edit().putString("email", toEmailList.get(0).toString()).apply();
-
-                                            new SendMailTask(ForgotPasswordActivity.this).execute("snapapaper@gmail.com",
-                                                    "Dinitrophenylhydrazine", toEmailList, "Reset your password for snapApaper", "Hi " + object.getUsername() + "," + System.lineSeparator() + "A password request was requested for your account, your password reset code is " +
-                                                            key + "." + newline + "Enter this key into the app to change your password." + newline +
-                                                            "If you did not request this, please ignore this message. Thank you :) and enjoy using snapApaper! ", getApplicationContext());
-
-                                        } else {
-
-                                            errorTextView.setText("Please enter a valid email");
+                                                }
+                                                else{
 
 
-                                        }
+                                                }
+                                            }
+                                        });
+
                                     }
                                 } else {
 
@@ -149,18 +142,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-    public String generateKey(){
 
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 6) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-    }
 
 
 }

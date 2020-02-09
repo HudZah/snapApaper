@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:textSize="26sp"
-            android:text="Enter your reset password code"
+            android:text="Change your password"
             android:layout_marginTop="50dp"
             android:textColor="@color/black"/>
 
@@ -43,28 +43,18 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textSize="18sp"
-        android:text="An email was sent to your email with a reset code, please type the code here."
+        android:text="An email was sent to your email with a link to reset your password."
         android:layout_marginTop="50dp"
         android:textColor="@color/black"
         android:layout_marginBottom="40dp"/>
 
-    <EditText
-        android:id="@+id/keyEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="45dp"
-        android:layout_marginLeft="45dp"
-        android:maxLength="6"
-        android:hint="Reset Code"
-
-        />
 
     <Button
         android:layout_marginLeft="45dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="Submit Code"
+        android:text="Back to login"
         android:textAllCaps="false"
         android:background="@drawable/roundedbutton"
         android:backgroundTint="@color/headings"

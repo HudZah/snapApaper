@@ -30,10 +30,6 @@ public class EnterCodeActivity extends AppCompatActivity {
 
         submitCodeButton = (Button) findViewById(R.id.submitCodeButton);
 
-        SharedPreferences sharedPreferences = EnterCodeActivity.this.getSharedPreferences("com.hudzah.snapapaper", Context.MODE_PRIVATE);
-
-        keyEditText = (EditText) findViewById(R.id.keyEditText);
-
         errorTextView = (TextView) findViewById(R.id.errorTextView);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
@@ -44,8 +40,15 @@ public class EnterCodeActivity extends AppCompatActivity {
 
                 if(v.getId() == R.id.layout){
 
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    try {
+
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    }
+                    catch (Exception e){
+
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -54,24 +57,11 @@ public class EnterCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String keyFromText = keyEditText.getText().toString();
 
-                String key = sharedPreferences.getString("key", "");
-
-                Log.i("Key", key + " Key from user " + keyFromText);
-
-                if(key.equals(keyFromText)){
-
-                    Intent changePasswordIntent = new Intent(EnterCodeActivity.this, ChangePasswordActivity.class);
-                    startActivity(changePasswordIntent);
-                }
-                else{
-
-                    errorTextView.setText("Incorrect code, please check enter the correct code.");
-                }
+                Intent intent = new Intent(EnterCodeActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
-
 
 
 
