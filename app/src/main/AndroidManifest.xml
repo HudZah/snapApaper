@@ -39,13 +39,13 @@
 
         <meta-data
             android:name="com.parse.SERVER_URL"
-            android:value="@string/server_url" />
+            android:value="@string/back4app_server_url" />
         <meta-data
             android:name="com.parse.APPLICATION_ID"
-            android:value="@string/app_id" />
+            android:value="@string/back4app_app_id" />
         <meta-data
             android:name="com.parse.CLIENT_KEY"
-            android:value="@string/client_key" />
+            android:value="@string/back4app_client_key" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
