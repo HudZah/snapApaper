@@ -80,11 +80,11 @@ public class AboutActivity extends AppCompatActivity {
         try {
             // get the Twitter app if possible
             this.getPackageManager().getPackageInfo("com.twitter.android", 0);
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=1051009170235830272"));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=1227141366809006081"));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } catch (Exception e) {
             // no Twitter app, revert to browser
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/hud_zah"));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/ApaperSnap"));
         }
         this.startActivity(intent);
     }
@@ -120,5 +120,12 @@ public class AboutActivity extends AppCompatActivity {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?" + this.getPackageName())));
         }
+    }
+
+    public void website(View view){
+
+        Intent websiteIntent = new Intent("android.intent.action.VIEW",
+                Uri.parse("https://snapapaper.wixsite.com/snapapaper"));
+        startActivity(websiteIntent);
     }
 }

@@ -513,13 +513,19 @@ public class TypeActivity extends AppCompatActivity {
                             // Splits into 9709, 42, M, J, 19
                             // Splits into 9709, 42, O, N, 19
 
-                            if(Integer.parseInt(splitText[1]) < 10){
-                                splitText[1] = splitText[1].substring(1);
+
+
+                            paperCode = splitText[0] + "_";
+
+                            Log.i("Test value", splitText[0] + splitText[1]  + splitText[2] + splitText[3] + splitText[4]);
+
+                            if(Integer.parseInt(splitText[4]) < 10){
+                                splitText[1] = splitText[1].substring(0,1);
                                 Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
                             }
 
 
-                            paperCode = splitText[0] + "_";
+
 
                             if (splitText[2].equals("F")) {
 
@@ -703,7 +709,6 @@ public class TypeActivity extends AppCompatActivity {
 
 
 
-
                     if (spinnerSession.getSelectedItem().toString().equals("Feb/Mar")) {
 
                         paperCode = paperCode + "m" + examYear;
@@ -718,10 +723,10 @@ public class TypeActivity extends AppCompatActivity {
                         paperCode = paperCode + "w" + examYear;
                     }
 
-                    if(Integer.parseInt(paperNumberEditText.getText().toString()) <  10){
+                    if(Integer.parseInt(examYear) < 10){
 
-                        paperNumber = paperNumberEditText.getText().toString().substring(1);
-                        Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+                        paperNumber = paperNumberEditText.getText().toString().substring(0,1);
+                        Log.i("YearBelow", "Year below 2009 is " + paperNumber);
                     }
 
                     else{
