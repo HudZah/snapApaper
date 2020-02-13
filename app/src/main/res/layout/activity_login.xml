@@ -7,15 +7,16 @@
     android:id="@+id/relativeLayout"
     tools:context=".LoginActivity">
 
-    <TextView
+
+
+    <ImageView
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="45dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:textSize="30sp"
-        android:text="snapApaper"
-        android:layout_marginTop="50dp"
-        android:textColor="@color/headings"/>
+        android:scaleType="centerCrop"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:src="@drawable/finallogo"/>
+
 
     <LinearLayout
         android:id="@+id/linear1"
@@ -175,5 +176,7 @@
         android:textAlignment="center"
         android:text="A HudZah Production"
         android:textColor="@color/headings" />
+
+
 
 </RelativeLayout>
