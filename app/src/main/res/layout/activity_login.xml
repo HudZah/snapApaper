@@ -14,8 +14,8 @@
         android:layout_marginLeft="45dp"
         android:scaleType="centerCrop"
         android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:src="@drawable/finallogo"/>
+        android:layout_height="120dp"
+        android:src="@drawable/finallogomdpi"/>
 
 
     <LinearLayout

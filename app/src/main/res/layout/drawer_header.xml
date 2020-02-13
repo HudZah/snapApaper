@@ -7,43 +7,40 @@
     android:layout_height="200dp"
     android:background="@drawable/profile_bg">
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
 
-        <TextView
-            android:layout_marginLeft="45dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="30sp"
-            android:text="snapApaper"
-            android:layout_marginTop="50dp"
-            android:textColor="@color/black"/>
-
-
-
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/finallogowhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="45dp"
-        android:fontFamily="sans-serif-medium"
-        android:layout_marginTop="10dp"
-        android:text="A HudZah Production"/>
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="45dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher_foreground" />
+        android:text="Production by HudZah"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.421" />
 
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </RelativeLayout>

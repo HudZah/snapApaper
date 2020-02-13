@@ -30,10 +30,10 @@
             android:layout_marginLeft="25dp"
             android:scaleType="centerCrop"
             android:layout_width="200dp"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/finallogo"/>
+            android:src="@drawable/finallogomdpi"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
