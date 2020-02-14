@@ -55,7 +55,7 @@ public class AboutActivity extends AppCompatActivity {
             startActivity(likeIng);
         } catch (ActivityNotFoundException e) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://www.instagram.com/snapapaper_/")));
+                    Uri.parse("https://www.instagram.com/snapapaper.ed/")));
         }
     }
 

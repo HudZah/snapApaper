@@ -1,5 +1,6 @@
 package com.hudzah.snapapaper;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -10,6 +11,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PricingActivity extends AppCompatActivity {
 
@@ -24,6 +38,8 @@ public class PricingActivity extends AppCompatActivity {
     LinearLayout linearPremium;
 
     CardView cardViewPremium;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +65,7 @@ public class PricingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // Purchase
-                String packageSelected = "Plus";
 
-                //parseSave(packageSelected);
 
             }
         });
@@ -120,4 +134,6 @@ public class PricingActivity extends AppCompatActivity {
             dropdownButtonPremium.setBackgroundResource(R.drawable.arrow_bitmap);
         }
     }
+
+
 }

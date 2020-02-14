@@ -141,54 +141,90 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
                                 loadingDialog.startLoadingDialog();
 
-
-
                                 Log.i("User is", object.getUsername());
-                                object.put("package", packageSelected);
-                                object.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if(e == null){
 
-                                            Log.i("Saved", "Saved Package");
-                                        }
-                                        else{
-                                            Log.i("Error", e.getMessage());
-                                        }
-                                    }
-                                });
 
                                 if(!packageSelected.equals("")) {
+
+                                    object.put("package", packageSelected);
+                                    object.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if(e == null){
+
+                                                Log.i("Saved", "Saved Package");
+                                            }
+                                            else{
+                                                Log.i("Error", e.getMessage());
+                                            }
+                                        }
+                                    });
 
                                     if (packageSelected.equals("Free")) {
 
                                         object.put("dailyRemaining", "5");
                                         object.put("monthlyRemaining", "30");
-                                        object.saveInBackground();
+                                        object.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+
+                                                if(e == null){
+
+                                                    changeIntent();
+                                                }
+                                                else{
+
+                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
 
                                         
                                     } else if (packageSelected.equals("Plus")) {
 
                                         object.put("dailyRemaining", "10");
                                         object.put("monthlyRemaining", "60");
-                                        object.saveInBackground();
+                                        object.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
 
+                                                if(e == null){
+
+                                                    changeIntent();
+                                                }else{
+
+                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
 
 
                                     } else if (packageSelected.equals("Premium")) {
 
                                         object.put("dailyRemaining", "20");
                                         object.put("monthlyRemaining", "120");
-                                        object.saveInBackground();
+                                        object.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
 
+                                                if(e == null){
 
+                                                    changeIntent();
+                                                }else{
 
+                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                    else{
+
+                                        Toast.makeText(PackageSelectorActivity.this, "Could not sign up", Toast.LENGTH_SHORT).show();
                                     }
 
                                     ParseUser.logOut();
-                                    Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    Toast.makeText(getApplicationContext(), "Account has been created, login to continue", Toast.LENGTH_LONG).show();
-                                    startActivity(loginIntent);
+
                                 }
 
                                 loadingDialog.dismissDialog();
@@ -201,6 +237,12 @@ public class PackageSelectorActivity extends AppCompatActivity {
         }
     }
 
+    private void changeIntent() {
+
+        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        Toast.makeText(getApplicationContext(), "Account has been created, login to continue", Toast.LENGTH_LONG).show();
+        startActivity(loginIntent);
+    }
 
 
     public void freeDropdown(View view){
