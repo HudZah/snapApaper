@@ -112,9 +112,9 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
         upgradePackage = (RelativeLayout)findViewById(R.id.upgradePackage);
 
-        dailyRemainingTextView = (TextView)findViewById(R.id.dailyRemainingTextView);
-
-        monthlyRemainingTextView = (TextView)findViewById(R.id.monthlyRemainingTextView);
+//        dailyRemainingTextView = (TextView)findViewById(R.id.dailyRemainingTextView);
+//
+//        monthlyRemainingTextView = (TextView)findViewById(R.id.monthlyRemainingTextView);
 
         dailyPackageDetails = (TextView)findViewById(R.id.dailyPackageDetails);
 
@@ -255,18 +255,18 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
                                 if (packageSelected.equals("Free")) {
 
-                                    dailyPackageDetails.setText("5");
-                                    monthlyPackageDetails.setText("30");
+                                    dailyPackageDetails.setText("Unlimited");
+                                    monthlyPackageDetails.setText("Unlimited");
                                     packageName.setText("Free");
                                 } else if (packageSelected.equals("Plus")) {
 
-                                    dailyPackageDetails.setText("10");
-                                    monthlyPackageDetails.setText("60");
+                                    dailyPackageDetails.setText("Unlimited");
+                                    monthlyPackageDetails.setText("Unlimited");
                                     packageName.setText("Plus");
                                 } else if (packageSelected.equals("Premium")) {
 
-                                    dailyPackageDetails.setText("20");
-                                    monthlyPackageDetails.setText("120");
+                                    dailyPackageDetails.setText("Unlimited");
+                                    monthlyPackageDetails.setText("Unlimited");
                                     packageName.setText("Premium");
                                 }
                             }
@@ -331,9 +331,9 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     public void updateRemaining(int dailRemaining, int monthlyRemaining){
 
-        dailyRemainingTextView.setText(dailyRemaining + " more");
-
-        monthlyRemainingTextView.setText(monthlyRemaining + " more");
+//        dailyRemainingTextView.setText(dailyRemaining + " more");
+//
+//        monthlyRemainingTextView.setText(monthlyRemaining + " more");
     }
 
 

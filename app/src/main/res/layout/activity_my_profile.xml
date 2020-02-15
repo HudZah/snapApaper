@@ -359,75 +359,75 @@
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Limit remaining today"
-                android:textColor="@color/headings"
-                android:textSize="16sp" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Limit remaining today"-->
+<!--                android:textColor="@color/headings"-->
+<!--                android:textSize="16sp" />-->
 
-            <TextView
-                android:id="@+id/dailyRemainingTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:text="value"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/dailyRemainingTextView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="sans-serif-light"-->
+<!--                android:text="value"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textSize="16sp" />-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1.5dp"
-                android:layout_marginTop="15dp"
-                android:background="@color/grey" />
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1.5dp"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:background="@color/grey" />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Limit remaining for the month"
-                    android:textColor="@color/headings"
-                    android:textSize="16sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Limit remaining for the month"-->
+<!--                    android:textColor="@color/headings"-->
+<!--                    android:textSize="16sp" />-->
 
-                <TextView
-                    android:id="@+id/monthlyRemainingTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="value"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/monthlyRemainingTextView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="sans-serif-light"-->
+<!--                    android:text="value"-->
+<!--                    android:textColor="#000000"-->
+<!--                    android:textSize="16sp" />-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey"
-                    />
+<!--                <View-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="1.5dp"-->
+<!--                    android:layout_marginTop="15dp"-->
+<!--                    android:background="@color/grey"-->
+<!--                    />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="To extend your limit you can : "
-                android:textColor="@color/headings"
-                android:textSize="18sp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="20dp"
-/>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="To extend your limit you can : "-->
+<!--                android:textColor="@color/headings"-->
+<!--                android:textSize="18sp"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--/>-->
 
             <LinearLayout
                 android:id="@+id/linear2"
@@ -511,6 +511,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:clickable="true"
                     android:id="@+id/upgradePackage"
                     android:layout_width="match_parent"

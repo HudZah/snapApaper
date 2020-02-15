@@ -12,7 +12,9 @@
 
     <string-array name="examboard_spinner">
         <item>Cambridge</item>
-        <item>Edexcel</item>
+        <item>Edexcel (Coming Soon!)</item>
+        <item>AQA (Coming Soon!)</item>
+        <item>Local For SL (Coming Soon!)</item>
     </string-array>
 
     <string-array name="session_spinner_cambridge">

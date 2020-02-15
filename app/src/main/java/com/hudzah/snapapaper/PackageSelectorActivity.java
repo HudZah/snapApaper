@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -100,6 +101,18 @@ public class PackageSelectorActivity extends AppCompatActivity {
         userQuery = ParseUser.getQuery();
         userQuery.whereEqualTo("username", username);
         //userQuery.findInBackground();
+
+        Button continueButton = (Button) findViewById(R.id.continueButton);
+
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ParseUser.logOut();
+
+                changeIntent();
+            }
+        });
 
 
         Log.i("Usermame is", username);

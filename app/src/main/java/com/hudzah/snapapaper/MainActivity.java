@@ -868,9 +868,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     cameraImage.setImageResource(R.drawable.cameraon);
 
-                    if (dailyRemaining > 0) {
+//                    if (dailyRemaining > 0) {
+                    if(1 == 1){
 
-                        if (monthlyRemaining > 0) {
+                        if(1 == 1){
+//                        if (monthlyRemaining > 0) {
 
                             loadingDialog.startLoadingDialog();
 
@@ -1139,7 +1141,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                     singlePaper = false;
 
-                                    if(packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+//                                    if(packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                                    if(1==1){
 
                                         isQp = true;
                                         isMs  = true;
@@ -1668,8 +1672,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         multipleDownload.show();
 
-        if(packageSelected.equals("Plus")){
+//        if(packageSelected.equals("Plus")){
 
+        if(1 == 0){
 
             cardViewManyPerYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
             downloadMultipleYears.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#c2c2c2")));
@@ -1723,14 +1728,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 int val = 2;
 
-                if(val <= dailyRemaining){
-                    decreaseLimit(val);
-                    downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, val);
-                }
-                else{
-
-                    Snackbar.make(textureView, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-                }
+//                if(val <= dailyRemaining){
+                decreaseLimit(val);
+                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, val);
+//                }
+//                else{
+//
+//                    Snackbar.make(textureView, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+//                }
             }
         });
 
@@ -1738,8 +1743,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
+//                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
 
+                if(1 == 1){
                     String vale = String.valueOf(spinnerNumberOfPapers.getSelectedItem());
 
                     int val = Integer.parseInt(vale);
@@ -1759,7 +1765,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     else if(val > 0){
 
-                        if (val <= dailyRemaining) {
+//                        if (val <= dailyRemaining) {
                             //decreaseLimit(val);
                             Log.i("Worked", paperCode);
 
@@ -1813,10 +1819,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             decreaseLimit(val);
                             downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
 
-                        } else {
-
-                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-                        }
+//                        } else {
+//
+//                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+//                        }
                     }
 
                 }
@@ -1844,9 +1850,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                if(packageSelected.equals("Premium")) {
+//                if(packageSelected.equals("Premium")) {
 
-                    if (packageSelected.equals("Premium")) {
+//                    if (packageSelected.equals("Premium")) {
+
+
+                if(1 == 1){
+
+                    if(1 == 1){
 
                         int fromYear = Integer.parseInt(spinnerFromYear.getSelectedItem().toString());
 
@@ -1871,7 +1882,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         } else {
 
-                            if (val <= dailyRemaining) {
+//                            if (val <= dailyRemaining) {
 
                                 Log.i("ArraySize", String.valueOf(val));
 
@@ -1934,11 +1945,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 decreaseLimit(val);
                                 downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
 
-                            }
-                            else{
-
-                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-                            }
+//                            }
+//                            else{
+//
+//                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+//                            }
                         }
 
                     }

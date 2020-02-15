@@ -1,8 +1,10 @@
 package com.hudzah.snapapaper;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.executor.TaskExecutor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -92,75 +94,93 @@ public class SignupActivity extends AppCompatActivity {
 
             String itemSelected = examBoardSpinner.getSelectedItem().toString();
 
-            // Show loading 'Login button collapses to circle and loads'
+            if(itemSelected.equals("Cambridge")) {
 
-            if (usernameEditText.getText().toString().matches("^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$")) {
+                // Show loading 'Login button collapses to circle and loads'
 
-                if (emailEditText.getText().toString().matches("^(.+)@(.+)$")) {
+                if (usernameEditText.getText().toString().matches("^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$")) {
 
-                    if (passwordEditText.getText().toString().length() > 7) {
+                    if (emailEditText.getText().toString().matches("^(.+)@(.+)$")) {
 
-                        if (passwordEditText2.getText().toString().matches(passwordEditText.getText().toString())) {
+                        if (passwordEditText.getText().toString().length() > 7) {
 
-                            if (phoneNumber.getText().toString().length() == 10 || phoneNumber.getText().toString().matches("")) {
+                            if (passwordEditText2.getText().toString().matches(passwordEditText.getText().toString())) {
 
-                                loadingDialog.startLoadingDialog();
+                                if (phoneNumber.getText().toString().length() == 10 || phoneNumber.getText().toString().matches("")) {
 
-                                ParseUser.logOut();
+                                    loadingDialog.startLoadingDialog();
 
-                                user = new ParseUser();
+                                    ParseUser.logOut();
 
-                                user.setUsername(usernameEditText.getText().toString());
-                                user.setPassword(passwordEditText.getText().toString());
-                                user.setEmail(emailEditText.getText().toString());
-                                user.put("phoneNumber", phoneNumber.getText().toString());
-                                user.put("examBoard", itemSelected);
-                                user.put("package", "Free");
-                                user.put("dailyRemaining", "5");
-                                user.put("monthlyRemaining", "30");
+                                    user = new ParseUser();
 
-                                user.signUpInBackground(new SignUpCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
+                                    user.setUsername(usernameEditText.getText().toString());
+                                    user.setPassword(passwordEditText.getText().toString());
+                                    user.setEmail(emailEditText.getText().toString());
+                                    user.put("phoneNumber", phoneNumber.getText().toString());
+                                    user.put("examBoard", itemSelected);
+                                    user.put("package", "Free");
+                                    user.put("dailyRemaining", "5");
+                                    user.put("monthlyRemaining", "30");
 
-                                        if (e == null) {
+                                    user.signUpInBackground(new SignUpCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
 
-                                            // Stop loading
+                                            if (e == null) {
 
-                                            Log.i("Signup", "Successful");
+                                                // Stop loading
 
-                                            Intent packageActivity = new Intent(getApplicationContext(), PackageSelectorActivity.class);
-                                            packageActivity.putExtra("username", usernameEditText.getText().toString());
-                                            packageActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            startActivity(packageActivity);
-                                        } else {
+                                                Log.i("Signup", "Successful");
 
-                                            errorTextView.setText(e.getMessage());
+                                                Intent packageActivity = new Intent(getApplicationContext(), PackageSelectorActivity.class);
+                                                packageActivity.putExtra("username", usernameEditText.getText().toString());
+                                                packageActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(packageActivity);
+                                            } else {
+
+                                                errorTextView.setText(e.getMessage());
+                                            }
+
+                                            loadingDialog.dismissDialog();
                                         }
+                                    });
+                                } else {
 
-                                        loadingDialog.dismissDialog();
-                                    }
-                                });
+                                    errorTextView.setText("Phone number has to be 10 digits long");
+                                }
                             } else {
 
-                                errorTextView.setText("Phone number has to be 10 digits long");
+                                Log.i("password", passwordEditText2.getText().toString() + passwordEditText.getText().toString());
+                                errorTextView.setText("Passwords are not matching");
                             }
                         } else {
 
-                            Log.i("password", passwordEditText2.getText().toString() + passwordEditText.getText().toString());
-                            errorTextView.setText("Passwords are not matching");
+                            errorTextView.setText("Password must be atleast 8 characters in length");
                         }
                     } else {
 
-                        errorTextView.setText("Password must be atleast 8 characters in length");
+                        errorTextView.setText("Email does not match a valid format");
                     }
                 } else {
 
-                    errorTextView.setText("Email does not match a valid format");
+                    errorTextView.setText("Username must be more than 5 and less than 20 characters");
                 }
-            } else {
+            }
+            else{
 
-                errorTextView.setText("Username must be more than 5 and less than 20 characters");
+                new AlertDialog.Builder(SignupActivity.this)
+                        .setTitle("Not Available Yet")
+                        .setMessage("Sorry, " + itemSelected + " is not available yet. Would like to receive updates for when we release snapApaper for " + itemSelected + "?")
+                        .setPositiveButton("Sure!", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                               // Add to email list
+                            }
+                        })
+                        .setNegativeButton("Not now", null)
+                        .show();
             }
 
 

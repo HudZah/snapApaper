@@ -481,9 +481,13 @@ public class TypeActivity extends AppCompatActivity {
         Log.i(LOG_TAG, paperCodeBefore);
 
 
-        if(dailyRemaining > 0){
+//        if(dailyRemaining > 0){
+        if(1 ==1){
 
-            if(monthlyRemaining > 0) {
+            if(1==1){
+
+
+//            if(monthlyRemaining > 0) {
 
                 if (paperCodeBefore.isEmpty()) {
 
@@ -627,7 +631,9 @@ public class TypeActivity extends AppCompatActivity {
 
                                             singlePaper = false;
 
-                                            if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+//                                            if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                                            if(1 == 1){
 
                                                 isQp = true;
                                                 isMs = true;
@@ -695,9 +701,14 @@ public class TypeActivity extends AppCompatActivity {
         }
         else{
 
-            if(dailyRemaining > 0) {
+//            if(dailyRemaining > 0) {
+//////
+//////                if (monthlyRemaining > 0) {
 
-                if (monthlyRemaining > 0) {
+            if(1 == 1){
+
+                if(1 == 1){
+
 
                     String examLevel = spinnerExamLevel.getSelectedItem().toString();
 
@@ -818,7 +829,10 @@ public class TypeActivity extends AppCompatActivity {
 
                                     singlePaper = false;
 
-                                    if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+//                                    if (packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+
+                                    if(1 == 1){
 
                                         isQp = true;
                                         isMs = true;
@@ -1118,7 +1132,9 @@ public class TypeActivity extends AppCompatActivity {
         multipleDownload.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         multipleDownload.show();
 
-        if(packageSelected.equals("Plus")){
+//        if(packageSelected.equals("Plus")){
+
+        if(1 == 0){
 
 
             cardViewManyPerYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
@@ -1188,8 +1204,9 @@ public class TypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
+//                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
 
+                if( 1== 1){
                     String vale = String.valueOf(spinnerNumberOfPapers.getSelectedItem());
 
                     int val = Integer.parseInt(vale);
@@ -1209,7 +1226,10 @@ public class TypeActivity extends AppCompatActivity {
                     }
                     else if(val > 0){
 
-                        if (val <= dailyRemaining) {
+//                        if (val <= dailyRemaining) {
+
+                        if(1 == 1){
+
                             //decreaseLimit(val);
                             Log.i("Worked", paperCode);
 
@@ -1294,9 +1314,14 @@ public class TypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(packageSelected.equals("Premium")) {
+//                if(packageSelected.equals("Premium")) {
 
-                    if (packageSelected.equals("Premium")) {
+                if(1 == 1){
+
+
+//                    if (packageSelected.equals("Premium")) {
+
+                    if(1 == 1){
 
                         int fromYear = Integer.parseInt(spinnerFromYear.getSelectedItem().toString());
 
@@ -1321,7 +1346,10 @@ public class TypeActivity extends AppCompatActivity {
 
                         } else {
 
-                            if (val <= dailyRemaining) {
+//                            if (val <= dailyRemaining) {
+
+                            if( 1 == 1){
+
 
                                 Log.i("ArraySize", String.valueOf(val));
 

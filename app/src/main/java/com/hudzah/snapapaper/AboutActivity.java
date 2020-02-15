@@ -46,7 +46,7 @@ public class AboutActivity extends AppCompatActivity {
 
     public void instagram(View view){
 
-        Uri uri = Uri.parse("http://instagram.com/_u/snapapaper_");
+        Uri uri = Uri.parse("http://instagram.com/_u/snapapaper.ed");
         Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
 
         likeIng.setPackage("com.instagram.android");
@@ -64,7 +64,7 @@ public class AboutActivity extends AppCompatActivity {
 
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"snapapaper@example.com"});
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"snapapaper@gmail.com"});
         i.putExtra(Intent.EXTRA_SUBJECT, "Ask us a question!");
         i.putExtra(Intent.EXTRA_TEXT   , "body of email");
         try {
