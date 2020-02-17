@@ -187,6 +187,8 @@ public class TypeActivity extends AppCompatActivity {
 
     TextView multipleYearsText;
 
+    String newPaperNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1236,7 +1238,17 @@ public class TypeActivity extends AppCompatActivity {
                             // 9701_w16_qp_42
 
                             String[] splitCode = paperCode.split("_");
-                            String splitVariant = splitCode[3].substring(1, 2);
+
+                            String splitVariant = "2";
+
+                            if(Integer.parseInt(splitCode[1].substring(1)) > 10) {
+                                splitVariant = splitCode[3].substring(1, 2);
+
+                            }
+                            else{
+
+                                splitVariant = "";
+                            }
                             Log.i("Worked", splitVariant);
                             String[] filenamesFullSet = new String[val];
                             String[] urlsToDownloadFullSet = new String[val];
@@ -1265,8 +1277,20 @@ public class TypeActivity extends AppCompatActivity {
 
                             for(int i = 1; i < val + 1; i++){
 
-                                String paperNumber = i + splitVariant;
-                                Log.i("Worked", paperNumber);
+                                if(Integer.parseInt(splitCode[1].substring(1)) > 10){
+
+                                    paperNumber = i + splitVariant;
+                                    Log.i("Worked", paperNumber);
+
+                                }
+                                else{
+
+                                    paperNumber = i + "";
+
+//                                    splitCode[3] = splitCode[3].substring(0, 1);
+//                                    Log.i("YearBelow", "Year below 2009 is " + splitCode[3]);
+
+                                }
 
                                 String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
 
@@ -1388,13 +1412,30 @@ public class TypeActivity extends AppCompatActivity {
                                 for (int i = 0; i < val + 1; i++) {
 
                                     //paperYears[i] = String.valueOf(nextYear).substring(2);
+
+                                    Log.i("PaperYear", String.valueOf(nextYear));
+
+                                    if(nextYear < 2010){
+
+
+                                        newPaperNumber = splitCode[3].substring(0,1);
+                                    }
+                                    else{
+
+                                        newPaperNumber = splitCode[3];
+                                    }
+
                                     String newPaperYear = paperSeason + nextYear;
+
+                                    Log.i("PaperYear", newPaperNumber);
 
                                     newPaperYear = paperSeason + newPaperYear.substring(3);
 
                                     Log.i("PaperYear", newPaperYear);
 
-                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + splitCode[3];
+                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + newPaperNumber;
+
+                                    Log.i("PaperYear", newPaperCode);
 
                                     filenamesMultiple[i] = newPaperCode;
 

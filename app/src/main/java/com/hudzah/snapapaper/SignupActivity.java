@@ -15,11 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 public class SignupActivity extends AppCompatActivity {
@@ -169,18 +172,55 @@ public class SignupActivity extends AppCompatActivity {
             }
             else{
 
-                new AlertDialog.Builder(SignupActivity.this)
-                        .setTitle("Not Available Yet")
-                        .setMessage("Sorry, " + itemSelected + " is not available yet. Would like to receive updates for when we release snapApaper for " + itemSelected + "?")
-                        .setPositiveButton("Sure!", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                if (emailEditText.getText().toString().matches("^(.+)@(.+)$")) {
 
-                               // Add to email list
-                            }
-                        })
-                        .setNegativeButton("Not now", null)
-                        .show();
+                    new AlertDialog.Builder(SignupActivity.this)
+                            .setTitle("Not Available Yet")
+                            .setMessage("Sorry, " + itemSelected + " is not available yet. Would like to receive updates for when we release snapApaper for " + itemSelected + "?")
+                            .setPositiveButton("Sure!", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    LoadingDialog loadingDialog = new LoadingDialog(SignupActivity.this);
+
+                                    loadingDialog.startLoadingDialog();
+
+                                    ParseObject object = new ParseObject("ComingSoonList");
+
+                                    object.put("email", emailEditText.getText().toString());
+                                    object.put("examBoard", itemSelected);
+                                    object.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            if(e != null){
+
+                                                Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            else{
+
+                                                loadingDialog.dismissDialog();
+
+                                                new AlertDialog.Builder(SignupActivity.this)
+                                                        .setTitle("Thank You!")
+                                                        .setMessage("Thank you! We will inform you once we release our app for your exam board")
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
+
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("Not now", null)
+                            .show();
+                }
+                else{
+
+                    errorTextView.setText("Email does not match a valid format");
+                }
+
+
             }
 
 

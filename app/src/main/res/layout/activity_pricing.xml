@@ -38,11 +38,12 @@
 
 
             <ImageView
+                android:layout_marginTop="20dp"
                 android:id="@+id/image"
                 android:layout_below="@id/toolbar"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:background="@drawable/snapapaperbgmdpi"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/storeiconmdpi"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"/>

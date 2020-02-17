@@ -230,6 +230,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView multipleYearsText;
 
+    String paperNumber;
+
+    String newPaperNumber;
+
 
     public static final String KEY_TASK = "key_task";
 
@@ -1801,8 +1805,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             for(int i = 1; i < val + 1; i++){
 
-                                String paperNumber = i + splitVariant;
-                                Log.i("Worked", paperNumber);
+                                if(Integer.parseInt(splitCode[1].substring(1)) > 10){
+
+                                    paperNumber = i + splitVariant;
+                                    Log.i("Worked", paperNumber);
+
+                                }
+                                else{
+
+                                    paperNumber = i + "";
+
+//                                    splitCode[3] = splitCode[3].substring(0, 1);
+//                                    Log.i("YearBelow", "Year below 2009 is " + splitCode[3]);
+
+                                }
 
                                 String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
 
@@ -1921,13 +1937,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 for (int i = 0; i < val + 1; i++) {
 
                                     //paperYears[i] = String.valueOf(nextYear).substring(2);
+
+
+                                    if(nextYear < 2010){
+
+
+                                        newPaperNumber = splitCode[3].substring(0,1);
+                                    }
+                                    else{
+
+                                        newPaperNumber = splitCode[3];
+                                    }
                                     String newPaperYear = paperSeason + nextYear;
 
                                     newPaperYear = paperSeason + newPaperYear.substring(3);
 
                                     Log.i("PaperYear", newPaperYear);
 
-                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + splitCode[3];
+                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + newPaperNumber;
 
                                     filenamesMultiple[i] = newPaperCode;
 
