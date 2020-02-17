@@ -190,9 +190,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     CardView cardViewDuo;
 
-    String[] papersToDownload;
+    List<String> papersToDownload;
 
-    String[] urlsToDownload;
+    List<String> urlsToDownload;
 
     ImageView closeOverlay;
 
@@ -233,6 +233,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String paperNumber;
 
     String newPaperNumber;
+
+    CodeSplitter codeSplitter;
+
+    DownloadPdf downloadPdf;
 
 
     public static final String KEY_TASK = "key_task";
@@ -718,7 +722,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(listIntent);
                 break;
             case R.id.item_c:
-                Intent typeIntent = new Intent(this, TypeActivity.class);
+                Intent typeIntent = new Intent(this, MainActivity.class);
                 startActivity(typeIntent);
 
                 break;
@@ -1002,203 +1006,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 preview.enableTorch(false);
                 torchButton.setBackgroundResource(R.drawable.flashofficon);
 
-                splitText = codeText.split("/");
+                String type = "choice_names";
 
-
-                // Splits into 9709, 42, F, M, 19
-                // Splits into 9709, 42, M, J, 19
-                // Splits into 9709, 42, O, N, 19
-
-
-                paperCode = splitText[0] + "_";
-
-                Log.i("Test value", splitText[0] + splitText[1]  + splitText[2] + splitText[3] + splitText[4]);
-
-                if(Integer.parseInt(splitText[1]) < 10){
-                    splitText[1] = splitText[1].substring(1);
-                    Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
-                }
-
-
-                if(splitText[2].equals("F")){
-
-                    paperCode = paperCode + "m" + splitText[4] + "_qp_" + splitText[1];
-
-                }
-                else if(splitText[2].equals("M")){
-
-                    paperCode = paperCode + "s" + splitText[4] + "_qp_" + splitText[1];
-                }
-                else if(splitText[2].equals("O")) {
-
-                    paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
-                }
-                else if(Integer.valueOf(splitText[2]) == 0){
-
-                    paperCode = paperCode + "w" + splitText[4] + "_qp_" + splitText[1];
-                }
-                else{
-
-                    Log.i("paperCode", "Code is none");
-                }
-
-                Log.i("Paper", paperCode);
-
-                Boolean paperCodeValid = Pattern.compile("\\d{4}\\/\\d{2}\\/\\w\\/\\w\\/\\d{2}").matcher(text).find();
-
-                if (paperCodeValid != true){
-
-
-                    Snackbar.make(textureView, "Could not find the past paper, please try again", Snackbar.LENGTH_LONG).show();
-                }
-
-                else {
-
-                    CameraX.unbind(preview);
-
-                    paperCodeMs = paperCode.replace("_qp_", "_ms_");
-
-                    pdfUrlPart = examCodesMap.get(splitText[0]);
-
-                    subjectName = examCodesMap.get(splitText[0]);
-
-                    if (pdfUrlPart != null) {
-
-                        Log.i("pdfUrlPart", pdfUrlPart);
-
-                        pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
-
-                        Log.i("pdfUrlPart", pdfUrlPart);
-
-                        if (Integer.valueOf(splitText[0]) > 8000) {
-
-                            examLevel = "A%20Levels";
-                            examLevelFull = "A Level";
-                        } else if (Integer.valueOf(splitText[0]) < 1000) {
-
-                            examLevel = "IGCSE";
-                            examLevelFull = "IGCSE";
-                        } else {
-
-                            examLevel = "O%20Levels";
-                            examLevelFull = "O Level";
-                        }
-
-                        pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + paperCode + ".pdf";
-
-                        pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
-
-                        Log.i("pdfURl", pdfUrl + "MS IS " + pdfUrlMs);
-
-                        choiceBuilder = new AlertDialog.Builder(this);
-
-                        // add a list
-
-                        String[] items = getResources().getStringArray(R.array.choice_names);
-
-                        choiceBuilder.setCancelable(true);
-                        choiceBuilder.setTitle("Select an option for \n" + codeText);
-                        //choiceBuilder.setMessage("Choose an option");
-
-                        String[] papersToDownload = {paperCode, paperCodeMs};
-                        String[] urlsToDownload = {pdfUrl, pdfUrlMs};
-                        choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                if(which == 0){
-
-
-                                    String[] array = {"Download Question Paper", "Download Mark Scheme"};
-
-                                    new AlertDialog.Builder(MainActivity.this)
-                                            .setItems(array, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-                                                    singlePaper = true;
-
-                                                    if(which == 0){
-
-                                                        isQp = true;
-                                                        isMs = false;
-                                                        value = 1;
-                                                        decreaseLimit(value);
-                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
-                                                    }
-
-                                                    else if(which == 1){
-
-                                                        isQp = false;
-                                                        isMs = true;
-                                                        value = 1;
-                                                        decreaseLimit(value);
-                                                        downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, value);
-                                                    }
-                                                }
-                                            }).show();
-
-                                    dialog.dismiss();
-
-                                }
-
-                                else if(which == 1){
-
-                                    singlePaper = false;
-
-//                                    if(packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
-
-                                    if(1==1){
-
-                                        isQp = true;
-                                        isMs  = true;
-                                        value = 2;
-
-                                        showMultipleDownloads(which, urlsToDownload, papersToDownload, isQp, isMs, codeText);
-                                        dialog.dismiss();
-
-                                    }
-
-                                    else{
-
-                                        new AlertDialog.Builder(MainActivity.this)
-                                                .setTitle("Sorry you need a better package to use this")
-                                                .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
-                                                .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                        Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
-                                                        startActivity(pricingIntent);
-                                                    }
-                                                })
-                                                .setNegativeButton("Not now", null)
-                                                .create()
-                                                .show();
-
-                                        dialog.dismiss();
-                                    }
-
-                                    // FIXME: 1/31/2020
-                                }
-                                else if(which == 2){
-
-                                    Intent listIntent = new Intent(getApplicationContext(), MyListActivity.class);
-                                    startActivity(listIntent);
-                                }
-
-                                else if(which == 3){
-
-                                    startCamera();
-                                }
-
-                            }
-
-
-                        }).show();
-
-                    }
-
-                }
+                showChoices(type);
 
                 startCamera();
             }
@@ -1216,6 +1026,121 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+    }
+
+    public void showChoices(String type){
+
+        choiceBuilder = new AlertDialog.Builder(this);
+
+        String[] items = getResources().getStringArray(R.array.choice_names_for_type);
+
+        codeSplitter = new CodeSplitter(MainActivity.this, codeText);
+        downloadPdf = new DownloadPdf(MainActivity.this, textureView);
+
+
+        if(type.equals("choice_names")) {
+
+            codeSplitter.createCodeForType();
+        }
+
+
+        papersToDownload = codeSplitter.getCodes();
+        urlsToDownload = codeSplitter.getUrls();
+
+        choiceBuilder.setCancelable(true);
+        choiceBuilder.setTitle("Select an option for \n" + codeSplitter.getPaperCode());
+
+        choiceBuilder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                if(which == 0){
+
+                    String[] array = {"Download Question Paper", "Download Mark Scheme"};
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setItems(array, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    singlePaper = true;
+
+                                    if(which == 0){
+
+                                        isQp = true;
+                                        isMs = false;
+                                        value = 1;
+                                        decreaseLimit(value);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                    }
+
+                                    else if(which == 1){
+
+                                        isQp = false;
+                                        isMs = true;
+                                        value = 1;
+                                        decreaseLimit(value);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                    }
+                                }
+                            }).show();
+
+                    dialog.dismiss();
+
+                }
+
+                else if(which == 1){
+
+                    singlePaper = false;
+
+    //                                    if(packageSelected.equals("Plus") || packageSelected.equals("Premium")) {
+
+                    if(1==1){
+
+                        isQp = true;
+                        isMs  = true;
+                        value = 2;
+
+                        showMultipleDownloads(which, urlsToDownload, papersToDownload, isQp, isMs, codeText);
+                        dialog.dismiss();
+
+                    }
+
+                    else{
+
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Sorry you need a better package to use this")
+                                .setMessage("Would you like to upgrade to Plus or Premium to unlock this feature?")
+                                .setPositiveButton("Upgrade", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        Intent pricingIntent = new Intent(getApplicationContext(), PricingActivity.class);
+                                        startActivity(pricingIntent);
+                                    }
+                                })
+                                .setNegativeButton("Not now", null)
+                                .create()
+                                .show();
+
+                        dialog.dismiss();
+                    }
+
+                    // FIXME: 1/31/2020
+                }
+                else if(which == 2){
+
+                    Intent listIntent = new Intent(getApplicationContext(), MyListActivity.class);
+                    startActivity(listIntent);
+                }
+
+                else if(which == 3){
+
+                    startCamera();
+                }
+            }
+        }).show();
     }
 
     public void downloadPdf(int which, String[] urlsToDownload, String[] fileNames, Boolean isQp, Boolean isMs, int value) {
@@ -1419,7 +1344,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
-
 
     private void updateTransform(){
         Matrix mx = new Matrix();
@@ -1625,8 +1549,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void showMultipleDownloads(int which, String[] urlsToDownload, String[] papersToDownload, Boolean isQp, Boolean isMs, String examCode){
-
+    public void showMultipleDownloads(int which, List<String> urlsToDownload, List<String> papersToDownload, Boolean isQp, Boolean isMs, String examCode){
 
 
         multipleDownload.setContentView(R.layout.overlay_multiple_papers);
@@ -1664,6 +1587,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         yearTextView = (TextView)multipleDownload.findViewById(R.id.yearTextView);
         multipleYearsText = (TextView) multipleDownload.findViewById(R.id.multipleYearsText);
 
+
         yearTextView.setText("For " + examCode);
 
         closeOverlay.setOnClickListener(new View.OnClickListener() {
@@ -1679,6 +1603,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        if(packageSelected.equals("Plus")){
 
         if(1 == 0){
+
 
             cardViewManyPerYear.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
             downloadMultipleYears.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#c2c2c2")));
@@ -1733,13 +1658,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 int val = 2;
 
 //                if(val <= dailyRemaining){
-                decreaseLimit(val);
-                downloadPdf(which, urlsToDownload, papersToDownload, isQp, isMs, val);
-//                }
-//                else{
-//
-//                    Snackbar.make(textureView, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-//                }
+
+                if(1 == 1){
+                    decreaseLimit(val);
+                    singlePaper = false;
+                    Boolean isQp = true;
+                    Boolean isMs = true;
+                    Log.i("ArrayPapers", String.valueOf(papersToDownload));
+                    downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+
+                }
+                else{
+
+                    Snackbar.make(textureView, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -1749,8 +1681,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //                if(packageSelected.equals("Premium") || packageSelected.equals("Plus")){
 
-                if(1 == 1){
+
+
+                if( 1== 1){
                     String vale = String.valueOf(spinnerNumberOfPapers.getSelectedItem());
+
 
                     int val = Integer.parseInt(vale);
 
@@ -1770,20 +1705,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     else if(val > 0){
 
 //                        if (val <= dailyRemaining) {
+
+                        if(1 == 1){
+
                             //decreaseLimit(val);
-                            Log.i("Worked", paperCode);
 
-                            // 9701_w16_qp_42
+                            String paperType = "_qp_";
 
-                            String[] splitCode = paperCode.split("_");
-                            String splitVariant = splitCode[3].substring(1, 2);
-                            Log.i("Worked", splitVariant);
-                            String[] filenamesMultiple = new String[val];
-                            String[] urlsToDownloadMultiple = new String[val];
-                            String paperType = splitCode[2];
-
-
-                            if(spinnerTypeOfPaperFullSet.getSelectedItemPosition() == 0){
+                            if (spinnerTypeOfPaperFullSet.getSelectedItemPosition() == 0) {
 
                                 paperType = "_qp_";
                                 Log.i("Worked", "Question");
@@ -1791,8 +1720,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Boolean isMs = false;
 
 
-                            }
-                            else{
+                            } else{
 
                                 paperType = "_ms_";
                                 Log.i("Worked", "Mark");
@@ -1801,44 +1729,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             }
 
+                            singlePaper = false;
 
+                            Log.i("Tester", val + paperType);
 
-                            for(int i = 1; i < val + 1; i++){
+                            codeSplitter.createCodeForFullSet(val, paperType);
+                            downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
 
-                                if(Integer.parseInt(splitCode[1].substring(1)) > 10){
+                            Log.i("Papers", String.valueOf(codeSplitter.getCodes()));
 
-                                    paperNumber = i + splitVariant;
-                                    Log.i("Worked", paperNumber);
-
-                                }
-                                else{
-
-                                    paperNumber = i + "";
-
-//                                    splitCode[3] = splitCode[3].substring(0, 1);
-//                                    Log.i("YearBelow", "Year below 2009 is " + splitCode[3]);
-
-                                }
-
-                                String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
-
-                                filenamesMultiple[i -1] = newPaperCode;
-
-                                String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
-
-                                urlsToDownloadMultiple[i -1] = newPdfUrl;
-
-                                Log.i("Worked", Arrays.toString(filenamesMultiple) + "Paper codes are " + Arrays.toString(urlsToDownloadMultiple));
-                            }
 
                             multipleDownload.dismiss();
                             decreaseLimit(val);
-                            downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
+                            //downloadPdf(0, urlsToDownloadFullSet, filenamesFullSet, isQp, isMs, val);
 
-//                        } else {
-//
-//                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-//                        }
+                        } else {
+
+                            Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                        }
                     }
 
                 }
@@ -1868,10 +1776,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //                if(packageSelected.equals("Premium")) {
 
-//                    if (packageSelected.equals("Premium")) {
-
-
                 if(1 == 1){
+
+
+//                    if (packageSelected.equals("Premium")) {
 
                     if(1 == 1){
 
@@ -1880,7 +1788,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         int toYear = Integer.parseInt(spinnerToYear.getSelectedItem().toString());
 
                         int val = (toYear - fromYear);
-
 
                         if (val <= 0) {
 
@@ -1892,28 +1799,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 linearMultipleYears.setVisibility(View.VISIBLE);
                                 dropdownButtonMultipleYears.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
 
-                                // 2018, 2017, 2016, 2015, 2014
-
                             }
 
                         } else {
 
 //                            if (val <= dailyRemaining) {
 
-                                Log.i("ArraySize", String.valueOf(val));
+                            if( 1 == 1){
 
-                                String[] filenamesMultiple = new String[val + 1];
-
-                                String[] splitCode = paperCode.split("_");
-
-                                String paperSeason = splitCode[1].substring(0, 1); //w
-
-                                String paperYear = splitCode[1].substring(1); //16
-
-                                String paperType = splitCode[2];
-
-                                String[] urlsToDownloadMultiple = new String[val + 1];
-                                // 9701_w16_qp_42
+                                String paperType = "_qp_";
 
                                 if (spinnerTypeOfPaperMultipleYears.getSelectedItemPosition() == 0) {
 
@@ -1932,51 +1826,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 }
 
-                                int nextYear = fromYear;
 
-                                for (int i = 0; i < val + 1; i++) {
+                                codeSplitter.createCodeForMultipleYears(val, paperType, fromYear, toYear);
 
-                                    //paperYears[i] = String.valueOf(nextYear).substring(2);
-
-
-                                    if(nextYear < 2010){
-
-
-                                        newPaperNumber = splitCode[3].substring(0,1);
-                                    }
-                                    else{
-
-                                        newPaperNumber = splitCode[3];
-                                    }
-                                    String newPaperYear = paperSeason + nextYear;
-
-                                    newPaperYear = paperSeason + newPaperYear.substring(3);
-
-                                    Log.i("PaperYear", newPaperYear);
-
-                                    String newPaperCode = splitCode[0] + "_" + newPaperYear + paperType + newPaperNumber;
-
-                                    filenamesMultiple[i] = newPaperCode;
-
-                                    String newPdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + newPaperCode + ".pdf";
-
-                                    urlsToDownloadMultiple[i] = newPdfUrl;
-
-                                    nextYear = nextYear + 1;
-
-                                }
-
-                                Log.i("Years", Arrays.toString(filenamesMultiple) + " and urls are " + Arrays.toString(urlsToDownloadMultiple));
+                                downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
 
                                 multipleDownload.dismiss();
                                 decreaseLimit(val);
-                                downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
+                                //downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
 
-//                            }
-//                            else{
-//
-//                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
-//                            }
+                            }
+                            else{
+
+                                Snackbar.make(linearFullSet, "Required limit to download this is " + val, Snackbar.LENGTH_LONG).show();
+                            }
                         }
 
                     }
@@ -2005,10 +1868,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
-
-
-
 
 
     }

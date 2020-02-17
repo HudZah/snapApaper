@@ -550,7 +550,7 @@ public class TypeActivity extends AppCompatActivity {
         String[] items = getResources().getStringArray(R.array.choice_names_for_type);
 
         codeSplitter = new CodeSplitter(TypeActivity.this, codeText);
-        downloadPdf = new DownloadPdf(TypeActivity.this);
+        downloadPdf = new DownloadPdf(TypeActivity.this, layout);
 
 
         if(type.equals("type")) {
@@ -872,6 +872,8 @@ public class TypeActivity extends AppCompatActivity {
                 if(1 == 1){
                     decreaseLimit(val);
                     singlePaper = false;
+                    Boolean isQp = true;
+                    Boolean isMs = true;
                     Log.i("ArrayPapers", String.valueOf(papersToDownload));
                     downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
 

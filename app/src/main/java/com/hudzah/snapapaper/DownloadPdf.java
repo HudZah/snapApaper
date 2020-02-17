@@ -35,13 +35,16 @@ public class DownloadPdf {
 
     int monthlyRemaining;
 
+    View layout;
+
     private static final String TAG = "DownloadPdf";
 
 
 
-    public DownloadPdf(Context context){
+    public DownloadPdf(Context context, View layout){
 
         this.context = context;
+        this.layout = layout;
     }
 
     public void downloadSinglePaper(List<String> urlsToDownload, List<String> fileNames, Boolean isQp, Boolean isMs, int value, Boolean singlePaper){
@@ -53,7 +56,7 @@ public class DownloadPdf {
             // If no connection, refund limits
             decreaseLimit(-value);
 
-            final Snackbar snackBar = Snackbar.make(TypeActivity.layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
+            final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
             snackBar.setAction("OK",
                     new View.OnClickListener() {
@@ -110,7 +113,7 @@ public class DownloadPdf {
 
                 if (downloadFile.exists()) {
 
-                    Snackbar.make(TypeActivity.layout, "File already exists", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(layout, "File already exists", Snackbar.LENGTH_LONG).show();
                     Toast.makeText(context, fileName + " already exists", Toast.LENGTH_SHORT).show();
                 } else {
 

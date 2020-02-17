@@ -73,8 +73,19 @@ public class CodeSplitter {
                 splitText[1] = splitText[1];
             }
             else {
-                splitText[1] = splitText[1].substring(0, 1);
-                Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+
+                if(Integer.parseInt(splitText[1]) > 10){
+
+                    splitText[1] = splitText[1].substring(0, 1);
+                    Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+
+                }else{
+
+                    splitText[1] = splitText[1].substring(1);
+                    Log.i("YearBelow", "Year below 2009 is " + splitText[1]);
+                }
+
+
             }
         }
 
@@ -293,22 +304,28 @@ public class CodeSplitter {
 
         for (int i = 0; i < val + 1; i++) {
 
-            if(Integer.parseInt(paperNumberEditText.getText().toString()) > 10){
 
-                if(nextYear < 2010){
+            if(nextYear < 2010){
 
-                    if(nextYear == 2009 && splitCode[1].substring(0,1).equals("w")){
+                if(nextYear == 2009 && splitCode[1].substring(0,1).equals("w")){
 
-                        newPaperNumber = paperNumberEditText.getText().toString();
+                    newPaperNumber = splitCode[3];
 
-                    }else {
+                }else {
 
-                        newPaperNumber = paperNumberEditText.getText().toString().substring(0, 1);
-                    }
+                    newPaperNumber = splitCode[3].substring(0, 1);
+                }
+
+            }
+            else{
+
+                if(Integer.parseInt(splitCode[3]) > 10) {
+
+                    newPaperNumber = splitCode[3];
                 }
                 else{
 
-                    newPaperNumber = paperNumberEditText.getText().toString();
+                    newPaperNumber = splitCode[3] + 2;
                 }
             }
 
