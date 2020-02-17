@@ -74,6 +74,9 @@ public class DownloadPdf {
 
                 urlsToDownload = urlsToDownload;
                 fileNames = fileNames;
+
+                Log.i("ArrayFiles", String.valueOf(fileNames));
+
             }
 
             else if(isQp && !isMs){
