@@ -1,5 +1,7 @@
 package com.hudzah.snapapaper;
 
+import android.graphics.Color;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import androidx.arch.core.executor.TaskExecutor;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -51,6 +54,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), holder.examPaperCode + ".pdf");
+
         ListItem currentItem = mList.get(position);
 
         holder.subjectName.setText(currentItem.getSubjectName());
@@ -58,6 +63,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.examPaperCode.setText(currentItem.getExamCode());
 
         holder.examLevel.setText(currentItem.getExamLevel());
+
+        if(file.exists()){
+
+            if(file.length() > 21000){
+
+
+            }
+            else{
+
+                holder.subjectName.setText("File corrupted");
+                holder.subjectName.setTextColor(Color.parseColor("#FF0000"));
+                holder.examPaperCode.setText(currentItem.getExamCode());
+                holder.examLevel.setText("This paper was not downloaded correctly");
+            }
+        }
+
     }
 
     @Override
@@ -73,6 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public CardView cardView;
         public ImageView deleteButton;
 
+
         public RecyclerViewHolder(@NonNull View itemView, OnItemClickListener listener) {
 
             super(itemView);
@@ -81,6 +103,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             examLevel = (TextView)itemView.findViewById(R.id.examLevel);
             cardView = (CardView)itemView.findViewById(R.id.cardView);
             deleteButton = (ImageView)itemView.findViewById(R.id.deleteButton);
+
 
 
             cardView.setOnClickListener(new View.OnClickListener() {

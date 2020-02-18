@@ -1,8 +1,10 @@
 package com.hudzah.snapapaper;
 
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -37,6 +39,12 @@ public class DownloadPdf {
 
     View layout;
 
+    Boolean isQp;
+
+    Boolean isMs;
+
+    String fileName;
+
     private static final String TAG = "DownloadPdf";
 
 
@@ -50,6 +58,9 @@ public class DownloadPdf {
     public void downloadSinglePaper(List<String> urlsToDownload, List<String> fileNames, Boolean isQp, Boolean isMs, int value, Boolean singlePaper){
 
         connectionDetector = new ConnectionDetector(context);
+
+        this.isMs = isMs;
+        this.isQp = isQp;
 
         if (!connectionDetector.checkConnection()) {
 
@@ -106,7 +117,7 @@ public class DownloadPdf {
 
             for(int i = 0; i < urlsToDownload.size(); i++ ) {
 
-                String fileName = fileNames.get(i);
+                fileName = fileNames.get(i);
                 String url = urlsToDownload.get(i);
 
                 File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
@@ -159,7 +170,7 @@ public class DownloadPdf {
 
                         if(finalUrlsToDownload.size() <= 2 && singlePaper) {
 
-                            //registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                            context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
                             Log.i(TAG, "Complete");
                         }
 
@@ -217,4 +228,69 @@ public class DownloadPdf {
 
         Log.i(TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
+
+    BroadcastReceiver onComplete = new BroadcastReceiver() {
+        public void onReceive(Context ctxt, Intent intent) {
+
+
+            if(isQp && isMs) {
+
+                openPdf(fileName);
+
+            }
+            else if(!isQp && isMs){
+
+                openPdf(fileName);
+            }
+
+            else if(isQp && !isMs){
+
+                openPdf(fileName);
+
+            }
+
+        }
+
+    };
+
+    public void onDestroy() {
+        onDestroy();
+
+        try {
+
+            context.unregisterReceiver(onComplete);
+        }catch (Exception e){
+
+            e.getMessage();
+        }
+    }
+
+    public void openPdf(String fileName){
+
+        try {
+
+            Log.i(TAG, "Open");
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
+
+            Log.i("pdf file name", fileName + ".pdf");
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            try {
+                context.startActivity(intent);
+            }
+            catch (Exception e){
+
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+        catch (Exception e){
+
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
