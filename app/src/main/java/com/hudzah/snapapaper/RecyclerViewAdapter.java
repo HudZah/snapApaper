@@ -54,9 +54,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), holder.examPaperCode + ".pdf");
+
 
         ListItem currentItem = mList.get(position);
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), currentItem.getExamCode() + ".pdf");
+
 
         holder.subjectName.setText(currentItem.getSubjectName());
 
@@ -64,18 +67,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.examLevel.setText(currentItem.getExamLevel());
 
+        Log.i("FileSize", String.valueOf(file.length()));
+
         if(file.exists()){
 
-            if(file.length() > 21000){
 
+            if(file.length() > 23000){
 
+                holder.subjectName.setText(currentItem.getSubjectName());
+
+                holder.examPaperCode.setText(currentItem.getExamCode());
+
+                holder.examLevel.setText(currentItem.getExamLevel());
             }
             else{
 
                 holder.subjectName.setText("File corrupted");
                 holder.subjectName.setTextColor(Color.parseColor("#FF0000"));
                 holder.examPaperCode.setText(currentItem.getExamCode());
-                holder.examLevel.setText("This paper was not downloaded correctly");
+                holder.examLevel.setText("This paper does not exist");
             }
         }
 

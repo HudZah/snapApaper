@@ -466,16 +466,7 @@ public class TypeActivity extends AppCompatActivity {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
 
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("dailyRemaining", dailyRemaining);
-            resultIntent.putExtra("monthlyRemaining", monthlyRemaining);
-
-            setResult(RESULT_OK, resultIntent);
             this.finish(); // close this activity and return to preview activity (if there is any)
-
-            IntentFilter intentFilter = new IntentFilter();
-
-            registerReceiver(onComplete, intentFilter);
 
 
         }
@@ -687,72 +678,6 @@ public class TypeActivity extends AppCompatActivity {
             }
 
             Log.i("PaperCodeForSearch", paperCode + paperCodeMs);
-        }
-    }
-
-
-
-    BroadcastReceiver onComplete = new BroadcastReceiver() {
-        public void onReceive(Context ctxt, Intent intent) {
-
-
-
-
-            if(isQp && isMs) {
-
-                openPdf(paperCode);
-                openPdf(paperCodeMs);
-
-            }
-            else if(!isQp && isMs){
-
-                openPdf(paperCodeMs);
-            }
-
-            else if(isQp && !isMs){
-
-                openPdf(paperCode);
-
-            }
-
-        }
-
-    };
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        try {
-
-            unregisterReceiver(onComplete);
-        }catch (Exception e){
-
-            e.getMessage();
-        }
-    }
-
-
-
-
-    public void openPdf(String fileName){
-
-        try {
-
-            Log.i(LOG_TAG, "Open");
-
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
-
-            Log.i("pdf file name", fileName + ".pdf");
-
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(intent);
-        }
-        catch (Exception e){
-
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

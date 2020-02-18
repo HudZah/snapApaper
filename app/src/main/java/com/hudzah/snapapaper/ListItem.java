@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -43,6 +44,7 @@ public class ListItem {
         // Open pdf
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), mExamPaperCode + ".pdf");
         Log.i("pdf file name", mExamPaperCode + ".pdf");
+        MyListActivity myListActivity = new MyListActivity();
 
         if(file.exists()) {
 
@@ -61,7 +63,15 @@ public class ListItem {
             }
             else{
 
-                Snackbar.make(recyclerView, "File was not downloaded correctly", Snackbar.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar.make(recyclerView, "File was maybe corrupted", Snackbar.LENGTH_LONG);
+
+                snackbar.setAction("Delete", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        myListActivity.deleteItem(position);
+                    }
+                }).show();
             }
         }
         else{

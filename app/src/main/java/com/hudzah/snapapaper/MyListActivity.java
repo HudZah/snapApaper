@@ -80,11 +80,11 @@ public class MyListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
 
-    private RecyclerViewAdapter adapter;
+    static private RecyclerViewAdapter adapter;
 
     private RecyclerView.LayoutManager layoutManager;
 
-    ArrayList<ListItem> listItems;
+    static ArrayList<ListItem> listItems;
 
     TextView emptyView;
 
