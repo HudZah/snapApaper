@@ -120,7 +120,17 @@ public class DownloadPdf {
                 fileName = fileNames.get(i);
                 String url = urlsToDownload.get(i);
 
-                File downloadFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
+                File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                File dir = new File(root.getAbsolutePath());
+
+                if (dir.exists() == false) {
+                    dir.mkdirs();
+                }
+
+                String examCodeForFile = fileName + ".pdf";
+
+                File downloadFile = new File(dir, examCodeForFile);
+
 
                 if (downloadFile.exists()) {
 
@@ -275,10 +285,13 @@ public class DownloadPdf {
 
             Log.i("pdf file name", fileName + ".pdf");
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent target = new Intent(Intent.ACTION_VIEW);
+            target.setDataAndType(Uri.fromFile(file), "application/pdf");
+            target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            Intent intent = Intent.createChooser(target, "Open File");
+
             try {
                 context.startActivity(intent);
             }

@@ -49,10 +49,14 @@ public class ListItem {
         if(file.exists()) {
 
             if(file.length() >  23000) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                Intent intent = Intent.createChooser(target, "Open File");
+
                 try {
                     context.startActivity(intent);
                 }
@@ -60,6 +64,7 @@ public class ListItem {
 
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+
             }
             else{
 
