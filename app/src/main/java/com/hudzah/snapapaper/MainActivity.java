@@ -722,7 +722,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(listIntent);
                 break;
             case R.id.item_c:
-                Intent typeIntent = new Intent(this, MainActivity.class);
+                Intent typeIntent = new Intent(this, TypeActivity.class);
                 startActivity(typeIntent);
 
                 break;
@@ -1019,10 +1019,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadingDialog.dismissDialog();
 
 
-            Snackbar.make(textureView, "Text is not a valid Cambridge exam format", Snackbar.LENGTH_LONG).show();
+            Snackbar snackbar = Snackbar.make(textureView, "Text was not recognized correctly. Try again", Snackbar.LENGTH_LONG);
+
+            snackbar.setAction("Help",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            showHelpDialog();
+                            snackbar.dismiss();
+                        }
+                    }).show();
 
 
             loadingDialog.dismissDialog();
+
 
         }
 

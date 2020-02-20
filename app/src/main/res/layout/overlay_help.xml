@@ -109,7 +109,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="To start using snapApaper, there are 3 ways to finding your paper code. The first way would be to use the camera and capture a picture of your exam code found on your exam paper.\n\n Keep your phone steady and focus the camera, once it is clear enough, capture and wait for us to recognize code. \n\n If you don't have a past paper to scan, you can always type a code or search for a specific paper by clicking the 'Keyboard' icon next to the capture button"
+                                android:text="To start using snapApaper, there are 3 ways to finding your paper code. The first way would be to use the camera and capture a picture of your exam code found on your exam paper.\n\n Keep your phone steady and focus the camera, once it is clear enough, capture and wait for us to recognize code. Make sure there is adequate lighting. Capturing a paper for the first using snapApaper might take some time since, we take time to process an exam code.  \n\n If you don't have a past paper to scan, you can always type a code or search for a specific paper by clicking the 'Keyboard' icon next to the capture button"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
                                 android:layout_marginLeft="12dp"

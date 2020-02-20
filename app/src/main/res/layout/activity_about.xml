@@ -31,7 +31,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/cool"
+            android:src="@drawable/abouticon"
             android:layout_gravity="center"
             android:layout_margin="20dp"/>
 
@@ -39,11 +39,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="About Us"
-            android:textSize="26sp"
-            android:textAlignment="center"
-            android:textColor="@color/headings"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"/>
+            android:gravity="center_horizontal"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -86,7 +88,7 @@
                     android:textColor="@color/headings"
                     android:fontFamily="sans-serif-medium"
                     android:textIsSelectable="true"
-                    android:text="Learn More"/>
+                    android:text="Learn More From Our Website\n\n Copyright HudZah 2020"/>
 
             </LinearLayout>
 
@@ -107,6 +109,46 @@
                 android:textSize="24sp"
                 android:textColor="@color/headings"
                 android:padding="20dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:onClick="rateUs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="8dp"
+                >
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="4dp"
+                        android:src="@drawable/googleplayicon"/>
+
+                    <TextView
+                        android:fontFamily="sans-serif-light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rate Us!"
+                        android:layout_gravity="center"
+                        android:textSize="24sp"
+                        android:textColor="@color/black"
+                        />
+
+                </LinearLayout>
+
+
+
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:onClick="instagram"
@@ -304,45 +346,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:onClick="rateUs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="8dp"
-                >
 
-                <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="4dp"
-                        android:src="@drawable/googleplayicon"/>
-
-                    <TextView
-                        android:fontFamily="sans-serif-light"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rate Us!"
-                        android:layout_gravity="center"
-                        android:textSize="24sp"
-                        android:textColor="@color/black"
-                        />
-
-                </LinearLayout>
-
-
-
-            </androidx.cardview.widget.CardView>
 
 
             <TextView

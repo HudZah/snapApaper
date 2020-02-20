@@ -1,11 +1,13 @@
 package com.hudzah.snapapaper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
@@ -31,12 +33,15 @@ public class ListItem {
     private String mSubjectName;
     private String mExamPaperCode;
     private String mExamLevel;
+    MyListActivity myListActivity;
+
 
     public ListItem(String subjectName, String examPaperCode, String examLevel){
 
         mSubjectName = subjectName;
         mExamPaperCode = examPaperCode;
         mExamLevel = examLevel;
+
 
     }
 
@@ -45,7 +50,6 @@ public class ListItem {
         // Open pdf
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), mExamPaperCode + ".pdf");
         Log.i("pdf file name", mExamPaperCode + ".pdf");
-        MyListActivity myListActivity = new MyListActivity();
 
         if(file.exists()) {
 
@@ -103,33 +107,40 @@ public class ListItem {
 
                 File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), mExamPaperCode + ".pdf");
 
+                if(which == 0) {
 
-                if(which == 0){
+                    final Handler handler = new Handler();
 
-                    // Share
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1){
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Share
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
 
-                        final String AUTHORITY = context.getPackageName() + ".fileprovider";
+                                final String AUTHORITY = context.getPackageName() + ".fileprovider";
 
-                        Uri contentUri = FileProvider.getUriForFile(context, AUTHORITY, file);
+                                Uri contentUri = FileProvider.getUriForFile(context, AUTHORITY, file);
 
-                        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                        shareIntent.setType("application/pdf");
-                        context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+                                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                                shareIntent.setType("application/pdf");
+                                context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
 
-                    }
-                    else{
+                            } else {
 
-                        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
-                        Uri fileUri = Uri.parse(file.getAbsolutePath());
+                                Uri fileUri = Uri.parse(file.getAbsolutePath());
 
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                        shareIntent.setType("application/pdf");
-                        context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+                                shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                                shareIntent.setType("application/pdf");
+                                context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
 
-                    }
+                            }
+
+                        }
+
+                    }, 200);
                 }
 
                 else if(which == 1){

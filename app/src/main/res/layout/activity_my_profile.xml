@@ -4,454 +4,121 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:id="@+id/layout"
-    android:layout_height="match_parent"
-    tools:context=".MyProfileActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@drawable/profile_bg"
-        android:paddingBottom="20dp"
-        android:id="@+id/rellay1">
-
-        <RelativeLayout
-            android:id="@+id/imgUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            >
 
 
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_margin="9dp"
-                android:paddingLeft="3dp"
-                android:textStyle="bold"
-                android:src="@drawable/profileiconmdpi"
-                android:textSize="50sp"
-                android:gravity="center"
-                android:adjustViewBounds="true"
-                android:textColor="@color/black"
-                android:scaleType="fitCenter"/>
 
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imgUser"
-            android:layout_centerHorizontal="true"
-            android:text="User"
-            android:textSize="32sp"
-            android:textColor="@color/black"
-            android:fontFamily="sans-serif-light"
-            android:layout_marginTop="15sp"></TextView>
-
-        <TextView
-            android:id="@+id/tv_examboard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif"
-            android:text="Exam board"
-            android:layout_marginTop="2dp"
-            android:textAllCaps="true"
-            android:textColor="@color/address"
-            android:textSize="14sp" />
-        
-        <ImageView
-            android:id="@+id/settingsButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_settings_black_24dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            />
-
-    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/linear1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/rellay1">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:background="@color/colorAccent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:layout_weight="1"
-            >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/packageName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Package"
-                    android:textColor="@color/textColor"
-                    android:textSize="25sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Package"
-                    android:textAllCaps="true"
-                    android:textColor="@color/textColor"
-                    android:textSize="13sp"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:background="@color/colorAccent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:layout_weight="1"
-            >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/dailyPackageDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Value"
-                    android:textColor="@color/textColor"
-                    android:textSize="25sp"/>
-
-                <TextView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="DAILY LIMIT"
-                    android:textAllCaps="true"
-                    android:textColor="@color/textColor"
-                    android:textSize="13sp"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:background="@color/colorAccent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:layout_weight="1"
-            >
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/monthlyPackageDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Value"
-                    android:textColor="@color/textColor"
-                    android:textSize="25sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="monthly limit"
-                    android:textAllCaps="true"
-                    android:textColor="@color/textColor"
-                    android:textSize="13sp"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/relative2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/linear1">
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar"
+        >
 
 
 
-
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="false"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:background="@color/colorAccent"
+            android:backgroundTint="@color/colorAccent"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_marginBottom="0dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif"
-                android:text="Details"
-                android:textAllCaps="true"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Username"
-                    android:textColor="@color/headings"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/detailsUsername"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Username"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textColor="@color/headings"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/detailsEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="username@email.com"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Phone Number"
-                    android:textColor="@color/headings"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/detailsPhone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text=""
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/relative3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/relative2">
-
-
-
-        <LinearLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="false"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:id="@+id/layout"
+            android:layout_height="match_parent"
+            tools:context=".MyProfileActivity">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif"
-                android:text="Package"
-                android:textAllCaps="true"
-                android:textColor="@color/black"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/profile_bg"
+                android:paddingBottom="20dp"
+                android:id="@+id/rellay1">
 
-<!--            <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
+                <RelativeLayout
+                    android:id="@+id/imgUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    >
 
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Limit remaining today"-->
-<!--                android:textColor="@color/headings"-->
-<!--                android:textSize="16sp" />-->
 
-<!--            <TextView-->
-<!--                android:id="@+id/dailyRemainingTextView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="sans-serif-light"-->
-<!--                android:text="value"-->
-<!--                android:textColor="#000000"-->
-<!--                android:textSize="16sp" />-->
+                    <ImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="9dp"
+                        android:paddingLeft="3dp"
+                        android:textStyle="bold"
+                        android:src="@drawable/profileiconmdpi"
+                        android:textSize="50sp"
+                        android:gravity="center"
+                        android:adjustViewBounds="true"
+                        android:textColor="@color/black"
+                        android:scaleType="fitCenter"/>
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1.5dp"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:background="@color/grey" />-->
+                </RelativeLayout>
 
-<!--        </LinearLayout>-->
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imgUser"
+                    android:layout_centerHorizontal="true"
+                    android:text="User"
+                    android:textSize="32sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_marginTop="15sp"></TextView>
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:orientation="vertical">-->
+                <TextView
+                    android:id="@+id/tv_examboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_name"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif"
+                    android:text="Exam board"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/address"
+                    android:textSize="14sp" />
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Limit remaining for the month"-->
-<!--                    android:textColor="@color/headings"-->
-<!--                    android:textSize="16sp" />-->
+                <ImageView
+                    android:id="@+id/settingsButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_settings_black_24dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="15dp"
+                    />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/monthlyRemainingTextView"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:fontFamily="sans-serif-light"-->
-<!--                    android:text="value"-->
-<!--                    android:textColor="#000000"-->
-<!--                    android:textSize="16sp" />-->
-
-<!--                <View-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="1.5dp"-->
-<!--                    android:layout_marginTop="15dp"-->
-<!--                    android:background="@color/grey"-->
-<!--                    />-->
-
-<!--            </LinearLayout>-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="To extend your limit you can : "-->
-<!--                android:textColor="@color/headings"-->
-<!--                android:textSize="18sp"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--/>-->
+            </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/linear2"
+                android:id="@+id/linear1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_below="@id/rellay1">
 
                 <RelativeLayout
-                    android:layout_marginTop="20dp"
-                    android:clickable="true"
-                    android:onClick="startVideoAd"
-                    android:id="@+id/watchAnAd"
                     android:layout_width="match_parent"
-                    android:background="@drawable/roundedbutton"
-                    android:backgroundTint="@color/headings"
+                    android:background="@color/colorAccent"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="15dp"
+                    android:paddingTop="5dp"
                     android:gravity="center"
-                    android:paddingBottom="15dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:paddingBottom="5dp"
                     android:layout_weight="1"
                     >
 
@@ -462,32 +129,35 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/packageName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
-                            android:text="Watch An Ad"
+                            android:text="Package"
                             android:textColor="@color/textColor"
                             android:textSize="25sp"/>
 
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Package"
+                            android:textAllCaps="true"
+                            android:textColor="@color/textColor"
+                            android:textSize="13sp"/>
 
                     </LinearLayout>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:clickable="true"
-                    android:id="@+id/share"
                     android:layout_width="match_parent"
-                    android:background="@drawable/roundedbutton"
-                    android:backgroundTint="@color/headings"                    android:layout_gravity="center"
+                    android:background="@color/colorAccent"
+                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="15dp"
+                    android:paddingTop="5dp"
                     android:gravity="center"
-                    android:paddingBottom="15dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:paddingBottom="5dp"
                     android:layout_weight="1"
                     >
 
@@ -498,33 +168,36 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/dailyPackageDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
-                            android:text="Share"
+                            android:text="Value"
                             android:textColor="@color/textColor"
                             android:textSize="25sp"/>
 
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="DAILY LIMIT"
+                            android:textAllCaps="true"
+                            android:textColor="@color/textColor"
+                            android:textSize="13sp"/>
 
                     </LinearLayout>
 
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:visibility="gone"
-                    android:clickable="true"
-                    android:id="@+id/upgradePackage"
                     android:layout_width="match_parent"
-                    android:background="@drawable/roundedbutton"
-                    android:backgroundTint="@color/headings"
+                    android:background="@color/colorAccent"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
-                    android:paddingTop="15dp"
+                    android:paddingTop="5dp"
                     android:gravity="center"
-                    android:paddingBottom="15dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:paddingBottom="5dp"
                     android:layout_weight="1"
                     >
 
@@ -535,42 +208,394 @@
                         android:layout_height="wrap_content">
 
                         <TextView
+                            android:id="@+id/monthlyPackageDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
-                            android:text="Upgrade Your Package"
+                            android:text="Value"
                             android:textColor="@color/textColor"
                             android:textSize="25sp"/>
 
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="monthly limit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/textColor"
+                            android:textSize="13sp"/>
 
                     </LinearLayout>
 
-
-
                 </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/linear1">
+
+
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:layout_centerInParent="false"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@color/headings"
-                    android:layout_gravity="center_horizontal"
-                    android:text="A HudZah Production"/>
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:src="@mipmap/ic_launcher_foreground"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="15dp"
-                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Details"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Username"
+                            android:textColor="@color/headings"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/detailsUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Username"
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1.5dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/grey" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email"
+                            android:textColor="@color/headings"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/detailsEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="username@email.com"
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1.5dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/grey" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Phone Number"
+                            android:textColor="@color/headings"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/detailsPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text=""
+                            android:textColor="#000000"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1.5dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/grey" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/relative3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/relative2">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="false"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:fontFamily="sans-serif"
+                        android:text="Package"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+        <!--            <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="Limit remaining today"-->
+        <!--                android:textColor="@color/headings"-->
+        <!--                android:textSize="16sp" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/dailyRemainingTextView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:fontFamily="sans-serif-light"-->
+        <!--                android:text="value"-->
+        <!--                android:textColor="#000000"-->
+        <!--                android:textSize="16sp" />-->
+
+        <!--            <View-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="1.5dp"-->
+        <!--                android:layout_marginTop="15dp"-->
+        <!--                android:background="@color/grey" />-->
+
+        <!--        </LinearLayout>-->
+
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="15dp"-->
+        <!--                android:orientation="vertical">-->
+
+        <!--                <TextView-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="Limit remaining for the month"-->
+        <!--                    android:textColor="@color/headings"-->
+        <!--                    android:textSize="16sp" />-->
+
+        <!--                <TextView-->
+        <!--                    android:id="@+id/monthlyRemainingTextView"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:fontFamily="sans-serif-light"-->
+        <!--                    android:text="value"-->
+        <!--                    android:textColor="#000000"-->
+        <!--                    android:textSize="16sp" />-->
+
+        <!--                <View-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="1.5dp"-->
+        <!--                    android:layout_marginTop="15dp"-->
+        <!--                    android:background="@color/grey"-->
+        <!--                    />-->
+
+        <!--            </LinearLayout>-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="To extend your limit you can : "-->
+        <!--                android:textColor="@color/headings"-->
+        <!--                android:textSize="18sp"-->
+        <!--                android:layout_marginTop="15dp"-->
+        <!--                android:layout_marginBottom="20dp"-->
+        <!--/>-->
+
+                    <LinearLayout
+                        android:id="@+id/linear2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_below="@id/rellay1">
+
+                        <RelativeLayout
+                            android:layout_marginTop="20dp"
+                            android:clickable="true"
+                            android:onClick="startVideoAd"
+                            android:id="@+id/watchAnAd"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/roundedbutton"
+                            android:backgroundTint="@color/headings"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:gravity="center"
+                            android:paddingBottom="15dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Watch An Ad"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="25sp"/>
+
+
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:clickable="true"
+                            android:id="@+id/share"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/roundedbutton"
+                            android:backgroundTint="@color/headings"                    android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:gravity="center"
+                            android:paddingBottom="15dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Share"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="25sp"/>
+
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:visibility="gone"
+                            android:clickable="true"
+                            android:id="@+id/upgradePackage"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/roundedbutton"
+                            android:backgroundTint="@color/headings"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:gravity="center"
+                            android:paddingBottom="15dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            >
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Upgrade Your Package"
+                                    android:textColor="@color/textColor"
+                                    android:textSize="25sp"/>
+
+
+
+                            </LinearLayout>
+
+
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@color/headings"
+                        android:layout_gravity="center_horizontal"
+                        android:text="A HudZah Production"/>
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@mipmap/ic_launcher_foreground"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="15dp"
+                            />
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -578,12 +603,10 @@
             </LinearLayout>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
-    </RelativeLayout>
-
-
-</RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>

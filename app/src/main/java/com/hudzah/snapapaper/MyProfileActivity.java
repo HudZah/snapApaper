@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -95,6 +96,15 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
+
+        androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         loadingDialog = new LoadingDialog(this);
 
@@ -291,28 +301,48 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
             @Override
             public void onClick(View v) {
 
-                String text = "Tired of using ad-filled and shady websites to get your past papers? Switch to snapApaper \n link";
+                LoadingDialog loadingDialog = new LoadingDialog(MyProfileActivity.this);
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1){
+                loadingDialog.startLoadingDialog();
+
+                final Handler handler = new Handler();
+
+                String text = "Tired of using ad-filled websites to get your past papers? Switch to snapApaper \n\nhttps://play.google.com/store/apps/details?id=com.hudzah.snapapaper";
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        loadingDialog.dismissDialog();
+
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1){
 
 
-                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-                    shareIntent.setType("text/plain");
-                    MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+                            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                            shareIntent.setType("text/plain");
+                            MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share link via"));
 
-                }
-                else{
+                        }
+                        else{
 
-                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
-                    shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
-                    shareIntent.setType("text/plain");
-                    MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+                            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
-                }
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                            shareIntent.setType("text/plain");
+
+
+                            MyProfileActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                        }
+
+                    }
+                }, 1500);
+
+
             }
 
         });
@@ -447,6 +477,19 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
             .setMessage("You have earned an additional " + value + " " + "limits")
             .setPositiveButton("OK", null)
                 .show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+
+            this.finish(); // close this activity and return to preview activity (if there is any)
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

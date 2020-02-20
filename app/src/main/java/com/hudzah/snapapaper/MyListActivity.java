@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
@@ -17,6 +18,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -92,6 +94,8 @@ public class MyListActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
 
+    Dialog help;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +120,8 @@ public class MyListActivity extends AppCompatActivity {
         paperIcon.setVisibility(View.GONE);
 
         emptyView.setVisibility(View.GONE);
+
+        help = new Dialog(this);
 
         fab = (FloatingActionButton)findViewById(R.id.fab);
 
@@ -243,13 +249,36 @@ public class MyListActivity extends AppCompatActivity {
         startActivity(cameraIntent);
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.help, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
             finish(); // close this activity and return to preview activity (if there is any)
+        }
+
+        if(item.getItemId() == R.id.action_help){
+
+            help.setContentView(R.layout.overlay_list_help);
+
+            ImageView closeOverlay = (ImageView) help.findViewById(R.id.closeOverlay);
+
+            Log.i(TAG, "Help");
+
+            closeOverlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    help.dismiss();
+                }
+            });
+
+            help.show();
         }
 
         return super.onOptionsItemSelected(item);

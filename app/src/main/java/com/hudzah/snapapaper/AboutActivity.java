@@ -68,7 +68,7 @@ public class AboutActivity extends AppCompatActivity {
         i.putExtra(Intent.EXTRA_SUBJECT, "Ask us a question!");
         i.putExtra(Intent.EXTRA_TEXT   , "body of email");
         try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
+            startActivity(Intent.createChooser(i, "Email via"));
         } catch (android.content.ActivityNotFoundException ex) {
 
         }

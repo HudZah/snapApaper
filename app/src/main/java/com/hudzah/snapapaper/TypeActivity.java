@@ -331,6 +331,25 @@ public class TypeActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        cardViewType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(typeCodeLayout.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewType, new AutoTransition());
+                    typeCodeLayout.setVisibility(View.VISIBLE);
+                    typeCodeButtonDropDown.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewType);
+                    typeCodeLayout.setVisibility(View.GONE);
+                    typeCodeButtonDropDown.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
         typeCodeButtonDropDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -346,6 +365,25 @@ public class TypeActivity extends AppCompatActivity {
                     TransitionManager.beginDelayedTransition(cardViewType);
                     typeCodeLayout.setVisibility(View.GONE);
                     typeCodeButtonDropDown.setBackgroundResource(R.drawable.arrow_bitmap);
+                }
+            }
+        });
+
+        cardViewSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(searchCodeLayout.getVisibility() == View.GONE){
+
+                    TransitionManager.beginDelayedTransition(cardViewSearch, new AutoTransition());
+                    searchCodeLayout.setVisibility(View.VISIBLE);
+                    searchCodeButtonDropDown.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+                else{
+
+                    TransitionManager.beginDelayedTransition(cardViewSearch);
+                    searchCodeLayout.setVisibility(View.GONE);
+                    searchCodeButtonDropDown.setBackgroundResource(R.drawable.arrow_bitmap);
                 }
             }
         });

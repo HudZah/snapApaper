@@ -73,7 +73,7 @@
                 android:textSize="17sp"
                 android:textAlignment="center"
                 android:layout_marginBottom="30dp"
-                android:text="Our app is currently free for everyone with no restrictions or limitations. However in the future we might add certain in-app products to help keep this app afloat\n\nIf you would like support us please contact us a snapapaper@gmail.com"/>
+                android:text="Our app is currently free for everyone with no restrictions or limitations. However in the future we might add certain in-app products to help keep this app afloat\n\nIf you would like support us please contact us at snapapaper@gmail.com"/>
 
 
 

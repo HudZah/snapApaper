@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        app:cardCornerRadius="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+
+        >
+
+        <ImageView
+            android:id="@+id/closeOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_black_24dp"
+            android:layout_alignParentRight="true"
+            android:elevation="5dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="12dp"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sharing Papers"
+                    android:textColor="@color/headings"
+                    android:textSize="26sp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="sans-serif-medium"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="To share papers in snapApaper, simply long press on a paper in your list. Once you do that, you will be provided with some options, there select 'Share' and you will be able to share that paper to anyone you like\n\nYou can also view details about your paper"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="12dp"
+                    android:paddingBottom="10dp"/>
+
+            </LinearLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
