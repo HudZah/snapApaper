@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -48,7 +49,10 @@ public class ListItem {
 
         if(file.exists()) {
 
-            if(file.length() >  23000) {
+            if(file.length() >  21000) {
+
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
 
                 Intent target = new Intent(Intent.ACTION_VIEW);
                 target.setDataAndType(Uri.fromFile(file), "application/pdf");
@@ -68,7 +72,7 @@ public class ListItem {
             }
             else{
 
-                Snackbar snackbar = Snackbar.make(recyclerView, "File was maybe corrupted", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(recyclerView, "Paper maybe corrupted", Snackbar.LENGTH_LONG);
 
                 snackbar.setAction("Delete", new View.OnClickListener() {
                     @Override

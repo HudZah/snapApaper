@@ -1,6 +1,7 @@
 package com.hudzah.snapapaper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class CodeSplitter {
     List<String> papersToDownload = new ArrayList<String>();
 
     String newPaperNumber;
+
+    String splitVariant;
 
 
     private static final String TAG = "CodeSplitter";
@@ -244,7 +247,16 @@ public class CodeSplitter {
 
         String[] splitCode = paperCode.split("_");
 
-        String splitVariant = "2";
+        if(Integer.parseInt(splitCode[3]) > 10){
+
+            splitVariant = splitCode[3].substring(1);
+
+        }
+        else{
+
+            splitVariant = "";
+        }
+
 
 
         Log.i("Worked", splitVariant);
@@ -255,17 +267,8 @@ public class CodeSplitter {
 
             Log.i("Worked", splitCode[3]);
 
-            if(splitCode[3].length() > 1){
-
-                paperNumber = i + splitVariant;
-                Log.i("Worked", paperNumber);
-
-            }
-            else{
-
-                paperNumber = i + "";
-
-            }
+            paperNumber = i + splitVariant;
+            Log.i("Worked", paperNumber);
 
             String newPaperCode = splitCode[0] + "_" + splitCode[1] + paperType + paperNumber;
 
@@ -309,11 +312,24 @@ public class CodeSplitter {
 
                 if(nextYear == 2009 && splitCode[1].substring(0,1).equals("w")){
 
-                    newPaperNumber = splitCode[3];
+                    if(Integer.parseInt(splitCode[3]) > 1) {
+
+                        newPaperNumber = splitCode[3];
+                    }else{
+
+                        newPaperNumber = splitCode[3] + 2;
+                    }
 
                 }else {
 
-                    newPaperNumber = splitCode[3].substring(0, 1);
+                    if(Integer.parseInt(splitCode[3]) > 10) {
+
+                        newPaperNumber = splitCode[3].substring(0, 1);
+                    }
+                    else{
+
+                        newPaperNumber = splitCode[3];
+                    }
                 }
 
             }

@@ -964,6 +964,8 @@ public class TypeActivity extends AppCompatActivity {
 
                                 codeSplitter.createCodeForMultipleYears(val, paperType, fromYear, toYear);
 
+                                Log.i("PapersTest", String.valueOf(codeSplitter.getCodes()));
+
                                 downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
 
                                 multipleDownload.dismiss();

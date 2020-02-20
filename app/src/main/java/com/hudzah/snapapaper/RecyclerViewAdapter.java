@@ -79,6 +79,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.examPaperCode.setText(currentItem.getExamCode());
 
                 holder.examLevel.setText(currentItem.getExamLevel());
+
+                holder.subjectName.setTextColor(Color.parseColor("#000000"));
             }
             else{
 

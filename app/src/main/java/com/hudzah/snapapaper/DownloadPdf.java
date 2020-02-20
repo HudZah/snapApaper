@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -44,6 +46,8 @@ public class DownloadPdf {
     Boolean isMs;
 
     String fileName;
+
+    List<String> finalUrlsToDownload;
 
     private static final String TAG = "DownloadPdf";
 
@@ -165,7 +169,7 @@ public class DownloadPdf {
                         papersObject = new ParseObject("Papers");
 
 
-                        List<String> finalUrlsToDownload = urlsToDownload;
+                        finalUrlsToDownload = urlsToDownload;
 
                         for(int c = 0; c < urlsToDownload.size(); c++ ) {
 
@@ -196,10 +200,36 @@ public class DownloadPdf {
                 }
 
             }
+
             if(!singlePaper){
 
-                Intent listIntent = new Intent(context, MyListActivity.class);
-                context.startActivity(listIntent);
+                if(finalUrlsToDownload.size() > 8){
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent listIntent = new Intent(context, MyListActivity.class);
+                            context.startActivity(listIntent);
+                        }
+                    }, 4500);
+                }
+
+                else if(finalUrlsToDownload.size() < 8){
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent listIntent = new Intent(context, MyListActivity.class);
+                            context.startActivity(listIntent);
+                        }
+                    }, 2500);
+                }
+
+
 
             }
 
@@ -284,6 +314,9 @@ public class DownloadPdf {
             File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), fileName + ".pdf");
 
             Log.i("pdf file name", fileName + ".pdf");
+
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
 
             Intent target = new Intent(Intent.ACTION_VIEW);
             target.setDataAndType(Uri.fromFile(file), "application/pdf");
