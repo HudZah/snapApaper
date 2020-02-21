@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -306,5 +307,12 @@ public class PackageSelectorActivity extends AppCompatActivity {
             linearPremium.setVisibility(View.GONE);
             dropdownButtonPremium.setBackgroundResource(R.drawable.arrow_bitmap);
         }
+    }
+
+    public void openTerms(View view){
+
+        Intent websiteIntent = new Intent("android.intent.action.VIEW",
+                Uri.parse("https://snapapaper.wixsite.com/snapapaper/privacy-policy"));
+        startActivity(websiteIntent);
     }
 }

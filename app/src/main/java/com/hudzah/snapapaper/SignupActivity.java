@@ -232,4 +232,5 @@ public class SignupActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(loginIntent);
     }
+
 }

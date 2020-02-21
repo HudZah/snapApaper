@@ -72,7 +72,7 @@ public class MyListActivity extends AppCompatActivity {
 
     ConnectionDetector connectionDetector;
 
-    RelativeLayout view;
+    static RelativeLayout view;
 
     String paperSelected;
 

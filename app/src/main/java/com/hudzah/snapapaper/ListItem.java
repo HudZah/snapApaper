@@ -23,6 +23,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -184,6 +185,7 @@ public class ListItem {
 
     public void deleteFile(int position, Context context){
 
+
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(),  mExamPaperCode + ".pdf");
 
         Log.i("FileName", String.valueOf(file));
@@ -204,6 +206,7 @@ public class ListItem {
                         for (ParseObject object : objects){
 
                             object.deleteInBackground();
+                            savedDeletedItem(mExamPaperCode, context);
 
                             if(file.exists()){
 
@@ -211,6 +214,10 @@ public class ListItem {
                             }
                         }
                     }
+                }
+                else{
+
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -227,5 +234,29 @@ public class ListItem {
     public String getExamLevel(){
 
         return mExamLevel;
+    }
+
+    public void savedDeletedItem(String mExamPaperCode, Context context){
+
+        ParseObject object = new ParseObject("DeletedPapers");
+
+        object.put("username", ParseUser.getCurrentUser().getUsername());
+        object.put("session", ParseUser.getCurrentUser().getSessionToken());
+        object.put("paper", mExamPaperCode);
+        object.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+
+                if(e == null){
+
+                    Log.i("SavedItem", "Saved item to Parse");
+
+                }
+                else{
+
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
