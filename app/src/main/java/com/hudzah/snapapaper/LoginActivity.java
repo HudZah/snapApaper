@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText passwordEditText;
 
-    RelativeLayout relativeLayout;
+    ScrollView relativeLayout;
 
 
     @Override
@@ -59,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
-        relativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout);
+        relativeLayout = (ScrollView)findViewById(R.id.relativeLayout);
 
         if(ParseUser.getCurrentUser() != null){
 
