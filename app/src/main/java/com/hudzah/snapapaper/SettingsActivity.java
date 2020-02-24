@@ -1,7 +1,9 @@
 package com.hudzah.snapapaper;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -47,15 +49,35 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 if(position == 1){
 
-                    Toast.makeText(SettingsActivity.this, "Test", Toast.LENGTH_SHORT).show();
+                    Intent bugIntent = new Intent(SettingsActivity.this, SettingsBugs.class);
+                    startActivity(bugIntent);
                 }
                 if(position == 2){
 
-                    Toast.makeText(SettingsActivity.this, "Test", Toast.LENGTH_SHORT).show();
+                    Intent suggestIntent = new Intent(SettingsActivity.this, SettingsSuggestions.class);
+                    startActivity(suggestIntent);
                 }
                 if(position == 3){
 
-                    Toast.makeText(SettingsActivity.this, "Test", Toast.LENGTH_SHORT).show();
+                    Uri uri = Uri.parse("market://details?id=" + SettingsActivity.this.getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    // To count with Play market backstack, After pressing back button,
+                    // to taken back to our application, we need to add following flags to intent.
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    try {
+                        startActivity(goToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?" + SettingsActivity.this.getPackageName())));
+                    }
+                }
+                if(position == 4){
+
+                    Intent websiteIntent = new Intent("android.intent.action.VIEW",
+                            Uri.parse("https://snapapaper.wixsite.com/snapapaper/privacy-policy"));
+                    startActivity(websiteIntent);
                 }
             }
         });
@@ -123,4 +145,6 @@ public class SettingsActivity extends AppCompatActivity {
             return row;
         }
     }
+
+
 }
