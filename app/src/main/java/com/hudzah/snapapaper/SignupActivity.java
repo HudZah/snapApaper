@@ -97,7 +97,7 @@ public class SignupActivity extends AppCompatActivity {
 
             String itemSelected = examBoardSpinner.getSelectedItem().toString();
 
-            if(itemSelected.equals("Cambridge")) {
+            if(itemSelected.equals("CIE (CAIE)")) {
 
                 // Show loading 'Login button collapses to circle and loads'
 

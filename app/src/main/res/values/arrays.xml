@@ -11,9 +11,12 @@
     </string-array>
 
     <string-array name="examboard_spinner">
-        <item>Cambridge</item>
+        <item>CIE (CAIE)</item>
         <item>Edexcel</item>
         <item>AQA</item>
+        <item>OCR</item>
+        <item>CCEA</item>
+        <item>IB</item>
         <item>Local For SL</item>
     </string-array>
 

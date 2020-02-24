@@ -1260,6 +1260,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public void settings(View view){
+
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
     public void showHelpDialog(){
 
 

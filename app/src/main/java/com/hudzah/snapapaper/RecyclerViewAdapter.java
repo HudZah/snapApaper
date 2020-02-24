@@ -14,9 +14,15 @@ import androidx.arch.core.executor.TaskExecutor;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.io.File;
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
@@ -84,6 +90,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
             else{
 
+
                 holder.subjectName.setText("File corrupted");
                 holder.subjectName.setTextColor(Color.parseColor("#FF0000"));
                 holder.examPaperCode.setText(currentItem.getExamCode());
@@ -92,6 +99,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
     }
+
 
     @Override
     public int getItemCount() {
