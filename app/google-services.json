@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "157928905943",
+    "firebase_url": "https://snapapaper.firebaseio.com",
+    "project_id": "snapapaper",
+    "storage_bucket": "snapapaper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157928905943:android:b51fe5b3d5fb8036f7e492",
+        "android_client_info": {
+          "package_name": "com.hudzah.snapapaper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157928905943-3t4055ftppm0dk4oo9lec9iq0fv5npm6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hudzah.snapapaper",
+            "certificate_hash": "a40d29cb05aecc72a44e9ddb55beec25ce1d2f61"
+          }
+        },
+        {
+          "client_id": "157928905943-7370rbrhcm0ragm2hk9rpklpes3pr0ku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsMUNhdpcXReqKBqiI8U4fbhOPvK1uUU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157928905943-7370rbrhcm0ragm2hk9rpklpes3pr0ku.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

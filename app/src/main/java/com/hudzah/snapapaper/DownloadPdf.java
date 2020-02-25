@@ -35,10 +35,6 @@ public class DownloadPdf {
 
     String examLevelFull;
 
-    int dailyRemaining;
-
-    int monthlyRemaining;
-
     View layout;
 
     Boolean isQp;
@@ -239,34 +235,34 @@ public class DownloadPdf {
 
     public void decreaseLimit(int amountToDecrease){
 
-        dailyRemaining -= amountToDecrease;
-        monthlyRemaining -= amountToDecrease;
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-                            object.saveInBackground();
-                        }
-                    }
-                }
-                else{
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Log.i(TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
+//        dailyRemaining -= amountToDecrease;
+//        monthlyRemaining -= amountToDecrease;
+//
+//        ParseQuery<ParseUser> query = ParseUser.getQuery();
+//        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+//
+//        query.findInBackground(new FindCallback<ParseUser>() {
+//            @Override
+//            public void done(List<ParseUser> objects, ParseException e) {
+//                if(e == null){
+//
+//                    if(objects.size() > 0){
+//
+//                        for(ParseUser object : objects){
+//
+//                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
+//                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
+//                            object.saveInBackground();
+//                        }
+//                    }
+//                }
+//                else{
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        Log.i(TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
 
     BroadcastReceiver onComplete = new BroadcastReceiver() {

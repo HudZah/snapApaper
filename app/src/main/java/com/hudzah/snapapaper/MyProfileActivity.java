@@ -75,10 +75,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     TextView detailsPhone;
 
-    int dailyRemaining;
-
-    int monthlyRemaining;
-
     LoadingDialog loadingDialog;
 
     ImageView settingsButton;
@@ -232,10 +228,7 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
 
 
-                                dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
-                                monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
 
-                                Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
 
                                 String packageSelected = object.getString("package");
                                 String examBoard = object.getString("examBoard");
@@ -249,8 +242,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
                                 detailsEmail.setText(ParseUser.getCurrentUser().getEmail());
 
-                                updateRemaining(dailyRemaining, monthlyRemaining);
-
                                 if (!phoneNumber.matches("")) {
 
                                     detailsPhone.setText(phoneNumber);
@@ -260,8 +251,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
                                 }
 
                                 Log.i("Package ", packageSelected);
-
-                                Log.i("Package ", String.valueOf(dailyRemaining));
 
                                 if (packageSelected.equals("Free")) {
 
@@ -421,36 +410,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
     public void onRewarded(RewardItem rewardItem) {
 
         value = 2;
-
-        dailyRemaining += value;
-        monthlyRemaining += value;
-
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-                            object.saveInBackground();
-                            updateRemaining(dailyRemaining, monthlyRemaining);
-
-                            showRewardDialog(value);
-
-                        }
-                    }
-                }
-                else{
-                    e.printStackTrace();
-                }
-            }
-        });
 
     }
 

@@ -589,7 +589,7 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:src="@drawable/logoalone"
+                            android:src="@mipmap/ic_launcher_foreground"
                             android:layout_gravity="center"
                             android:layout_marginBottom="15dp"
                             />

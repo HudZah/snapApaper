@@ -620,7 +620,7 @@ public class TypeActivity extends AppCompatActivity {
                                         isQp = true;
                                         isMs = false;
                                         value = 1;
-                                        decreaseLimit(value);
+                                        //decreaseLimit(value);
 
                                         Log.i("Papers", String.valueOf(papersToDownload));
 
@@ -631,7 +631,7 @@ public class TypeActivity extends AppCompatActivity {
                                         isQp = false;
                                         isMs = true;
                                         value = 1;
-                                        decreaseLimit(value);
+                                        //decreaseLimit(value);
 
                                         Log.i("Papers", String.valueOf(papersToDownload));
 
@@ -833,7 +833,7 @@ public class TypeActivity extends AppCompatActivity {
 //                if(val <= dailyRemaining){
 
                 if(1 == 1){
-                    decreaseLimit(val);
+                    //decreaseLimit(val);
                     singlePaper = false;
                     Boolean isQp = true;
                     Boolean isMs = true;
@@ -913,7 +913,7 @@ public class TypeActivity extends AppCompatActivity {
 
 
                             multipleDownload.dismiss();
-                            decreaseLimit(val);
+                            //decreaseLimit(val);
                             //downloadPdf(0, urlsToDownloadFullSet, filenamesFullSet, isQp, isMs, val);
 
                         } else {
@@ -1007,7 +1007,7 @@ public class TypeActivity extends AppCompatActivity {
                                 downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
 
                                 multipleDownload.dismiss();
-                                decreaseLimit(val);
+                                //decreaseLimit(val);
                                 //downloadPdf(0, urlsToDownloadMultiple, filenamesMultiple, isQp, isMs, val);
 
                             }

@@ -92,6 +92,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -314,10 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.activity_main);
 
-        ParseInstallation.getCurrentInstallation().saveInBackground();
-
-        //ParseAnalytics.trackAppOpenedInBackground(getIntent());
-
+        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
 
         loadingDialog = new LoadingDialog(MainActivity.this);
 
@@ -344,77 +342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(connectionDetector.checkConnection()) {
 
-            Intent loginIntentUsername = getIntent();
-            username = loginIntentUsername.getStringExtra("username");
 
-            ParseQuery<ParseUser> queryPackage = ParseUser.getQuery();
-
-            queryPackage.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-            queryPackage.setLimit(1);
-
-
-            queryPackage.findInBackground(new FindCallback<ParseUser>() {
-                @Override
-                public void done(List<ParseUser> objects, ParseException e) {
-                    if (e == null) {
-
-                        if (objects.size() > 0) {
-
-                            for (ParseUser object : objects) {
-
-                                packageSelected = object.getString("package");
-                                resetLimitDate = object.getCreatedAt();
-                                setAlarmDailyLimit(resetLimitDate.getTime());
-                                setAlarmMonthlyLimit(resetLimitDate.getTime());
-                                Log.i("Date", String.valueOf(object.getCreatedAt().getTime()));
-                            }
-                        }
-                    }
-                    else{
-
-                        Log.i("Alarm", e.getMessage());
-                    }
-                }
-            });
-
-
-            ParseQuery<ParseUser> query = ParseUser.getQuery();
-            query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-            query.setLimit(1);
-
-            query.findInBackground(new FindCallback<ParseUser>() {
-                @Override
-                public void done(List<ParseUser> objects, ParseException e) {
-                    if (e == null) {
-
-                        if (objects.size() > 0) {
-
-                            for (ParseUser object : objects) {
-
-                                try {
-
-                                    Log.i("Limits", "" + object.getString("dailyRemaining"));
-                                    Log.i("Limits", "" + object.getString("monthlyRemaining"));
-
-                                    packageSelected = object.getString("package");
-                                    dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
-                                    monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
-                                } catch (Exception ex) {
-
-                                    String err = (ex.getMessage() == null) ? "Failed" : ex.getMessage();
-                                    Log.e("sdcard-err2:", err);
-                                }
-
-
-                                Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
-                            }
-                        }
-                    } else {
-
-                        e.printStackTrace();
-                    }
-                }
-            });
             // do this every 24 hours, and 30 days
 
             todayDate = getDateFromFormat("dd-MM-yyyy");
@@ -671,34 +599,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void decreaseLimit(int amountToDecrease){
 
-        dailyRemaining = dailyRemaining - amountToDecrease;
-        monthlyRemaining = monthlyRemaining - amountToDecrease;
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-                            object.saveInBackground();
-                        }
-                    }
-                }
-                else{
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
+//        dailyRemaining = dailyRemaining - amountToDecrease;
+//        monthlyRemaining = monthlyRemaining - amountToDecrease;
+//
+//        ParseQuery<ParseUser> query = ParseUser.getQuery();
+//        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+//
+//        query.findInBackground(new FindCallback<ParseUser>() {
+//            @Override
+//            public void done(List<ParseUser> objects, ParseException e) {
+//                if(e == null){
+//
+//                    if(objects.size() > 0){
+//
+//                        for(ParseUser object : objects){
+//
+//                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
+//                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
+//                            object.saveInBackground();
+//                        }
+//                    }
+//                }
+//                else{
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
 
 
@@ -1331,39 +1259,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "Oh I passed the milestone ffs");
     }
 
-    public void setAlarmDailyLimit(long currentDay){
-
-        if(currentDay != 0) {
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, MyAlarmDaily.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, currentDay, AlarmManager.INTERVAL_DAY, pendingIntent);
-
-            Log.i("Alarm", "Alarm is running");
-
-        }
-    }
-
-    public void setAlarmMonthlyLimit(long currentMonth){
-
-        // FIXME: 2/2/2020
-
-        if(currentMonth != 0) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, MyAlarmMonthly.class);
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentMonth, AlarmManager.INTERVAL_DAY * 30, pendingIntent);
-
-            Log.i("Alarm", "Alarm is running (monthly)");
-
-
-            // test with 2 days for now
-        }
-    }
 
     public void showMultipleDownloads(int which, List<String> urlsToDownload, List<String> papersToDownload, Boolean isQp, Boolean isMs, String examCode){
 

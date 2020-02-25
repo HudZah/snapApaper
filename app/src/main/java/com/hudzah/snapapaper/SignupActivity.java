@@ -123,8 +123,8 @@ public class SignupActivity extends AppCompatActivity {
                                     user.put("phoneNumber", phoneNumber.getText().toString());
                                     user.put("examBoard", itemSelected);
                                     user.put("package", "Free");
-                                    user.put("dailyRemaining", "5");
-                                    user.put("monthlyRemaining", "30");
+//                                    user.put("dailyRemaining", "5");
+//                                    user.put("monthlyRemaining", "30");
 
                                     user.signUpInBackground(new SignUpCallback() {
                                         @Override

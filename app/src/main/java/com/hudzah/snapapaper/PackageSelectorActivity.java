@@ -61,7 +61,6 @@ public class PackageSelectorActivity extends AppCompatActivity {
         // Purchase
         String packageSelected = "Premium";
 
-        parseSave(packageSelected);
 
     }
 
@@ -69,7 +68,6 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
         String packageSelected = "Plus";
 
-        parseSave(packageSelected);
     }
 
     @Override
@@ -124,131 +122,10 @@ public class PackageSelectorActivity extends AppCompatActivity {
 
                 String packageSelected = "Free";
 
-                parseSave(packageSelected);
-
             }
         });
 
 
-    }
-
-
-
-    public void parseSave(String packageSelected) {
-
-        if (!connectionDetector.checkConnection()) {
-
-            Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_LONG).show();
-        } else {
-
-            Log.i("PackageSelected", packageSelected);
-
-            userQuery.findInBackground(new FindCallback<ParseUser>() {
-                @Override
-                public void done(List<ParseUser> objects, ParseException e) {
-
-                    if (e == null) {
-
-                        if (objects.size() > 0) {
-
-                            for (ParseUser object : objects) {
-
-                                loadingDialog.startLoadingDialog();
-
-                                Log.i("User is", object.getUsername());
-
-
-                                if(!packageSelected.equals("")) {
-
-                                    object.put("package", packageSelected);
-                                    object.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            if(e == null){
-
-                                                Log.i("Saved", "Saved Package");
-                                            }
-                                            else{
-                                                Log.i("Error", e.getMessage());
-                                            }
-                                        }
-                                    });
-
-                                    if (packageSelected.equals("Free")) {
-
-                                        object.put("dailyRemaining", "5");
-                                        object.put("monthlyRemaining", "30");
-                                        object.saveInBackground(new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-
-                                                if(e == null){
-
-                                                    changeIntent();
-                                                }
-                                                else{
-
-                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-
-                                        
-                                    } else if (packageSelected.equals("Plus")) {
-
-                                        object.put("dailyRemaining", "10");
-                                        object.put("monthlyRemaining", "60");
-                                        object.saveInBackground(new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-
-                                                if(e == null){
-
-                                                    changeIntent();
-                                                }else{
-
-                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-
-
-                                    } else if (packageSelected.equals("Premium")) {
-
-                                        object.put("dailyRemaining", "20");
-                                        object.put("monthlyRemaining", "120");
-                                        object.saveInBackground(new SaveCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-
-                                                if(e == null){
-
-                                                    changeIntent();
-                                                }else{
-
-                                                    Toast.makeText(PackageSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-
-                                    }
-                                    else{
-
-                                        Toast.makeText(PackageSelectorActivity.this, "Could not sign up", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    ParseUser.logOut();
-
-                                }
-
-                                loadingDialog.dismissDialog();
-
-                            }
-                        }
-                    }
-                }
-            });
-        }
     }
 
     private void changeIntent() {
