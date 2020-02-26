@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,6 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -31,8 +38,12 @@ import java.util.List;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
+import static com.sun.activation.registries.LogSupport.log;
+
 public class LoginActivity extends AppCompatActivity {
 
+    private static final int MY_REQUEST_CODE = 1;
     TextView errorTextView;
 
     TextView registerButton;
@@ -42,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     LoadingDialog loadingDialog;
 
     EditText passwordEditText;
+
+    AppUpdateManager appUpdateManager;
 
     ScrollView relativeLayout;
 
@@ -61,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
         relativeLayout = (ScrollView)findViewById(R.id.relativeLayout);
+
+        checkForUpdates();
 
         if(ParseUser.getCurrentUser() != null){
 
@@ -107,7 +122,67 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void checkForUpdates() {
 
+        appUpdateManager = AppUpdateManagerFactory.create(LoginActivity.this);
+
+// Returns an intent object that you use to check for an update.
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+// Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo,
+                            IMMEDIATE,
+                            this,
+                            MY_REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            IMMEDIATE,
+                                            this,
+                                            MY_REQUEST_CODE);
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+    }
 
 
     public void login(View view) {
