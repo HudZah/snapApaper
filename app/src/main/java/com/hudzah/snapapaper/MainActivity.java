@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -43,8 +44,10 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -88,6 +91,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -158,10 +162,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Boolean isMs;
 
     String LOG_TAG = "MainActivity";
-
-    int dailyRemaining;
-
-    int monthlyRemaining;
 
     int value;
 
@@ -239,53 +239,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     DownloadPdf downloadPdf;
 
+    String examBoard;
+
+    String DOWNLOADED_BY = "Camera";
+
 
     public static final String KEY_TASK = "key_task";
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-        query.setLimit(1);
-
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            try {
-
-                                Log.i("Limits", "" + object.getString("dailyRemaining"));
-                                Log.i("Limits", "" + object.getString("monthlyRemaining"));
-
-                                dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
-                                monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
-                            }
-                            catch (Exception ex){
-
-                                String err = (ex.getMessage()==null)?"Failed":ex.getMessage();
-                                Log.e("sdcard-err2:",err);
-                            }
-
-
-                            Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
-                        }
-                    }
-                }
-                else{
-
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     public void torchAction(View view){
 
@@ -339,6 +299,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         connectionDetector = new ConnectionDetector(this);
 
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.setLimit(1);
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+
+                    if(objects.size() > 0){
+
+                        for(ParseUser object : objects){
+
+                            examBoard = object.getString("examBoard");
+                            Log.i("ExamBoard", examBoard);
+
+                        }
+                    }
+                }
+                else{
+
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
 
         if(connectionDetector.checkConnection()) {
 
@@ -348,9 +336,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             todayDate = getDateFromFormat("dd-MM-yyyy");
 
             currentMonth = getDateFromFormat("MM-yyyy");
-
-            Log.i("Limits", String.valueOf(dailyRemaining));
-
 
             drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -592,41 +577,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void callProfileIntent(){
 
         Intent profileIntent = new Intent(getApplicationContext(), MyProfileActivity.class);
-        profileIntent.putExtra("dailyRemaining", dailyRemaining);
-        profileIntent.putExtra("monthlyRemaining", monthlyRemaining);
         startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
-    }
-
-    public void decreaseLimit(int amountToDecrease){
-
-//        dailyRemaining = dailyRemaining - amountToDecrease;
-//        monthlyRemaining = monthlyRemaining - amountToDecrease;
-//
-//        ParseQuery<ParseUser> query = ParseUser.getQuery();
-//        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-//
-//        query.findInBackground(new FindCallback<ParseUser>() {
-//            @Override
-//            public void done(List<ParseUser> objects, ParseException e) {
-//                if(e == null){
-//
-//                    if(objects.size() > 0){
-//
-//                        for(ParseUser object : objects){
-//
-//                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-//                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-//                            object.saveInBackground();
-//                        }
-//                    }
-//                }
-//                else{
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
     }
 
 
@@ -680,9 +631,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.item_f:
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
-                startActivity(aboutIntent);
-                break;
+
+                LoadingDialog loadingDialog = new LoadingDialog(MainActivity.this);
+
+                loadingDialog.startLoadingDialog();
+
+                final Handler handler = new Handler();
+
+                String text = "Tired of using ad-filled websites to get your past papers? Switch to snapApaper \n\nhttps://play.google.com/store/apps/details?id=com.hudzah.snapapaper";
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        loadingDialog.dismissDialog();
+
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1){
+
+
+                            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                            shareIntent.setType("text/plain");
+                            MainActivity.this.startActivity(Intent.createChooser(shareIntent, "Share snapApaper via"));
+
+                        }
+                        else{
+
+
+                            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+                            shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "snapApaper");
+                            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+                            shareIntent.setType("text/plain");
+
+
+                            MainActivity.this.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                        }
+
+                    }
+                }, 1500);
 
 
         }
@@ -831,7 +820,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     String msg = "Image Capture Failed : " + message;
                                     Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
                                     if (cause != null) {
-                                        cause.printStackTrace();
+
+                                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -889,7 +879,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                e.printStackTrace();
+
+                                if(e != null){
+
+                                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                 );
@@ -943,7 +937,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        else{
+        else if(!isMatching){
             loadingDialog.dismissDialog();
 
 
@@ -1010,8 +1004,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         isQp = true;
                                         isMs = false;
                                         value = 1;
-                                        decreaseLimit(value);
-                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
                                     }
 
                                     else if(which == 1){
@@ -1019,8 +1012,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         isQp = false;
                                         isMs = true;
                                         value = 1;
-                                        decreaseLimit(value);
-                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
                                     }
                                 }
                             }).show();
@@ -1091,8 +1083,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         float cX = w / 2f;
         float cY = h / 2f;
 
-        int rotationDgr;
         int rotation = (int)textureView.getRotation();
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            Log.i("Orientation", "POrtrait");
+        }
+        else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+            Log.i("Orientation", "Landscape");
+        }
+
+        int rotationDgr;
+
+        Log.i("Orientation", "Rotation is " + rotation);
 
         switch(rotation){
             case Surface.ROTATION_0:
@@ -1111,7 +1115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return;
         }
 
-        mx.postRotate((float)rotationDgr, cX, cY);
+        mx.postRotate(-rotationDgr, cX, cY);
         textureView.setTransform(mx);
     }
 
@@ -1123,7 +1127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         catch (IOException e){
 
-            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
@@ -1176,8 +1180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.i(LOG_TAG, "Type");
         Intent typeIntent = new Intent(this, TypeActivity.class);
-        typeIntent.putExtra("dailyRemaining", dailyRemaining);
-        typeIntent.putExtra("monthlyRemaining", monthlyRemaining);
 
         startActivityForResult(typeIntent, 1);
     }
@@ -1221,8 +1223,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(resultCode == RESULT_OK){
 
-                dailyRemaining = data.getIntExtra("dailyRemaining", 0);
-                monthlyRemaining = data.getIntExtra("monthlyRemaining", 0);
             }
 
         }
@@ -1371,12 +1371,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                if(val <= dailyRemaining){
 
                 if(1 == 1){
-                    decreaseLimit(val);
                     singlePaper = false;
                     Boolean isQp = true;
                     Boolean isMs = true;
                     Log.i("ArrayPapers", String.valueOf(papersToDownload));
-                    downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                    downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
 
                 }
                 else{
@@ -1445,13 +1444,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Log.i("Tester", val + paperType);
 
                             codeSplitter.createCodeForFullSet(val, paperType);
-                            downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
+                            downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper, DOWNLOADED_BY);
 
                             Log.i("Papers", String.valueOf(codeSplitter.getCodes()));
 
 
                             multipleDownload.dismiss();
-                            decreaseLimit(val);
 
                         } else {
 
@@ -1539,10 +1537,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 codeSplitter.createCodeForMultipleYears(val, paperType, fromYear, toYear);
 
-                                downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
+                                downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper, DOWNLOADED_BY);
 
                                 multipleDownload.dismiss();
-                                decreaseLimit(val);
 
                             }
                             else{

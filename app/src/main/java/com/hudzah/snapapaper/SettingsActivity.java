@@ -25,8 +25,8 @@ import androidx.preference.PreferenceFragmentCompat;
 public class SettingsActivity extends AppCompatActivity {
 
     ListView listView;
-    String titles[] = {"Edit Profile", "Report A Bug", "Suggestions", "Rate snapApaper", "Privacy Policy"};
-    int images[] = {R.drawable.ic_account_circle_black_24dp, R.drawable.ic_bug_report_black_24dp, R.drawable.ic_event_available_black_24dp, R.drawable.ic_star_black_24dp, R.drawable.ic_security_black_24dp};
+    String titles[] = {"Edit Profile", "Report A Bug", "Suggestions", "Rate snapApaper", "Privacy Policy", "About Us"};
+    int images[] = {R.drawable.ic_account_circle_black_24dp, R.drawable.ic_bug_report_black_24dp, R.drawable.ic_event_available_black_24dp, R.drawable.ic_star_black_24dp, R.drawable.ic_security_black_24dp, R.drawable.ic_info_outline_black_24dp};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,11 @@ public class SettingsActivity extends AppCompatActivity {
                     Intent websiteIntent = new Intent("android.intent.action.VIEW",
                             Uri.parse("https://snapapaper.wixsite.com/snapapaper/privacy-policy"));
                     startActivity(websiteIntent);
+                }
+                if(position == 5){
+
+                    Intent aboutIntent = new Intent(SettingsActivity.this, AboutActivity.class);
+                    startActivity(aboutIntent);
                 }
             }
         });

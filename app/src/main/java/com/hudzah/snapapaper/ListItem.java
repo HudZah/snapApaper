@@ -77,7 +77,7 @@ public class ListItem {
             }
             else{
 
-                Snackbar snackbar = Snackbar.make(recyclerView, "Paper maybe corrupted", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(recyclerView, "Paper might be corrupted", Snackbar.LENGTH_LONG);
 
                 snackbar.setAction("Delete", new View.OnClickListener() {
                     @Override
@@ -110,38 +110,7 @@ public class ListItem {
 
                 if(which == 0) {
 
-                    final Handler handler = new Handler();
-
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Share
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-
-                                final String AUTHORITY = context.getPackageName() + ".fileprovider";
-
-                                Uri contentUri = FileProvider.getUriForFile(context, AUTHORITY, file);
-
-                                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                                shareIntent.setType("application/pdf");
-                                context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
-
-                            } else {
-
-                                final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-                                Uri fileUri = Uri.parse(file.getAbsolutePath());
-
-                                shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                                shareIntent.setType("application/pdf");
-                                context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
-
-                            }
-
-                        }
-
-                    }, 200);
+                    sharePdf(position, context);
                 }
 
                 else if(which == 1){
@@ -181,6 +150,44 @@ public class ListItem {
 
             }
         }).show();
+    }
+
+    public void sharePdf(int position, Context context){
+
+        final Handler handler = new Handler();
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), mExamPaperCode + ".pdf");
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Share
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+
+                    final String AUTHORITY = context.getPackageName() + ".fileprovider";
+
+                    Uri contentUri = FileProvider.getUriForFile(context, AUTHORITY, file);
+
+                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                    shareIntent.setType("application/pdf");
+                    context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                } else {
+
+                    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+                    Uri fileUri = Uri.parse(file.getAbsolutePath());
+
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                    shareIntent.setType("application/pdf");
+                    context.startActivity(Intent.createChooser(shareIntent, "Share file via"));
+
+                }
+
+            }
+
+        }, 200);
     }
 
     public void deleteFile(int position, Context context){

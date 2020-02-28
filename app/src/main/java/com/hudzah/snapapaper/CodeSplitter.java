@@ -3,11 +3,15 @@ package com.hudzah.snapapaper;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.hudzah.snapapaper.MainActivity.examCodesMap;
 import static com.hudzah.snapapaper.TypeActivity.paperNumberEditText;
 import static com.hudzah.snapapaper.TypeActivity.selectedExamCode;
 
@@ -64,6 +68,9 @@ public class CodeSplitter {
         // Splits into 9709, 42, F, M, 19
         // Splits into 9709, 42, M, J, 19
         // Splits into 9709, 42, O, N, 19
+
+        // Check to see if exam code exists in map
+
 
 
 

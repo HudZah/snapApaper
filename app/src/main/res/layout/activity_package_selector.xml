@@ -40,7 +40,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Select A Package"
+                    android:text="Why snapApaper?"
                     android:gravity="center_horizontal"
                     android:textSize="24sp"
                     android:textColor="@color/black"
@@ -52,7 +52,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Currently our app is free for everyone to use with no restrictions, however in the future we might add different packages to keep this app afloat"
+                    android:text="snapApaper is the app for all your past papers. Providing students and teachers with the ability to download papers in the easiest way possible for free!"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="40dp"
                     android:textColor="@color/headings"

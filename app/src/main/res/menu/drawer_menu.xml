@@ -32,9 +32,16 @@
 
     <item
         android:id="@+id/item_d"
-        android:title="Pricing"
+        android:title="Store"
         android:checkable="true"
         android:icon="@drawable/ic_monetization_on_black_24dp"
+        />
+
+    <item
+        android:id="@+id/item_f"
+        android:title="Share"
+        android:checkable="true"
+        android:icon="@drawable/ic_share_black_24dp"
         />
 
     <item
@@ -44,12 +51,7 @@
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         />
 
-    <item
-        android:id="@+id/item_f"
-        android:title="About us"
-        android:checkable="true"
-        android:icon="@drawable/ic_info_outline_black_24dp"
-        />
+
 
     </group>
 </menu>

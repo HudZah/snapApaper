@@ -162,7 +162,6 @@ public class SettingsEditProfile extends AppCompatActivity {
 
         if(connectionDetector.checkConnection()){
 
-            loadingDialog.startLoadingDialog();
 
             ParseQuery<ParseUser> query = ParseUser.getQuery();
 
@@ -173,51 +172,60 @@ public class SettingsEditProfile extends AppCompatActivity {
             // Check if the new username already exists on server
             query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
 
-            query.findInBackground(new FindCallback<ParseUser>() {
-                @Override
-                public void done(List<ParseUser> objects, ParseException e) {
+            if(newExamBoard.equals("CIE (CAIE)")) {
 
-                    if(e == null){
-
-                        for(ParseUser object : objects){
-
-                            object.setUsername(newUsername);
-                            object.put("examBoard", newExamBoard);
-                            object.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-
-                                    loadingDialog.dismissDialog();
-
-                                    if(e == null){
-
-                                        // Changes saved
-                                        final Snackbar snackBar = Snackbar.make(relativeLayout, "Changes saved! Please re-login", Snackbar.LENGTH_INDEFINITE);
-
-                                        snackBar.setAction("OK",
-                                                new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View view) {
-
-                                                        snackBar.dismiss();
-                                                        ParseUser.logOut();
-                                                        Intent intent = new Intent(SettingsEditProfile.this, LoginActivity.class);
-                                                        startActivity(intent);
-                                                    }
-                                                }).show();
+                loadingDialog.startLoadingDialog();
 
 
+                query.findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> objects, ParseException e) {
+
+                        if (e == null) {
+
+                            for (ParseUser object : objects) {
+
+                                object.setUsername(newUsername);
+                                object.put("examBoard", newExamBoard);
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+
+                                        loadingDialog.dismissDialog();
+
+                                        if (e == null) {
+
+                                            // Changes saved
+                                            final Snackbar snackBar = Snackbar.make(relativeLayout, "Changes saved! Please re-login", Snackbar.LENGTH_INDEFINITE);
+
+                                            snackBar.setAction("OK",
+                                                    new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+
+                                                            snackBar.dismiss();
+                                                            ParseUser.logOut();
+                                                            Intent intent = new Intent(SettingsEditProfile.this, LoginActivity.class);
+                                                            startActivity(intent);
+                                                        }
+                                                    }).show();
+
+
+                                        } else {
+
+                                            errorTextView.setText(e.getMessage());
+                                        }
                                     }
-                                    else{
-
-                                        errorTextView.setText(e.getMessage());
-                                    }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            else{
+
+                Toast.makeText(this, "Sorry " + newExamBoard + " is not available yet", Toast.LENGTH_SHORT).show();
+            }
 
 
         }

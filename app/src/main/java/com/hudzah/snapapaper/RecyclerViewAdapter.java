@@ -36,6 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void OnItemClick(int position);
         void OnDeleteClick(int position);
         void OnLongClick(int position);
+        void OnShareClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -91,10 +92,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             else{
 
 
-                holder.subjectName.setText("File corrupted");
+                holder.subjectName.setText("File Corrupted");
                 holder.subjectName.setTextColor(Color.parseColor("#FF0000"));
                 holder.examPaperCode.setText(currentItem.getExamCode());
-                holder.examLevel.setText("This paper does not exist");
+                holder.examLevel.setText("This paper may not exist");
             }
         }
 
@@ -113,6 +114,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public TextView examLevel;
         public CardView cardView;
         public ImageView deleteButton;
+        public ImageView shareButton;
 
 
         public RecyclerViewHolder(@NonNull View itemView, OnItemClickListener listener) {
@@ -123,6 +125,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             examLevel = (TextView)itemView.findViewById(R.id.examLevel);
             cardView = (CardView)itemView.findViewById(R.id.cardView);
             deleteButton = (ImageView)itemView.findViewById(R.id.deleteButton);
+            shareButton = (ImageView)itemView.findViewById(R.id.shareButton);
 
 
 
@@ -164,6 +167,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION) {
                             listener.OnDeleteClick(position);
+                        }
+                    }
+                }
+            });
+
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null) {
+
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION) {
+                            listener.OnShareClick(position);
                         }
                     }
                 }

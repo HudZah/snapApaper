@@ -61,6 +61,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.hudzah.snapapaper.MainActivity.examCodesMap;
 import static com.hudzah.snapapaper.MainActivity.packageSelected;
 
 public class TypeActivity extends AppCompatActivity {
@@ -195,6 +196,8 @@ public class TypeActivity extends AppCompatActivity {
     CodeSplitter codeSplitter;
     DownloadPdf downloadPdf;
 
+    String DOWNLOADED_BY = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,12 +215,6 @@ public class TypeActivity extends AppCompatActivity {
         multipleDownload = new Dialog(this);
 
         userCode = (EditText) findViewById(R.id.paperCode);
-
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.examboard_spinner, android.R.layout.simple_spinner_dropdown_item);
-
-        spinner.setAdapter(arrayAdapter);
 
         object = new ParseObject("Papers");
 
@@ -467,37 +464,6 @@ public class TypeActivity extends AppCompatActivity {
         return date;
     }
 
-    public void decreaseLimit(int amountToDecrease){
-
-        dailyRemaining -= amountToDecrease;
-        monthlyRemaining -= amountToDecrease;
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-                            object.saveInBackground();
-                        }
-                    }
-                }
-                else{
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Log.i(LOG_TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -522,6 +488,7 @@ public class TypeActivity extends AppCompatActivity {
         if(1 ==1){
 
             if(1==1){
+
 
 
 //            if(monthlyRemaining > 0) {
@@ -551,7 +518,14 @@ public class TypeActivity extends AppCompatActivity {
                             // Under signle PAPEr OMLY!
                             String type = "type";
 
-                            showChoices(type);
+                            if(checkIfCodeExists()) {
+
+                                showChoices(type);
+                            }
+                            else{
+
+                                Snackbar.make(layout, "Please enter a valid exam code", Snackbar.LENGTH_LONG).show();
+                            }
 
                         }
                     }
@@ -572,6 +546,20 @@ public class TypeActivity extends AppCompatActivity {
         }
     }
 
+    private Boolean checkIfCodeExists() {
+
+        String[] checkForCode = codeText.split("/");
+
+        if(examCodesMap.containsKey(checkForCode[0])){
+
+            return true;
+        }
+        else{
+
+            return false;
+        }
+    }
+
     public void showChoices(String type){
 
         choiceBuilder = new AlertDialog.Builder(this);
@@ -584,11 +572,14 @@ public class TypeActivity extends AppCompatActivity {
 
         if(type.equals("type")) {
             codeSplitter.createCodeForType();
+            DOWNLOADED_BY = "Type";
 
         }
         else if(type.equals("search")){
 
             codeSplitter.createCodeForSearch();
+            DOWNLOADED_BY = "Search";
+
         }
 
         papersToDownload = codeSplitter.getCodes();
@@ -624,7 +615,7 @@ public class TypeActivity extends AppCompatActivity {
 
                                         Log.i("Papers", String.valueOf(papersToDownload));
 
-                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
 
                                     } else if (which == 1) {
 
@@ -635,7 +626,7 @@ public class TypeActivity extends AppCompatActivity {
 
                                         Log.i("Papers", String.valueOf(papersToDownload));
 
-                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                                        downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
 
 
                                     }
@@ -838,7 +829,7 @@ public class TypeActivity extends AppCompatActivity {
                     Boolean isQp = true;
                     Boolean isMs = true;
                     Log.i("ArrayPapers", String.valueOf(papersToDownload));
-                    downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper);
+                    downloadPdf.downloadSinglePaper(urlsToDownload, papersToDownload, isQp, isMs, value, singlePaper, DOWNLOADED_BY);
 
                 }
                 else{
@@ -907,7 +898,7 @@ public class TypeActivity extends AppCompatActivity {
                             Log.i("Tester", val + paperType);
 
                             codeSplitter.createCodeForFullSet(val, paperType);
-                            downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
+                            downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper, DOWNLOADED_BY);
 
                             Log.i("Papers", String.valueOf(codeSplitter.getCodes()));
 
@@ -1004,7 +995,7 @@ public class TypeActivity extends AppCompatActivity {
 
                                 Log.i("PapersTest", String.valueOf(codeSplitter.getCodes()));
 
-                                downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper);
+                                downloadPdf.downloadSinglePaper(codeSplitter.getUrls(), codeSplitter.getCodes(), isQp, isMs, val, singlePaper, DOWNLOADED_BY);
 
                                 multipleDownload.dismiss();
                                 //decreaseLimit(val);

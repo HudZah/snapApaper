@@ -188,6 +188,11 @@ public class MyListActivity extends AppCompatActivity {
                                     public void OnLongClick(int position) {
                                         fileOptions(position);
                                     }
+
+                                    @Override
+                                    public void OnShareClick(int position) {
+                                        shareItem(position);
+                                    }
                                 });
 
 
@@ -236,6 +241,11 @@ public class MyListActivity extends AppCompatActivity {
         listItems.remove(position);
 
         adapter.notifyItemRemoved(position);
+    }
+
+    public void shareItem(int position){
+
+        listItems.get(position).sharePdf(position ,this);
     }
 
     public void fileOptions(int position){

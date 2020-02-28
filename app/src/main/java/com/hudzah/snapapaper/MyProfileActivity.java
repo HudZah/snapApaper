@@ -118,10 +118,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
         upgradePackage = (RelativeLayout)findViewById(R.id.upgradePackage);
 
-//        dailyRemainingTextView = (TextView)findViewById(R.id.dailyRemainingTextView);
-//
-//        monthlyRemainingTextView = (TextView)findViewById(R.id.monthlyRemainingTextView);
-
         dailyPackageDetails = (TextView)findViewById(R.id.dailyPackageDetails);
 
         monthlyPackageDetails = (TextView)findViewById(R.id.monthlyPackageDetails);

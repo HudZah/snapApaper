@@ -45,6 +45,8 @@ public class DownloadPdf {
 
     List<String> finalUrlsToDownload;
 
+    String downloadedBy;
+
     private static final String TAG = "DownloadPdf";
 
 
@@ -55,7 +57,7 @@ public class DownloadPdf {
         this.layout = layout;
     }
 
-    public void downloadSinglePaper(List<String> urlsToDownload, List<String> fileNames, Boolean isQp, Boolean isMs, int value, Boolean singlePaper){
+    public void downloadSinglePaper(List<String> urlsToDownload, List<String> fileNames, Boolean isQp, Boolean isMs, int value, Boolean singlePaper, String downloadedBy){
 
         connectionDetector = new ConnectionDetector(context);
 
@@ -65,7 +67,6 @@ public class DownloadPdf {
         if (!connectionDetector.checkConnection()) {
 
             // If no connection, refund limits
-            decreaseLimit(-value);
 
             final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
@@ -173,6 +174,7 @@ public class DownloadPdf {
                             papersObject.put("paper", fileName);
                             papersObject.put("subject", CodeSplitter.subjectName); // issue
                             papersObject.put("examLevel", CodeSplitter.examLevelFull);
+                            papersObject.put("downloadedBy", downloadedBy);
                             papersObject.saveInBackground();
 
                         }
@@ -233,37 +235,7 @@ public class DownloadPdf {
         }
     }
 
-    public void decreaseLimit(int amountToDecrease){
 
-//        dailyRemaining -= amountToDecrease;
-//        monthlyRemaining -= amountToDecrease;
-//
-//        ParseQuery<ParseUser> query = ParseUser.getQuery();
-//        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-//
-//        query.findInBackground(new FindCallback<ParseUser>() {
-//            @Override
-//            public void done(List<ParseUser> objects, ParseException e) {
-//                if(e == null){
-//
-//                    if(objects.size() > 0){
-//
-//                        for(ParseUser object : objects){
-//
-//                            object.put("dailyRemaining", String.valueOf(dailyRemaining));
-//                            object.put("monthlyRemaining", String.valueOf(monthlyRemaining));
-//                            object.saveInBackground();
-//                        }
-//                    }
-//                }
-//                else{
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        Log.i(TAG, "Decreased limit: " + dailyRemaining + " and monthly remaining " + monthlyRemaining);
-    }
 
     BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
