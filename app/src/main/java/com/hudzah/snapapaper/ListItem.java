@@ -34,65 +34,68 @@ public class ListItem {
     private String mSubjectName;
     private String mExamPaperCode;
     private String mExamLevel;
+    private String mDateCreated;
     MyListActivity myListActivity;
+    Boolean isDownloaded = false;
 
 
-    public ListItem(String subjectName, String examPaperCode, String examLevel){
+    public ListItem(String subjectName, String examPaperCode, String examLevel, Date createdAt){
 
         mSubjectName = subjectName;
         mExamPaperCode = examPaperCode;
         mExamLevel = examLevel;
 
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+        mDateCreated = sdf.format(createdAt);
+
 
     }
 
-    public void openPdf(int position, Context context, RecyclerView recyclerView){
+    public void showDashboard(int position, Context context, RecyclerView recyclerView){
 
         // Open pdf
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), mExamPaperCode + ".pdf");
         Log.i("pdf file name", mExamPaperCode + ".pdf");
 
-        if(file.exists()) {
+        if(file.exists()) isDownloaded = true;
 
-            if(file.length() >  21000) {
+        else isDownloaded = false;
 
-                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                StrictMode.setVmPolicy(builder.build());
+        Log.i("Downloaded", isDownloaded.toString());
 
-                Intent target = new Intent(Intent.ACTION_VIEW);
-                target.setDataAndType(Uri.fromFile(file), "application/pdf");
-                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                Intent intent = Intent.createChooser(target, "Open File");
+        if(isDownloaded && file.length() <  21000) {
 
-                try {
-                    context.startActivity(intent);
+            Snackbar snackbar = Snackbar.make(recyclerView, "Paper might be corrupted", Snackbar.LENGTH_LONG);
+
+            snackbar.setAction("Delete", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    myListActivity.deleteItem(position);
                 }
-                catch (Exception e){
-
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            else{
-
-                Snackbar snackbar = Snackbar.make(recyclerView, "Paper might be corrupted", Snackbar.LENGTH_LONG);
-
-                snackbar.setAction("Delete", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        myListActivity.deleteItem(position);
-                    }
-                }).show();
-            }
+            }).show();
         }
+
         else{
 
-            Snackbar.make(recyclerView, "File may have been moved or deleted", Snackbar.LENGTH_LONG).show();
+            Intent dashboardIntent = new Intent(context, PaperDashboardActivity.class);
+            dashboardIntent.putExtra("examPaperCode", mExamPaperCode);
+            dashboardIntent.putExtra("examLevel", mExamLevel);
+            dashboardIntent.putExtra("dateCreated", mDateCreated);
+            dashboardIntent.putExtra("isDownloaded", isDownloaded);
+            dashboardIntent.putExtra("examSubjectName", mSubjectName);
+            dashboardIntent.putExtra("position", position);
+            context.startActivity(dashboardIntent);
         }
+
+
+
+
     }
+
+
 
     public void fileOptions(int position, Context context){
 
@@ -115,37 +118,11 @@ public class ListItem {
 
                 else if(which == 1){
 
-                    // Details
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Papers");
-                    query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-                    query.whereEqualTo("paper", mExamPaperCode);
-                    query.setLimit(1);
-
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-
-                            if(e == null){
-                                if(objects.size() > 0){
-
-                                    for(ParseObject object: objects){
-
-                                        Date date = object.getCreatedAt();
-
-                                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-
-                                        new AlertDialog.Builder(context)
-                                                .setTitle("Date created for " + mExamPaperCode)
-                                                .setMessage("Created on " + sdf.format(date))
-                                                .setPositiveButton("OK", null)
-                                                .show();
-
-                                    }
-                                }
-                            }
-                        }
-                    });
-
+                    new AlertDialog.Builder(context)
+                            .setTitle("Date created for " + mExamPaperCode)
+                            .setMessage("Created on " + mDateCreated)
+                            .setPositiveButton("OK", null)
+                            .show();
                 }
 
             }
@@ -178,6 +155,7 @@ public class ListItem {
                     final Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
                     Uri fileUri = Uri.parse(file.getAbsolutePath());
+
 
                     shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
                     shareIntent.setType("application/pdf");
@@ -266,4 +244,6 @@ public class ListItem {
             }
         });
     }
+
+
 }

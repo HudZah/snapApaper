@@ -3,16 +3,20 @@ package com.hudzah.snapapaper;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import android.os.Bundle;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -21,69 +25,49 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PricingActivity extends AppCompatActivity {
-
-    Button dropdownButtonPlus;
-
-    LinearLayout linearPlus;
-
-    CardView cardViewPlus;
-
-    Button dropdownButtonPremium;
-
-    LinearLayout linearPremium;
-
-    CardView cardViewPremium;
+public class PricingActivity extends AppCompatActivity implements PurchasesUpdatedListener {
 
 
+    RecyclerView recyclerView;
+
+    private static final String TAG = "PricingActivity";
+
+    private static BillingClient billingClient;
+
+    private List<String> skuList = new ArrayList<>();
+
+    CardView cardView;
+
+    Button dropDownButton;
+
+    LinearLayout linear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pricing);
 
-        cardViewPlus = (CardView)findViewById(R.id.cardViewPlus);
+        setupBillingClient();
 
-        cardViewPremium = (CardView)findViewById(R.id.cardViewPremium);
-
-        dropdownButtonPlus = (Button)findViewById(R.id.dropdownButtonPlus);
-
-        dropdownButtonPremium = (Button)findViewById(R.id.dropdownButtonPremium);
-
-        linearPlus = (LinearLayout)findViewById(R.id.linearPlus);
-
-        linearPremium = (LinearLayout)findViewById(R.id.linearPremium);
-
-
-
-        cardViewPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Purchase
-
-
-            }
-        });
-
-        cardViewPremium.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String packageSelected = "Premium";
-
-                //parseSave(packageSelected);
-            }
-        });
+        skuList.add("remove_ads");
 
         // toolbar
         androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+
+        initValues();
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null){
@@ -101,38 +85,141 @@ public class PricingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void plusDropdown(View view){
+    public void setupBillingClient(){
 
-        if(linearPlus.getVisibility() == View.GONE){
+        billingClient = BillingClient.newBuilder(this).enablePendingPurchases().setListener(this)
+                .build();
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(BillingResult billingResult) {
+                if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                    Log.d(TAG, "onBillingSetupFinished: Query");
+                    loadProducts();
+                }
+            }
 
-            TransitionManager.beginDelayedTransition(cardViewPlus, new AutoTransition());
-            linearPlus.setVisibility(View.VISIBLE);
-            dropdownButtonPlus.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-        }
-        else{
-
-            TransitionManager.beginDelayedTransition(cardViewPlus);
-            linearPlus.setVisibility(View.GONE);
-            dropdownButtonPlus.setBackgroundResource(R.drawable.arrow_bitmap);
-        }
-
+            @Override
+            public void onBillingServiceDisconnected() {
+                Log.d(TAG, "onBillingServiceDisconnected: Disconnected");
+            }
+        });
     }
 
-    public void premiumDropdown(View view){
+    public void initValues(){
 
+        cardView = findViewById(R.id.cardView);
+        dropDownButton = (Button) findViewById(R.id.dropdownButton);
+        linear = (LinearLayout) findViewById(R.id.linear);
+    }
 
-        if(linearPremium.getVisibility() == View.GONE){
+    public void loadProducts(){
 
-            TransitionManager.beginDelayedTransition(cardViewPremium, new AutoTransition());
-            linearPremium.setVisibility(View.VISIBLE);
-            dropdownButtonPremium.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+        if(billingClient.isReady()){
+            SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+
+            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+
+            billingClient.querySkuDetailsAsync(params.build(),
+                    new SkuDetailsResponseListener() {
+                        @Override
+                        public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList) {
+                            if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                                Log.d(TAG, "onSkuDetailsResponse: ResponseCode is " + billingResult.getResponseCode());
+                                cardView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onPurchaseListener(skuDetailsList);
+                                    }
+                                });
+                            }
+                            else Log.d(TAG, "onSkuDetailsResponse: ResponseCode is " + billingResult.getResponseCode());
+                        }
+                });
         }
-        else{
+    }
 
-            TransitionManager.beginDelayedTransition(cardViewPremium, new AutoTransition());
-            linearPremium.setVisibility(View.GONE);
-            dropdownButtonPremium.setBackgroundResource(R.drawable.arrow_bitmap);
+    public void setDropDownButton(View view){
+        if(linear.getVisibility() == View.GONE){
+
+            TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
+            linear.setVisibility(View.VISIBLE);
+            dropDownButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
         }
+                    else{
+
+            TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
+            linear.setVisibility(View.GONE);
+            dropDownButton.setBackgroundResource(R.drawable.arrow_bitmap);
+        }
+    }
+
+
+    public void onPurchaseListener(List<SkuDetails> skuDetailsList){
+        launchBillingFlow(skuDetailsList.get(0));
+    }
+
+    public void launchBillingFlow(SkuDetails skuDetailsList){
+
+        BillingFlowParams params = BillingFlowParams.newBuilder()
+                .setSkuDetails(skuDetailsList)
+                .build();
+        billingClient.launchBillingFlow(PricingActivity.this, params);
+    }
+
+    @Override
+    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
+        Log.d(TAG, "onPurchasesUpdated: " + billingResult.getResponseCode());
+        if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+            for(Purchase purchase : purchases){
+                acknowledgePurchase(purchase.getPurchaseToken());
+                savePurchaseToServer();
+            }
+        }
+        else if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED){
+            Toast.makeText(PricingActivity.this, "Sorry, you already own this item", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onPurchasesUpdated: Already Owned");
+        }
+    }
+
+    public void acknowledgePurchase(String purchaseToken){
+
+        AcknowledgePurchaseParams ackParams = AcknowledgePurchaseParams.newBuilder()
+                .setPurchaseToken(purchaseToken)
+                .build();
+        billingClient.acknowledgePurchase(ackParams, new AcknowledgePurchaseResponseListener() {
+            @Override
+            public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
+                if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                    Toast.makeText(PricingActivity.this, billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onAcknowledgePurchaseResponse: Payment Acknowledged");
+                }
+
+            }
+        });
+    }
+
+    public void savePurchaseToServer(){
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null){
+                    for(ParseUser object : objects){
+                        object.put("adsRemoved", true);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e == null){
+                                    Log.d(TAG, "done: Saved Successfully On Parse");
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
     }
 
 

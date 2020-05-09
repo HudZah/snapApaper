@@ -96,10 +96,6 @@ public class TypeActivity extends AppCompatActivity {
 
     Boolean isMs;
 
-    int dailyRemaining;
-
-    int monthlyRemaining;
-
     int value;
 
     SharedPreferences sharedPreferences;
@@ -292,35 +288,6 @@ public class TypeActivity extends AppCompatActivity {
 
         ArrayAdapter<String> arrayAdapterSubject = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayList);
         spinnerSubject.setAdapter(arrayAdapterSubject);
-
-
-        todayDate = getDateFromFormat("dd-MM-yyyy");
-        currentMonth = getDateFromFormat("MM-yyyy");
-
-        query = ParseUser.getQuery();
-        query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null){
-
-                    if(objects.size() > 0){
-
-                        for(ParseUser object : objects){
-
-                            Log.i("Limits", object.getString("dailyRemaining"));
-                            Log.i("Limits", object.getString("monthlyRemaining"));
-
-                            dailyRemaining = Integer.parseInt(object.getString("dailyRemaining"));
-                            monthlyRemaining = Integer.parseInt(object.getString("monthlyRemaining"));
-
-                            Log.i("Limits", "Daily remain " + dailyRemaining + " and monthly " + monthlyRemaining);
-                        }
-                    }
-                }
-            }
-        });
 
         // add back arrow to toolbar
         if (getSupportActionBar() != null) {

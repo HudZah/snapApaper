@@ -72,10 +72,6 @@ public class CodeSplitter {
         // Check to see if exam code exists in map
 
 
-
-
-        paperCode = splitText[0] + "_";
-
         Log.i("Test value", splitText[0] + splitText[1]  + splitText[2] + splitText[3] + splitText[4]);
 
         if(Integer.parseInt(splitText[4]) < 10){
@@ -98,6 +94,12 @@ public class CodeSplitter {
 
             }
         }
+        else{
+
+            splitText[1] = splitText[1];
+        }
+
+        paperCode = splitText[0] + "_";
 
 
         if (splitText[2].equals("F")) {
@@ -383,6 +385,38 @@ public class CodeSplitter {
 
 
         }
+    }
+
+    public void reverseCode(){
+
+        String originalCode = codeText;
+
+        String[] splitCode = codeText.split("_");
+
+        pdfUrlPart = MainActivity.examCodesMap.get(splitCode[0]);
+
+        pdfUrlPart = pdfUrlPart.replaceAll("\\s+", "%20");
+
+        if (Integer.valueOf(splitCode[0]) > 8000) {
+
+            examLevel = "A%20Levels";
+            examLevelFull = "A Level";
+        } else if (Integer.valueOf(splitCode[0]) < 1000) {
+
+            examLevel = "IGCSE";
+            examLevelFull = "IGCSE";
+        } else {
+
+            examLevel = "O%20Levels";
+            examLevelFull = "O level";
+        }
+
+        pdfUrl = "https://papers.gceguide.com/" + examLevel + "/" + pdfUrlPart + "/" + originalCode + ".pdf";
+
+        papersToDownload.add(originalCode);
+        urlsToDownload.add(pdfUrl);
+
+        //pdfUrlMs = pdfUrl.replace("_qp_", "_ms_");
     }
 
 

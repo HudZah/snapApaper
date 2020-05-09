@@ -253,12 +253,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
-                        android:fontFamily="sans-serif"
+                        android:fontFamily="sans-serif-medium"
                         android:text="Details"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:textColor="@color/black"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
+                        android:textSize="24sp"
+                         />
+
+
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -370,86 +373,18 @@
                     android:layout_marginTop="20dp"
                     android:orientation="vertical">
 
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
-                        android:fontFamily="sans-serif"
-                        android:text="Package"
-                        android:textAllCaps="true"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Promote"
+                        android:textAllCaps="false"
                         android:textColor="@color/black"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
+                        android:textSize="24sp"
+                        />
 
-        <!--            <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:orientation="vertical">-->
-
-        <!--            <TextView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="Limit remaining today"-->
-        <!--                android:textColor="@color/headings"-->
-        <!--                android:textSize="16sp" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/dailyRemainingTextView"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:fontFamily="sans-serif-light"-->
-        <!--                android:text="value"-->
-        <!--                android:textColor="#000000"-->
-        <!--                android:textSize="16sp" />-->
-
-        <!--            <View-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="1.5dp"-->
-        <!--                android:layout_marginTop="15dp"-->
-        <!--                android:background="@color/grey" />-->
-
-        <!--        </LinearLayout>-->
-
-        <!--            <LinearLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_marginTop="15dp"-->
-        <!--                android:orientation="vertical">-->
-
-        <!--                <TextView-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:text="Limit remaining for the month"-->
-        <!--                    android:textColor="@color/headings"-->
-        <!--                    android:textSize="16sp" />-->
-
-        <!--                <TextView-->
-        <!--                    android:id="@+id/monthlyRemainingTextView"-->
-        <!--                    android:layout_width="wrap_content"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:fontFamily="sans-serif-light"-->
-        <!--                    android:text="value"-->
-        <!--                    android:textColor="#000000"-->
-        <!--                    android:textSize="16sp" />-->
-
-        <!--                <View-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="1.5dp"-->
-        <!--                    android:layout_marginTop="15dp"-->
-        <!--                    android:background="@color/grey"-->
-        <!--                    />-->
-
-        <!--            </LinearLayout>-->
-
-        <!--            <TextView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="To extend your limit you can : "-->
-        <!--                android:textColor="@color/headings"-->
-        <!--                android:textSize="18sp"-->
-        <!--                android:layout_marginTop="15dp"-->
-        <!--                android:layout_marginBottom="20dp"-->
-        <!--/>-->
 
                     <LinearLayout
                         android:id="@+id/linear2"
@@ -459,6 +394,7 @@
                         android:layout_below="@id/rellay1">
 
                         <RelativeLayout
+                            android:visibility="gone"
                             android:layout_marginTop="20dp"
                             android:clickable="true"
                             android:onClick="startVideoAd"

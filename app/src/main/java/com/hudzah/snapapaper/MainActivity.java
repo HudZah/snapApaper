@@ -638,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 final Handler handler = new Handler();
 
-                String text = "Tired of using ad-filled websites to get your past papers? Switch to snapApaper \n\nhttps://play.google.com/store/apps/details?id=com.hudzah.snapapaper";
+                String text = "Use your camera to download past papers. Try snapApaper \n\nhttps://play.google.com/store/apps/details?id=com.hudzah.snapapaper";
 
                 handler.postDelayed(new Runnable() {
                     @Override

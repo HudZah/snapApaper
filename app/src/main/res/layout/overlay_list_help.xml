@@ -49,7 +49,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sharing Papers"
+                    android:text="Your List"
                     android:textColor="@color/headings"
                     android:textSize="26sp"
                     android:paddingTop="10dp"
@@ -60,7 +60,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="To share papers in snapApaper, simply long press on a paper in your list. Once you do that, you will be provided with some options, there select 'Share' and you will be able to share that paper to anyone you like\n\nYou can also view details about your paper"
+                    android:text="Your list is a collection of all the papers you have ever downloaded using snapApaper, inclusive of those you have deleted from your device. Removing a paper from your list will delete your paper from your device, list and from our server. If the paper does not exist on your device you will be allowed to download it again from the dashboard. You can also share papers to your friends from here!"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:layout_marginLeft="12dp"

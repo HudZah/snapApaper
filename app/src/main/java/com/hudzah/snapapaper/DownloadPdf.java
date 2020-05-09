@@ -66,7 +66,6 @@ public class DownloadPdf {
 
         if (!connectionDetector.checkConnection()) {
 
-            // If no connection, refund limits
 
             final Snackbar snackBar = Snackbar.make(layout, "You are not connected to a network", Snackbar.LENGTH_INDEFINITE);
 
@@ -168,15 +167,18 @@ public class DownloadPdf {
 
                         finalUrlsToDownload = urlsToDownload;
 
-                        for(int c = 0; c < urlsToDownload.size(); c++ ) {
+                        if(!downloadedBy.equals("List")) {
 
-                            papersObject.put("username", ParseUser.getCurrentUser().getUsername());
-                            papersObject.put("paper", fileName);
-                            papersObject.put("subject", CodeSplitter.subjectName); // issue
-                            papersObject.put("examLevel", CodeSplitter.examLevelFull);
-                            papersObject.put("downloadedBy", downloadedBy);
-                            papersObject.saveInBackground();
+                            for (int c = 0; c < urlsToDownload.size(); c++) {
 
+                                papersObject.put("username", ParseUser.getCurrentUser().getUsername());
+                                papersObject.put("paper", fileName);
+                                papersObject.put("subject", CodeSplitter.subjectName); // issue
+                                papersObject.put("examLevel", CodeSplitter.examLevelFull);
+                                papersObject.put("downloadedBy", downloadedBy);
+                                papersObject.saveInBackground();
+
+                            }
                         }
 
 

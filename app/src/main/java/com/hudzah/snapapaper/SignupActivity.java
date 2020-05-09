@@ -123,6 +123,7 @@ public class SignupActivity extends AppCompatActivity {
                                     user.put("phoneNumber", phoneNumber.getText().toString());
                                     user.put("examBoard", itemSelected);
                                     user.put("package", "Free");
+                                    user.put("adsRemoved", false);
 
 
                                     user.signUpInBackground(new SignUpCallback() {

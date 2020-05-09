@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
@@ -76,6 +77,10 @@ public class MyListActivity extends AppCompatActivity {
 
     String paperSelected;
 
+    TextView userListName;
+
+    TextView noOfPapers;
+
     private static final String TAG = "MyListActivity";
 
     EditText search;
@@ -106,6 +111,10 @@ public class MyListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         loadingDialog = new LoadingDialog(this);
+
+        userListName = (TextView) findViewById(R.id.userListName);
+
+        noOfPapers = (TextView) findViewById(R.id.noOfPapers);
 
         connectionDetector = new ConnectionDetector(this);
 
@@ -147,7 +156,6 @@ public class MyListActivity extends AppCompatActivity {
             query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
             query.orderByDescending("createdAt");
 
-
             loadingDialog.startLoadingDialog();
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
@@ -162,7 +170,7 @@ public class MyListActivity extends AppCompatActivity {
                                 Log.d(TAG, "done: preparing items");
 
 
-                                listItems.add(new ListItem(object.getString("subject"), object.getString("paper"),object.getString("examLevel")));
+                                listItems.add(new ListItem(object.getString("subject"), object.getString("paper"),object.getString("examLevel"), object.getCreatedAt()));
 
 
                                 recyclerView = findViewById(R.id.recycler_view);
@@ -175,7 +183,7 @@ public class MyListActivity extends AppCompatActivity {
                                     @Override
                                     public void OnItemClick(int position) {
 
-                                        openPdf(position);
+                                        showDashboard(position);
                                     }
 
                                     @Override
@@ -191,7 +199,7 @@ public class MyListActivity extends AppCompatActivity {
 
                                     @Override
                                     public void OnShareClick(int position) {
-                                        shareItem(position);
+                                        shareItem(position, MyListActivity.this);
                                     }
                                 });
 
@@ -207,6 +215,10 @@ public class MyListActivity extends AppCompatActivity {
                     }
 
                     loadingDialog.dismissDialog();
+
+                    userListName.setText(ParseUser.getCurrentUser().getUsername() + "'s List");
+
+                    noOfPapers.setText("Total Papers: " + listItems.size());
                 }
             });
         }
@@ -229,9 +241,9 @@ public class MyListActivity extends AppCompatActivity {
 
     }
 
-    public void openPdf(int position){
+    public void showDashboard(int position){
 
-        listItems.get(position).openPdf(position, MyListActivity.this, recyclerView);
+        listItems.get(position).showDashboard(position, MyListActivity.this, recyclerView);
     }
 
     public void deleteItem(int position){
@@ -243,9 +255,9 @@ public class MyListActivity extends AppCompatActivity {
         adapter.notifyItemRemoved(position);
     }
 
-    public void shareItem(int position){
+    public void shareItem(int position, Context context){
 
-        listItems.get(position).sharePdf(position ,this);
+        listItems.get(position).sharePdf(position ,context);
     }
 
     public void fileOptions(int position){
