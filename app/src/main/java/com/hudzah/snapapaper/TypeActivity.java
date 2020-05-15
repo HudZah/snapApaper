@@ -40,6 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
@@ -194,6 +195,10 @@ public class TypeActivity extends AppCompatActivity {
 
     String DOWNLOADED_BY = "";
 
+    AdView adView;
+
+    private static final String TAG = "TypeActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +208,16 @@ public class TypeActivity extends AppCompatActivity {
         androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+
+        adView = (AdView) findViewById(R.id.adView);
+
+        AdsManager adsManager = new AdsManager(TypeActivity.this);
+
+        if(!MainActivity.adsRemoved) {
+
+            adsManager.initBannerAd();
+            adsManager.loadBannerAd(adView);
+        } else Log.d(TAG, "onCreate: Ads Removed");
 
         ImageView helpText = (ImageView) findViewById(R.id.helpText);
 

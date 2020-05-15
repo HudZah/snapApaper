@@ -33,6 +33,10 @@
 
     <string name="admob_app_id">ca-app-pub-9334007634623344~4718773124</string>
     <string name="ad_unit_id">ca-app-pub-9334007634623344/5447554958</string>
+    <string name="interstitial_unit_id">ca-app-pub-9334007634623344/7019952076</string>
+    <string name="test_unit_ad">ca-app-pub-9334007634623344/7019952076</string>
+    <string name="banner_unit_ad">ca-app-pub-9334007634623344/2595460012</string>
+    <string name="banner_test_unit_ad">ca-app-pub-9334007634623344/2595460012</string>
 
 
     <!-- Change the following strings as required -->

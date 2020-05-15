@@ -51,7 +51,7 @@
             android:value="@string/back4app_client_key" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-9334007634623344~4718773124" />
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
             android:value="id:157928905943" />

@@ -91,6 +91,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -122,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     File file;
 
     ImageCapture imgCap;
+
+    int value;
+
+    int valueAd = 3;
 
     String codeText;
 
@@ -162,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Boolean isMs;
 
     String LOG_TAG = "MainActivity";
-
-    int value;
 
     TextView limitTextView;
 
@@ -243,6 +246,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     String DOWNLOADED_BY = "Camera";
 
+    static boolean adsRemoved;
+
+    int clickerCount;
+
+    AdsManager adsManager;
+
+    Random rand = new Random();
+
+    private static final String TAG = "MainActivity";
+
 
     public static final String KEY_TASK = "key_task";
 
@@ -277,6 +290,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
 
+        adsManager = new AdsManager(MainActivity.this);
+
+        adsManager.initInterstitialAd();
+
         loadingDialog = new LoadingDialog(MainActivity.this);
 
         torchButton = (Button)findViewById(R.id.torchButton);
@@ -301,6 +318,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
 
+        clickerCount = 0;
+
         query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
         query.setLimit(1);
 
@@ -314,7 +333,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for(ParseUser object : objects){
 
                             examBoard = object.getString("examBoard");
+                            adsRemoved = object.getBoolean("adsRemoved");
                             Log.i("ExamBoard", examBoard);
+                            Log.d(TAG, "done: AdsRemoved are " + adsRemoved);
+
 
                         }
                     }
@@ -790,6 +812,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("Internet", "Not connected");
                 }
                 else {
+                    incrementClickCounter();
 
                     cameraImage.setImageResource(R.drawable.cameraon);
 
@@ -1178,6 +1201,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void typeCode(View view){
 
+        incrementClickCounter();
+
         Log.i(LOG_TAG, "Type");
         Intent typeIntent = new Intent(this, TypeActivity.class);
 
@@ -1257,6 +1282,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "And I don't have a mac so I can't make this app for IOS" +
                 "God damn it apple why do you have to be overpriced" +
                 "Oh I passed the milestone ffs");
+    }
+
+    public void incrementClickCounter(){
+
+
+        clickerCount += 1;
+        Log.d(TAG, "incrementClickCounter: " + clickerCount + " and value is " + valueAd);
+        if(clickerCount >= valueAd){
+            if(!adsRemoved) {
+                adsManager.showInterstitialAd();
+            }
+            else Log.d(TAG, "incrementClickCounter: Ads Removed");
+            valueAd = rand.nextInt(3) + 4;
+            clickerCount = 0;
+        }
     }
 
 

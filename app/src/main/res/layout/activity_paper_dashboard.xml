@@ -2,8 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/scrollView"
     tools:context=".PaperDashboardActivity">
 
     <RelativeLayout
@@ -243,6 +245,39 @@
                                 android:layout_marginTop="15dp"
                                 android:background="@color/grey" />
 
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp"
+                                    android:textColor="@color/black"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Best Time"/>
+
+                                <TextView
+                                    android:id="@+id/bestTimeTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:textColor="@color/headings"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="  Loading..."/>
+
+
+
+                            </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1.5dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/grey" />
 
                     </LinearLayout>
 
@@ -316,7 +351,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
@@ -363,7 +398,12 @@
                             android:text="01:00"
                             android:textColor="@color/black"
                             android:textSize="70sp"
+                            android:inputType="time"
+                            android:cursorVisible="true"
+
+                            android:background="@android:color/transparent"
                             android:layout_centerInParent="true"/>
+
 
 
 
@@ -372,35 +412,63 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp">
+                        android:layout_height="wrap_content">
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        <TextView
+                            android:id="@+id/text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/fabStop"
-                            android:layout_margin="@dimen/timer_fab_bigger_margin"
-                            android:layout_alignParentEnd="true"
-                            android:src="@drawable/ic_close_white_24dp"
-                            />
-
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/fabPause"
-                            android:layout_margin="@dimen/timer_fab_bigger_margin"
                             android:layout_centerHorizontal="true"
-                            android:src="@drawable/ic_pause_black_24dp"
-                            />
+                            android:textColor="@color/black"
+                            android:text="Click on the timer to set time in minutes and seconds" />
 
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:layout_width="wrap_content"
+                        <Button
+                            android:layout_width="140dp"
+                            android:id="@+id/timeSavedButton"
                             android:layout_height="wrap_content"
-                            android:id="@+id/fabStart"
-                            android:layout_margin="@dimen/timer_fab_bigger_margin"
-                            android:layout_alignParentLeft="true"
-                            android:src="@drawable/ic_play_arrow_black_24dp"
-                            />
+                            android:layout_below="@id/text"
+                            android:layout_centerHorizontal="true"
+                            android:backgroundTint="@color/colorAccent"
+                            android:text="Save Time"
+                            android:textSize="18sp"
+                            android:layout_margin="20dp"
+                            android:textColor="#FFF"
+                            android:textAllCaps="false"
+                            android:onClick="saveTime"
+                            android:background="@drawable/roundedbutton"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fabStop"
+                                android:layout_margin="@dimen/timer_fab_bigger_margin"
+                                android:layout_alignParentEnd="true"
+                                android:src="@drawable/ic_check_white_24dp"
+                                />
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fabPause"
+                                android:layout_margin="@dimen/timer_fab_bigger_margin"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/ic_pause_black_24dp"
+                                />
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/fabStart"
+                                android:layout_margin="@dimen/timer_fab_bigger_margin"
+                                android:layout_alignParentLeft="true"
+                                android:src="@drawable/ic_play_arrow_black_24dp"
+                                />
+                        </RelativeLayout>
 
 
                     </RelativeLayout>
@@ -411,7 +479,16 @@
 
             </androidx.cardview.widget.CardView>
 
-
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                ads:adSize="BANNER"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                ads:adUnitId="@string/banner_test_unit_ad">
+            </com.google.android.gms.ads.AdView>
 
         </LinearLayout>
 

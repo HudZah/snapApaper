@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -81,6 +82,10 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
     AlertDialog.Builder choiceBuilder;
 
+    AdView adView;
+
+    private static final String TAG = "MyProfileActivity";
+
     //public static final String app_id = "ca-app-pub-9334007634623344~4718773124";
 
     //public static final String ad_id = "ca-app-pub-9334007634623344/5447554958";
@@ -106,6 +111,16 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
         MobileAds.initialize(getApplicationContext(), getString(R.string.admob_app_id));
 
+        adView = (AdView) findViewById(R.id.adView);
+
+        AdsManager adsManager = new AdsManager(MyProfileActivity.this);
+
+        if(!MainActivity.adsRemoved) {
+
+            adsManager.initBannerAd();
+            adsManager.loadBannerAd(adView);
+        } else Log.d(TAG, "onCreate: Ads Removed");
+
         videoAd = MobileAds.getRewardedVideoAdInstance(this);
 
         videoAd.setRewardedVideoAdListener(MyProfileActivity.this);
@@ -115,8 +130,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
         watchAnAd = (RelativeLayout)findViewById(R.id.watchAnAd);
 
         share = (RelativeLayout)findViewById(R.id.share);
-
-        upgradePackage = (RelativeLayout)findViewById(R.id.upgradePackage);
 
         dailyPackageDetails = (TextView)findViewById(R.id.dailyPackageDetails);
 
@@ -332,15 +345,6 @@ public class MyProfileActivity extends AppCompatActivity implements RewardedVide
 
         });
 
-        upgradePackage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getApplicationContext(), PricingActivity.class);
-
-                startActivity(intent);
-            }
-        });
 
     }
 
